@@ -1,26 +1,24 @@
-# Diamond-1-Hardhat Implementation
+# Ekolance DAO protocol
 
-This is a reference implementation for [EIP-2535 Diamonds](https://github.com/ethereum/EIPs/issues/2535). To learn about other implementations go here: https://github.com/mudgen/diamond
-
-**Note:** The loupe functions in DiamondLoupeFacet.sol MUST be added to a diamond and are required by the EIP-2535 Diamonds standard.
-
-**Note:** In this implementation the loupe functions are NOT gas optimized. The `facets`, `facetFunctionSelectors`, `facetAddresses` loupe functions are not meant to be called on-chain and may use too much gas or run out of gas when called in on-chain transactions. In this implementation these functions should be called by off-chain software like websites and Javascript libraries etc., where gas costs do not matter.
-
+This folder contains all our smart contracts code, built with hardhat and the diamond standard for making upgradable smart contracts.
 
 ## Installation
 
-1. Clone this repo:
+1. Navigate to `dao-protocol`:
 ```console
-git clone git@github.com:mudgen/diamond-1-hardhat.git
+cd dao-protocol
 ```
 
 2. Install NPM packages:
 ```console
-cd diamond-1-hardhat
-npm install
+yarn install
 ```
 
 ## Deployment
+
+```console
+npx hardhat run scripts/deploy_dao.js
+```
 
 ```console
 npx hardhat run scripts/deploy.js
@@ -30,7 +28,7 @@ npx hardhat run scripts/deploy.js
 
 The [scripts/deploy.js](scripts/deploy.js) deployment script includes comments to explain how it works.
 
-How a diamond is deployed is not part of the EIP-2535 Diamonds standard. This implementation shows an example. 
+***How a diamond is deployed is not part of the EIP-2535 Diamonds standard. This implementation shows an example.***
 
 ## Run tests:
 ```console
@@ -41,7 +39,6 @@ npx hardhat test
 
 Check the `test/diamondTest.js` file for examples of upgrades.
 
-Note that upgrade functionality is optional. It is possible to deploy a diamond that can't be upgraded, which is a 'Single Cut Diamond'.  It is also possible to deploy an upgradeable diamond and at a later date remove its `diamondCut` function so it can't be upgraded any more.
 
 Note that any number of functions from any number of facets can be added/replaced/removed on a diamond in a single transaction. In addition an initialization function can be executed in the same transaction as an upgrade to initialize any state variables required for an upgrade. This 'everything done in a single transaction' capability ensures a diamond maintains a correct and consistent state during upgrades.
 
@@ -102,30 +99,4 @@ Similarly you need to use the ABI of a facet in Solidity code in order to call f
 ```solidity
 string result = MyUsefulFacet(address(diamondContract)).getResult()
 ```
-
-
-## Get Help and Join the Community
-
-If you need help or would like to discuss diamonds then send me a message [on twitter](https://twitter.com/mudgen), or [email me](mailto:nick@perfectabstractions.com). Or join the [EIP-2535 Diamonds Discord server](https://discord.gg/kQewPw2).
-
-## Useful Links
-1. [EIP-2535 Diamonds](https://eips.ethereum.org/EIPS/eip-2535)
-2. [Introduction to the Diamond Standard, EIP-2535 Diamonds](https://eip2535diamonds.substack.com/p/introduction-to-the-diamond-standard)
-3. [EIP2535 Diamonds Documentation](https://eip2535diamonds.substack.com/)
-4. [Awesome Diamonds](https://github.com/mudgen/awesome-diamonds)
-
-## Author
-
-This example implementation was written by Nick Mudge.
-
-Contact:
-
-- https://twitter.com/mudgen
-- nick@perfectabstractions.com
-- https://github.com/mudgen
-
-## License
-
-MIT license. See the license file.
-Anyone can use or modify this software for their purposes.
 
