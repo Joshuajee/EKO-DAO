@@ -1,8 +1,8 @@
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import TopNav from './';
+import Registration from '../../../src/pages/registraction';
 
 test('renders component', () => {
-  render(<TopNav />);
+    render(<Registration />);
 
 });
