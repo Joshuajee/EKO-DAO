@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
-import Proposals from './';
+import Home from '../../src/pages/';
 
 test('renders component', () => {
-  render(<Proposals />);
+  render(<Home />);
 
 });

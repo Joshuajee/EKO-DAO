@@ -22,6 +22,7 @@ async function deployDiamond () {
     'DiamondCutFacet',
     'DiamondLoupeFacet',
     'OwnershipFacet',
+    'AdminFacet',
     'BallotFacet',
     'RegistrationFacet',
     'CrowdFundFacet',
@@ -59,7 +60,7 @@ async function deployDiamond () {
   const ekoDAO = await EkoDAO.deploy(facetCuts, diamondArgs)
   await ekoDAO.deployed()
 
-  console.log('Diamond deployed:', ekoDAO.address)
+  console.log('Eko deployed:', ekoDAO.address)
 
   // returning the address of the diamond
   return ekoDAO.address

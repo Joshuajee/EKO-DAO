@@ -17,6 +17,7 @@ describe('EkoDAOTest', async function () {
     let diamondLoupeFacet
     let ownershipFacet
 
+    let adminFacet
     let ballotFacet
     let crowdFundFacet
     let hackFundFacet
@@ -34,7 +35,7 @@ describe('EkoDAOTest', async function () {
         diamondCutFacet = await ethers.getContractAt('DiamondCutFacet', diamondAddress)
         diamondLoupeFacet = await ethers.getContractAt('DiamondLoupeFacet', diamondAddress)
         ownershipFacet = await ethers.getContractAt('OwnershipFacet', diamondAddress)
-
+        adminFacet = await ethers.getContractAt('AdminFacet', diamondAddress)
         ballotFacet = await ethers.getContractAt('BallotFacet', diamondAddress)
         crowdFundFacet = await ethers.getContractAt('CrowdFundFacet', diamondAddress)
         hackFundFacet = await ethers.getContractAt('HackFundFacet', diamondAddress)
@@ -46,7 +47,7 @@ describe('EkoDAOTest', async function () {
             addresses.push(address)
         }
     
-        assert.equal(addresses.length, 7)
+        assert.equal(addresses.length, 8)
     })
   
     it('facets should have the right function selectors -- call to facetFunctionSelectors function', async () => {
@@ -230,30 +231,35 @@ describe('EkoDAOTest', async function () {
             {
                 facetAddress: addresses[3],
                 action: FacetCutAction.Add,
-                functionSelectors: getSelectors(ballotFacet)
+                functionSelectors: getSelectors(adminFacet)
             },
             {
                 facetAddress: addresses[4],
                 action: FacetCutAction.Add,
-                functionSelectors: getSelectors(crowdFundFacet)
+                functionSelectors: getSelectors(ballotFacet)
             },
             {
                 facetAddress: addresses[5],
                 action: FacetCutAction.Add,
-                functionSelectors: getSelectors(registractionFacet)
+                functionSelectors: getSelectors(crowdFundFacet)
             },
             {
                 facetAddress: addresses[6],
                 action: FacetCutAction.Add,
+                functionSelectors: getSelectors(registractionFacet)
+            },
+            {
+                facetAddress: addresses[7],
+                action: FacetCutAction.Add,
                 functionSelectors: getSelectors(hackFundFacet)
             },
             {
-                facetAddress: addresses[addresses.length - 2],
+                facetAddress: addresses[8],
                 action: FacetCutAction.Add,
                 functionSelectors: getSelectors(Test1Facet)
             },
             {
-                facetAddress: addresses[addresses.length - 1],
+                facetAddress: addresses[9],
                 action: FacetCutAction.Add,
                 functionSelectors: getSelectors(Test2Facet)
             }
@@ -267,8 +273,8 @@ describe('EkoDAOTest', async function () {
 
         const facets = await diamondLoupeFacet.facets()
         const facetAddresses = await diamondLoupeFacet.facetAddresses()
-        assert.equal(facetAddresses.length, 9)
-        assert.equal(facets.length, 9)
+        assert.equal(facetAddresses.length, 10)
+        assert.equal(facets.length, 10)
         assert.sameMembers(facetAddresses, addresses)
         assert.equal(facets[0][0], facetAddresses[0], 'first facet')
         assert.equal(facets[1][0], facetAddresses[1], 'second facet')
@@ -278,8 +284,8 @@ describe('EkoDAOTest', async function () {
         assert.sameMembers(facets[findAddressPositionInFacets(addresses[0], facets)][1], getSelectors(diamondCutFacet))
         assert.sameMembers(facets[findAddressPositionInFacets(addresses[1], facets)][1], diamondLoupeFacetSelectors)
         assert.sameMembers(facets[findAddressPositionInFacets(addresses[2], facets)][1], getSelectors(ownershipFacet))
-        assert.sameMembers(facets[findAddressPositionInFacets(addresses[addresses.length - 2], facets)][1], getSelectors(Test1Facet))
-        assert.sameMembers(facets[findAddressPositionInFacets(addresses[addresses.length - 1], facets)][1], getSelectors(Test2Facet))
+        assert.sameMembers(facets[findAddressPositionInFacets(addresses[8], facets)][1], getSelectors(Test1Facet))
+        assert.sameMembers(facets[findAddressPositionInFacets(addresses[9], facets)][1], getSelectors(Test2Facet))
     })
   })
   

@@ -3,6 +3,6 @@ export default function Proposal() {
       <>
         
       </>
-    )
+  )
 }
   
