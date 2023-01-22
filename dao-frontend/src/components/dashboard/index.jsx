@@ -10,7 +10,7 @@ const Dashboard = ({children}) => {
 
             <div className="flex">
 
-                <div style={{height: "calc(100vh - 70px)"}} className='basis-56 h-screen'> <SideNav /></div>
+                <div style={{height: "calc(100vh - 70px)"}} className='md:basis-56 h-screen'> <SideNav /></div>
 
                 <div className='grow bg-slate-100 overflow-y-auto'> 
                     { children } 
