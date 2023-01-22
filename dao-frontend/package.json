@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@next/font": "13.1.2",
+    "@testing-library/user-event": "^14.4.3",
     "aos": "^2.3.4",
     "autoprefixer": "^10.4.13",
     "eslint": "8.31.0",
