@@ -27,7 +27,7 @@ export default function Home() {
             
             <h1 className='my-4 text-3xl sm:text-4xl text-gradient-to-r from-indigo-500 '>Welcome to EkoDAO </h1>
 
-            <p className='text-center font-semibold mb-4 max-w-xl'>
+            <p className='text-center font-semibold mb-4 max-w-lg'>
               Ekolance Governance at your fingertip, Vote, Fund Community project and Join Hackathons.
             </p>
 
