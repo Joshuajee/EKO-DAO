@@ -2,14 +2,10 @@ import { useState } from 'react';
 import { motion } from "framer-motion"
 import Hamburger from 'hamburger-react';
 import PropTypes from 'prop-types';
-import NavLink from './NavLink';
-import { dashboardRoutes } from '../../libs/routes';
 import { menuAnimate, container } from './animation';
 import SideNav from './SideNav';
 
 const HambuggerMenu = ({open, setOpen}) => {
-
-    const [active, setActive] = useState(false);
 
     const handleClick = () => {
         setOpen(!open)
