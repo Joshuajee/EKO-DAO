@@ -1,16 +1,11 @@
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
+import { MockConnector } from 'wagmi/connectors/mock';
 import ConnectionBtn from './button';
 
- 
-// const connector = new MockConnector({
-//   chains: [polygonMumbai],
-// })
+describe ("Modal Wrapper", () => {
 
-
-describe ("Connection Button", () => {
-
-    it("Button Exists", () => {
+    it("Wrapper", () => {
         
 
         render(<ConnectionBtn  />);
