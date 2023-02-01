@@ -21,7 +21,7 @@ const HambuggerMenu = ({open, setOpen}) => {
 
                 <div 
                     onClick={handleClick} 
-                    className={`top-[70px] left-0 w-screen fixed h-screen bg-gray-800 opacity-50`}>
+                    className={`${!open && "hidden"} top-[70px] left-0 w-screen fixed h-screen bg-gray-800 opacity-50`}>
 
                 </div>
 
