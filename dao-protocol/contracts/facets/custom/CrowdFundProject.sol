@@ -1,7 +1,7 @@
 //SPDX-License-Identifier: Unlicense
 pragma solidity 0.8.17;
 
-import "./database.sol";
+import "../../libraries/LibStateVariables.sol";
 
 interface IERC20{
     function transfer(address to, uint256 amount) external  returns (bool);   
@@ -13,18 +13,9 @@ interface IERC20{
 }
 
 
-contract Project {      
-
-    //Mapcontributor address to the amount contirbuted 
-    //mapping (address => uint256) public contributor;
-
+contract Project {   
     //Instance of a stable Coin
     IERC20 stableCoin;
-
-    //Instance of stateVariable
-    //Database.State state;  
-    
-
 
     //events
     event adminWithdrawal (
@@ -50,13 +41,8 @@ contract Project {
         string projectTopic,
         string description,                          
         uint256 targetFund,
-        uint256 minimumContribution,
-         uint256 endDate, 
-        uint256 totalRecievedFund,    
-        uint256 amountWithdraw,
-        uint256 fundBalance,                      
-        uint256 noOfContributors,
-        Status status                     
+        uint256 minimumContribution
+                         
     );
 
 
@@ -68,7 +54,7 @@ contract Project {
     error ProjectIsSucessful();
     error StableCoinTranferFailed();
     error zeroDonation();
-    error AmountBelowTheMinimun(uint256 amount);
+    error AmountBelowTheMinimun();
     
     
     
@@ -96,9 +82,9 @@ contract Project {
 
 
     // @dev Create project
-    // @return null
 
-   constructor(       
+   constructor(
+        address _admin,       
         string  memory _projectTopic,
         string  memory _description,
         uint256 _targetFund,
@@ -107,7 +93,7 @@ contract Project {
         uint256 _projectPeriod
         ) {   
         Database.ProjectState storage state  = Database.getProjectRecords();     
-        state.admin = payable (msg.sender);
+        state.admin = _admin;
         state.projectAddress = address(this);
         state.projectTopic = _projectTopic;
         state.description = _description;
@@ -126,13 +112,7 @@ contract Project {
         _projectTopic, 
         _description,  
         _targetFund,
-        _minimumContribution, 
-        block.timestamp + _projectPeriod,
-        0,        
-        0, 
-        0,                
-        0,
-        state.status                    
+        _minimumContribution                
         );
    }
 
@@ -144,22 +124,9 @@ contract Project {
     }
 
     //View project descriptions
-    function getProjectDetails() public returns (Database.ProjectState memory details){        
+    function getProjectDetails() public pure returns (Database.ProjectState memory details){        
         details = Database.getProjectRecords(); 
-
-        emit ProjectDetails (        
-            address(this),
-            details.projectTopic, 
-            details.description,  
-            details.targetFund,
-            details.minimumContribution, 
-            details.endDate,
-            details.totalRecievedFund,    
-            details.amountWithdraw,
-            details.fundBalance,                      
-            details.noOfContributors,            
-            details.status                    
-        );  
+         
     }
 
     //View amount donated by a donor 
@@ -176,7 +143,7 @@ contract Project {
         Database.ProjectState storage state = Database.getProjectRecords(); //instance state variables
 
         if(_amount < state.minimumContribution) {
-            revert AmountBelowTheMinimun(_amount);
+            revert AmountBelowTheMinimun();
         }
 
         bool success = stableCoin.transferFrom(_user ,address(this), _amount);
@@ -198,7 +165,7 @@ contract Project {
     }
 
     //@dev:Allow admin to withdraw if the project is successful
-    function adminWithdraw(address _user, uint _amount) public isExpired isSucessful {
+    function adminWithdraw(address _user, uint _amount) public isSucessful {
         if (_user != Database.getProjectRecords().admin) revert Unauthorized(); //validate admin
 
         Database.ProjectState storage state = Database.getProjectRecords(); //get state variables location
@@ -233,5 +200,3 @@ contract Project {
     }   
 
 }
-
-    

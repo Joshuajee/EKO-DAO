@@ -2,7 +2,7 @@
 
 pragma solidity 0.8.17;
 
-import './project.sol';
+import '../facets/custom/CrowdFundProject.sol';
 
 // track Project status
     enum Status {
@@ -30,7 +30,7 @@ library Database{
     
     //project state variables
     struct ProjectState {
-        address payable admin;
+        address admin;
         address projectAddress;                           
         uint256 targetFund;
         uint256 totalRecievedFund;    
