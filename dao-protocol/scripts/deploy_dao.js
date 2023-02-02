@@ -24,7 +24,7 @@ async function deployDiamond () {
     'OwnershipFacet',
     'AdminFacet',
     'BallotFacet',
-    'RegistrationFacet',
+    'CommitmentFacet',
     'CrowdFundFacet',
     'HackFundFacet',
   ]

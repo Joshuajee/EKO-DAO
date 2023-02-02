@@ -1,11 +1,11 @@
 import Head from 'next/head'
 import Dashboard from "../../components/dashboard";
 
-export default function DashboardPage() {
+export default function Cohorts() {
     return (
         <Dashboard>
             <Head>
-                <title>Dashboard</title>
+                <title>Cohorts</title>
             </Head>
             <div></div>
         </Dashboard>
