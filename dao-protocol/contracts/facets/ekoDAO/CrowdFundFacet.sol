@@ -4,7 +4,7 @@ pragma solidity 0.8.17;
 import '../../libraries/LibStateVariables.sol';
 import "./CrowdFundProject.sol";
 
-contract Crowdfunding{
+contract CrowdFundFacet{
       event ProjectStarted(
         address projectContractAddress,
         string title,
@@ -114,7 +114,7 @@ function getProjectBalance(uint256 _projectIndex) public view returns(uint256) {
 
 //Get project details
 function getProjectDetails(uint256 _projectIndex) public view returns(Database.ProjectState memory) {
-    Project projectAddress = Database.getCrowdFundMappingRecords().Projects[_projectIndex];   
+    address projectAddress = address(Database.getCrowdFundMappingRecords().Projects[_projectIndex]);   
     return Project(projectAddress).getProjectDetails();  // Call function
 }
 

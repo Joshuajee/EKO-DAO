@@ -54,7 +54,7 @@ contract Project {
     error ProjectIsSucessful();
     error StableCoinTranferFailed();
     error zeroDonation();
-    error AmountBelowTheMinimun(uint256 amount);
+    error AmountBelowTheMinimun();
     
     
     
@@ -143,7 +143,7 @@ contract Project {
         Database.ProjectState storage state = Database.getProjectRecords(); //instance state variables
 
         if(_amount < state.minimumContribution) {
-            revert AmountBelowTheMinimun(_amount);
+            revert AmountBelowTheMinimun();
         }
 
         bool success = stableCoin.transferFrom(_user ,address(this), _amount);
