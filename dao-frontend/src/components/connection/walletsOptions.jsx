@@ -16,7 +16,7 @@ const WalletOptions = ({show, close}) => {
 
             <div onClick={close} className='fixed top-0 left-0 w-screen h-screen'></div>
     
-            <div className={`absolute right-4 md:right-10 top-20 w-4/5 border-solid border-2 bg-white max-w-[400px] z-1000`}>
+            <div className={`absolute shadow-2xl right-4 md:right-10 top-20 w-4/5 border-solid border-2 bg-white max-w-[400px] z-1000`}>
 
                 <h2 className='border-b-2 text-sm p-2 border-r-slate-300'>Choose Wallet</h2>
 
