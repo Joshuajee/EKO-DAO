@@ -29,17 +29,18 @@ module.exports = {
   settings: {
     optimizer: { enabled: true, runs: 200 }
   },
-//   networks: {
+
+  networks: {
                     
-//     goerli: {
-//       url: "https://eth-goerli.g.alchemy.com/v2/oQb3MTwwXCTwabfOVCMal6xsPve204OB",
-//       accounts: ['0x7c9a17ce900d4c227d6a01006681ca4c469c2926c1a0c3c833083468db98284e']
-//     },
-//     hardhat: {
-//       forking:{
-//         url:'https://eth-mainnet.g.alchemy.com/v2/L14t96z2IgmC3Nh6z5TpXqQ_e2Eq-pJq',
-//         //url:'https://eth-goerli.g.alchemy.com/v2/oQb3MTwwXCTwabfOVCMal6xsPve204OB',
-//       }
-//     },    
-//  }
-}
+    goerli: {
+      url: "https://eth-goerli.g.alchemy.com/v2/oQb3MTwwXCTwabfOVCMal6xsPve204OB",
+      accounts: ['0x7c9a17ce900d4c227d6a01006681ca4c469c2926c1a0c3c833083468db98284e']
+    },
+    hardhat: {
+      forking:{
+        url:'https://eth-mainnet.g.alchemy.com/v2/L14t96z2IgmC3Nh6z5TpXqQ_e2Eq-pJq',
+        //url:'https://eth-goerli.g.alchemy.com/v2/oQb3MTwwXCTwabfOVCMal6xsPve204OB',
+      }
+    },    
+ }
+
