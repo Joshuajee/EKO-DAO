@@ -3,15 +3,13 @@ import TopBanner from '@/components/ui/TopBanner';
 import Head from 'next/head'
 
 
-export default function Hackathons() {
+export default function Crowdfunding() {
   return (
     <Layout>
       <Head>
-        <title> Hackathons </title>
+        <title> Crowdfunding </title>
       </Head>
-      <TopBanner>
-        Hey Hackers, go build amazing stuff
-      </TopBanner>
+      <TopBanner>Donate to Crowdfunding Campaigns</TopBanner>
     </Layout>
   )
 }
