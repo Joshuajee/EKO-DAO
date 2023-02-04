@@ -1,13 +1,14 @@
+import Layout from '@/components/ui/Layout';
+import TopBanner from '@/components/ui/TopBanner';
 import Head from 'next/head'
-import Dashboard from "../../components/dashboard";
 
 export default function Proposals() {
   return (
-    <Dashboard>
+    <Layout>
         <Head>
-            <title>Proposals </title>
+          <title>Proposals </title>
         </Head>
-        <div></div>
-    </Dashboard>
+        <TopBanner> Vote on Community Improvement Proposals </TopBanner>
+    </Layout>
   )
 }

@@ -2,6 +2,13 @@ import { MdDashboard, MdSchool } from "react-icons/md";
 import { FaVoteYea, FaHandsHelping, FaAward } from "react-icons/fa";
 
 
+export const links = {
+    cohorts: "/cohorts",
+    proposals: "/proposals",
+    hackathons: "/hackathons",
+    crowdfunding: "/crowdfunding",
+}
+
 export const routes = {
     dashboard: "/dashboard"
 }

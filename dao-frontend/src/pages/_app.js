@@ -1,4 +1,5 @@
 import '@/styles/globals.css'
+import React from 'react'
 import { WagmiConfig, createClient, configureChains } from 'wagmi'
 import { polygonMumbai } from 'wagmi/chains'
 import { alchemyProvider } from 'wagmi/providers/alchemy'
@@ -53,6 +54,10 @@ const App = ({ Component, pageProps }) => {
   useEffect(() => {
     AOS.init({ duration: 500 });
   }, []);
+
+  React.useEffect(() => {
+    import("@lottiefiles/lottie-player");
+  }, [])
 
   return (
     <WagmiConfig client={client}>

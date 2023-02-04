@@ -1,14 +1,16 @@
+import Layout from '@/components/ui/Layout';
+import TopBanner from '@/components/ui/TopBanner';
 import Head from 'next/head'
 import Dashboard from "../../components/dashboard";
 
 export default function Cohorts() {
     return (
-        <Dashboard>
+        <Layout>
             <Head>
                 <title>Cohorts</title>
             </Head>
-            <div></div>
-        </Dashboard>
+            <TopBanner>Register For Cohorts</TopBanner>
+        </Layout>
     )
 }
   
