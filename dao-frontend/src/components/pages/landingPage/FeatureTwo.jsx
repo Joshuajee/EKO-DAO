@@ -6,11 +6,9 @@ import FeatureCardTwo from "./FeatureCardTwo";
 
 
 export default function FeatureTwo (){
-
-    console.log(links)
     
     return (
-        <section className="text-gray-600 body-font bg-slate-300">
+        <section className="text-gray-600 body-font bg-slate-100">
             <div className="container px-5 py-24 mx-auto">
 
                 <FeatureCardTwo 
