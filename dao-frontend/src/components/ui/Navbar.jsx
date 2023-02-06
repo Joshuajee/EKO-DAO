@@ -1,6 +1,10 @@
-import { links } from "@/libs/routes"
+import { useState } from "react"
 import Link from "next/link"
-//import ConnectionBtn from "../connection/button"
+import { useScroll } from "@/hooks/windows"
+import { links } from "@/libs/routes"
+import HambuggerMenu from "./HambuggerMenu"
+import Connection from "../connection"
+
 
 const navigation = [
     { name: 'Join Cohort', href: links.cohorts },
@@ -10,20 +14,31 @@ const navigation = [
 ]
 
 const Navbar = () => {
+
+    const [open, setOpen] = useState(false);
+
+    const scrollPosition = useScroll()
+
+    const trigger = scrollPosition > 80
+
     return (
-        <header class="absolute w-full text-gray-600 body-font z-10 ">
-            <div class="container mx-auto flex flex-wrap p-5 flex-col md:flex-row items-center">
-                <Link href={"/"} class="flex title-font font-medium items-center text-gray-900 mb-4 md:mb-0">
-                    <span class="ml-3 text-3xl font-bold text-blue-800">EkoDAO</span>
+        <header class={`${(trigger || open) ? "text-gray-600 bg-white shadow-lg" : "text-black" } fixed w-full body-font z-10 flex justify-center`}>
+            <div class="container w-full flex flex-wrap justify-between item-center py-2 lg:py-3 px-2">
+                <Link href={"/"} className="block title-font text-2xl md:text-3xl font-bold text-blue-800">
+                    EkoDAO
                 </Link>
-                <nav class="md:ml-auto md:mr-auto flex flex-wrap items-center text-base justify-center">
+                <nav class="hidden lg:ml-auto lg:mr-auto md:flex flex-wrap items-center text-base justify-center">
                     {
-                        navigation.map((nav, index) => <Link className="mr-5 hover:text-gray-900" key={index} href={nav.href}>{nav.name}</Link>)
+                        navigation.map((nav, index) => <Link className="mr-2 lg:mr-5 hover:text-gray-900" key={index} href={nav.href}>{nav.name}</Link>)
                     }
                 </nav>
-                <button className="bg-blue-700 rounded-lg hover:bg-blue-500 text-white py-2 px-8"> Connect Wallet </button>
+                <HambuggerMenu open={open} setOpen={setOpen} /> 
+
+                <div className="hidden md:block"><Connection /></div>
+
             </div>
-         </header>
+
+        </header>
     )
 }
 
