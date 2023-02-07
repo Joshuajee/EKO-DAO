@@ -1,44 +1,66 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.17;
 
+
+import '@openzeppelin/contracts/token/ERC20/IERC20.sol';
 import "./StorageLib.sol";
 
-contract Governor {
+
+contract GovernorFacet {
+
+  IERC20 Ekotoken;
+  bool init = false;
 
 
-    // Modifier to ensure that user inputs an existing Proposal_ID
-    modifier existingId(uint Proposal_ID){
-      StorageLib.Tracker storage pt = StorageLib.getProposalTracker();
-      if(!(Proposal_ID <= pt.Proposal_Tracker || Proposal_ID > 0)) 
-            { revert ("Invalid");
-            }else{
-            _;
-            }
+  // Modifier to ensure that user inputs an existing Proposal_ID
+  modifier existingId(uint Proposal_ID){
+    StorageLib.Tracker storage pt = StorageLib.getProposalTracker();
+    if(!(Proposal_ID <= pt.Proposal_Tracker || Proposal_ID > 0)) { 
+      revert ("Invalid");
+    }else{
+      _;
     }
+  }
 
-    // A modifier that is used to ensure that a user can not input an empty string
-    modifier noEmptiness(string memory name){
-      string memory a = "";
-        if (
-            keccak256(abi.encodePacked(name)) == keccak256(abi.encodePacked(a))
-        ) {
-            revert("Can't be empty");
-        }else{
-            _;
-        }
+
+  // A modifier that is used to ensure that a user can not input an empty string
+  modifier noEmptiness(string memory name){
+    string memory a = "";
+    if (keccak256(abi.encodePacked(name)) == keccak256(abi.encodePacked(a))) {
+      revert("Can't be empty");
+    }else{
+      _;
     }
-    
+  }
+  
 
-    // modifier to protect against address zero
-    modifier addressValidation(address a) {
-        if (a == address(0)){
-          revert("Invalid address");
-        }else{
-          _;
-        }
+  // modifier to protect against address zero
+  modifier addressValidation(address a) {
+    if (a == address(0)){
+      revert("Invalid address");
+    }else{
+      _;
     }
+  }
 
-    // CONSTRUCTOR
+
+  // modifier to ensure the voter has enough Eko Tokens to vote .
+  modifier enoughEkoTokens(address a) {
+    if (Ekotoken.balanceOf(a) < StorageLib.MINIMUM_TOKEN_REQUIREMENT){
+      revert("Insufficient Balance");
+    }else{
+      _;
+    }
+  }
+
+
+  //Ekotoken contract address is passed on governor contract initialization 
+  function intializeGovernor(address _token) public addressValidation(_token) {
+    if (init) revert("Already Initialized");
+    Ekotoken = IERC20(_token);
+    init = true;
+  }
+
 
   // fucntion to create a new voting Proposal by Ekolance Admins.
   function newProposal(
@@ -63,6 +85,8 @@ contract Governor {
     emit StorageLib.New_Proposal(msg.sender, _newProposal, Proposal_ID);
   }
 
+
+  // function to view an existing proposal
   function viewProposal(
     uint Proposal_ID
   ) external view existingId(Proposal_ID) returns(StorageLib.Proposal memory){
@@ -70,7 +94,13 @@ contract Governor {
     return mp.proposal[Proposal_ID];
   }
 
-  // function to delegate voting power
+  // function to get the number of existing proposals
+  function getNumberOfProposals() external view returns(uint){
+    StorageLib.Tracker storage pt = StorageLib.getProposalTracker();
+    return pt.Proposal_Tracker;
+  }
+
+  // function to delegate voting power for a particular proposal
   function addVotingDelegate(
     uint Proposal_ID,
     address _delegate
@@ -80,13 +110,15 @@ contract Governor {
       emit StorageLib.Add_Delegate(msg.sender, _delegate, Proposal_ID);
     }
 
+
+  // function to view the delegate of an address on a particular proposal
   function viewDelegate(
     uint Proposal_ID,
     address _delegate
   ) external view existingId(Proposal_ID) addressValidation(_delegate)
   returns(address){
       StorageLib.Mappings storage mp = StorageLib.getMappingStruct();
-      return mp.votingDelegate[Proposal_ID][msg.sender];
+      return mp.votingDelegate[Proposal_ID][_delegate];
   }
 
 
@@ -100,15 +132,15 @@ contract Governor {
     emit StorageLib.Remove_Delegate(msg.sender, _delegate, Proposal_ID);
   }
 
+
   // function to vote on a proposal
   function voteFor(
     uint Proposal_ID
     )
-    existingId(Proposal_ID) external{
-    // require that the voter has enough Ekotoken
+    existingId(Proposal_ID) enoughEkoTokens(msg.sender) external{
     StorageLib.Mappings storage mp = StorageLib.getMappingStruct();
     if(
-      // !(proposal[Proposal_ID].votingDelay <= block.timestamp) ||
+      (mp.proposal[Proposal_ID].votingDelay >= block.timestamp) ||
       (mp.proposal[Proposal_ID].votingPeriod <= block.timestamp) ||
       (mp.proposalVoter[Proposal_ID][msg.sender].voted) 
       ) revert("Can't Vote");
@@ -117,16 +149,16 @@ contract Governor {
     emit StorageLib.Vote_For(msg.sender, Proposal_ID);
   }
 
+  // 3 >= 1
   // function to vote for a proposal as delegate.
   function voteForAsDelegate(
     uint Proposal_ID,
     address delegator
     ) 
-    existingId(Proposal_ID) addressValidation(delegator) external{
-    // require that the delegator has enough Ekotoken
+    existingId(Proposal_ID) enoughEkoTokens(delegator) addressValidation(delegator) external{
     StorageLib.Mappings storage mp = StorageLib.getMappingStruct();
     if(
-      // !(proposal[Proposal_ID].votingDelay <= block.timestamp) ||
+      (mp.proposal[Proposal_ID].votingDelay >= block.timestamp) ||
       (mp.proposal[Proposal_ID].votingPeriod <= block.timestamp) ||
       (mp.proposalVoter[Proposal_ID][delegator].voted) ||
       (mp.votingDelegate[Proposal_ID][delegator] != msg.sender)
@@ -136,15 +168,15 @@ contract Governor {
     emit StorageLib.Vote_For_As_Delegate(delegator, msg.sender, Proposal_ID);
   }
 
+
   // function to vote against a proposal
   function voteAgainst(
     uint Proposal_ID
     )
-    existingId(Proposal_ID) external{
-    // require that the voter has enough Ekotoken
+    existingId(Proposal_ID) enoughEkoTokens(msg.sender) external{
     StorageLib.Mappings storage mp = StorageLib.getMappingStruct();
     if(
-      // !(proposal[Proposal_ID].votingDelay <= block.timestamp) ||
+      (mp.proposal[Proposal_ID].votingDelay >= block.timestamp) ||
       (mp.proposal[Proposal_ID].votingPeriod <= block.timestamp) ||
       (mp.proposalVoter[Proposal_ID][msg.sender].voted) 
       ) revert("Can't Vote");
@@ -153,16 +185,16 @@ contract Governor {
     emit StorageLib.Vote_Against(msg.sender, Proposal_ID);
   }
 
+
   // function to vote against on a proposal as delegate.
   function voteAgainstAsDelegate(
     uint Proposal_ID,
     address delegator
     ) 
-    existingId(Proposal_ID) addressValidation(delegator) external{
-    // require that the delegator has enough Ekotoken
+    existingId(Proposal_ID) enoughEkoTokens(delegator) addressValidation(delegator) external{
     StorageLib.Mappings storage mp = StorageLib.getMappingStruct();
     if(
-      // !(proposal[Proposal_ID].votingDelay <= block.timestamp) ||
+      (mp.proposal[Proposal_ID].votingDelay >= block.timestamp) ||
       (mp.proposal[Proposal_ID].votingPeriod <= block.timestamp) ||
       (mp.proposalVoter[Proposal_ID][delegator].voted) ||
       (mp.votingDelegate[Proposal_ID][delegator] != msg.sender)

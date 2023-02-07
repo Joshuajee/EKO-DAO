@@ -3,7 +3,7 @@
 
 const { getSelectors, FacetCutAction } = require('./libraries/diamond.js')
 
-async function deployDiamond () {
+async function deployDiamond (test = false) {
   const accounts = await ethers.getSigners()
   const contractOwner = accounts[0]
 
@@ -13,18 +13,19 @@ async function deployDiamond () {
   const DiamondInit = await ethers.getContractFactory('DiamondInit')
   const diamondInit = await DiamondInit.deploy()
   await diamondInit.deployed()
-  console.log('DiamondInit deployed:', diamondInit.address)
 
-  // Deploy facets and set the `facetCuts` variable
-  console.log('Deploying facets')
+  if (!test) {
+    console.log('DiamondInit deployed:', diamondInit.address)
+    // Deploy facets and set the `facetCuts` variable
+    console.log('Deploying facets')
+  }
 
   const FacetNames = [
     'DiamondCutFacet',
     'DiamondLoupeFacet',
     'OwnershipFacet',
     'AdminFacet',
-    'BallotFacet',
-    'CommitmentFacet',
+    'GovernorFacet',
     'CrowdFundFacet',
     'HackFundFacet',
   ]
@@ -35,7 +36,7 @@ async function deployDiamond () {
     const Facet = await ethers.getContractFactory(FacetName)
     const facet = await Facet.deploy()
     await facet.deployed()
-    console.log(`${FacetName} deployed: ${facet.address}`)
+    if (!test) console.log(`${FacetName} deployed: ${facet.address}`)
     facetCuts.push({
       facetAddress: facet.address,
       action: FacetCutAction.Add,
@@ -60,10 +61,10 @@ async function deployDiamond () {
   const ekoDAO = await EkoDAO.deploy(facetCuts, diamondArgs)
   await ekoDAO.deployed()
 
-  console.log('Eko deployed:', ekoDAO.address)
+  if(!test) console.log('Eko deployed:', ekoDAO.address)
 
   // returning the address of the diamond
-  return ekoDAO.address
+  return ekoDAO
 }
 
 // We recommend this pattern to be able to use async/await everywhere
