@@ -19,13 +19,8 @@ export default function Home() {
       </Head>
 
       <HeroSection />
-
-
       <Feature />
-
       <FeatureTwo />
-
-
 
     </Layout>
   )

@@ -2,7 +2,7 @@ const FeatureCardTwo = ({lottie, title, isRight}) => {
 
 
     const rightSide = (
-        <div data-aos="fade-right" class="flex items-center lg:w-3/5 mx-auto pb-10 mb-10 sm:flex-row flex-col">
+        <div class="flex items-center lg:w-3/5 mx-auto pb-10 mb-10 sm:flex-row flex-col">
             <div class="flex-grow sm:text-left text-center mt-6 sm:mt-0">
                 <h2 class="text-gray-900 text-lg title-font font-semibold mb-2">{title}</h2>
                 <p class="leading-relaxed text-base">
@@ -27,7 +27,7 @@ const FeatureCardTwo = ({lottie, title, isRight}) => {
 
 
     const leftSide = (
-        <div data-aos="fade-left" class="flex items-center lg:w-3/5 mx-auto pb-10 mb-10 sm:flex-row flex-col">
+        <div class="flex items-center lg:w-3/5 mx-auto pb-10 mb-10 sm:flex-row flex-col">
                 
             <div class="sm:w-60 sm:h-60 h-60 w-60 sm:mr-10 inline-flex items-center justify-center flex-shrink-0">
                 <lottie-player 
@@ -48,7 +48,7 @@ const FeatureCardTwo = ({lottie, title, isRight}) => {
         </div>    
     )
 
-    return isRight ? rightSide : leftSide
+    return <div data-aos="fade-up"> {isRight ? rightSide : leftSide} </div>
 
 }
 

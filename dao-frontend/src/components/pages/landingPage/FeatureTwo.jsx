@@ -26,7 +26,7 @@ export default function FeatureTwo (){
 
                 <FeatureCardTwo 
                     title={"Decentralised Vote"} isRight={false}
-                    lottie ={"https://assets6.lottiefiles.com/private_files/lf30_gepDF8.json"}
+                    lottie ={"https://assets4.lottiefiles.com/packages/lf20_hxwcQt.json"}
                     >
                 
                 </FeatureCardTwo>
