@@ -6,59 +6,60 @@ import '@openzeppelin/contracts/token/ERC20/IERC20.sol';
 import "./StorageLib.sol";
 
 
-contract Governor {
+contract GovernorFacet {
 
   IERC20 Ekotoken;
+  bool init = false;
 
 
-    // Modifier to ensure that user inputs an existing Proposal_ID
-    modifier existingId(uint Proposal_ID){
-      StorageLib.Tracker storage pt = StorageLib.getProposalTracker();
-      if(!(Proposal_ID <= pt.Proposal_Tracker || Proposal_ID > 0)) 
-            { revert ("Invalid");
-            }else{
-            _;
-            }
+  // Modifier to ensure that user inputs an existing Proposal_ID
+  modifier existingId(uint Proposal_ID){
+    StorageLib.Tracker storage pt = StorageLib.getProposalTracker();
+    if(!(Proposal_ID <= pt.Proposal_Tracker || Proposal_ID > 0)) { 
+      revert ("Invalid");
+    }else{
+      _;
     }
+  }
 
 
-    // A modifier that is used to ensure that a user can not input an empty string
-    modifier noEmptiness(string memory name){
-      string memory a = "";
-        if (
-            keccak256(abi.encodePacked(name)) == keccak256(abi.encodePacked(a))
-        ) {
-            revert("Can't be empty");
-        }else{
-            _;
-        }
+  // A modifier that is used to ensure that a user can not input an empty string
+  modifier noEmptiness(string memory name){
+    string memory a = "";
+    if (keccak256(abi.encodePacked(name)) == keccak256(abi.encodePacked(a))) {
+      revert("Can't be empty");
+    }else{
+      _;
     }
-    
+  }
+  
 
-    // modifier to protect against address zero
-    modifier addressValidation(address a) {
-        if (a == address(0)){
-          revert("Invalid address");
-        }else{
-          _;
-        }
+  // modifier to protect against address zero
+  modifier addressValidation(address a) {
+    if (a == address(0)){
+      revert("Invalid address");
+    }else{
+      _;
     }
+  }
 
 
-    // modifier to ensure the voter has enough Eko Tokens to vote .
-    modifier enoughEkoTokens(address a) {
-      if (Ekotoken.balanceOf(a) < StorageLib.MINIMUM_TOKEN_REQUIREMENT){
-        revert("Insufficient Balance");
-      }else{
-        _;
-      }
+  // modifier to ensure the voter has enough Eko Tokens to vote .
+  modifier enoughEkoTokens(address a) {
+    if (Ekotoken.balanceOf(a) < StorageLib.MINIMUM_TOKEN_REQUIREMENT){
+      revert("Insufficient Balance");
+    }else{
+      _;
     }
+  }
 
 
   //Ekotoken contract address is passed on governor contract initialization 
-    constructor(address _token) addressValidation(_token) {
-      Ekotoken = IERC20(_token);
-    }
+  function intializeGovernor(address _token) public addressValidation(_token) {
+    if (init) revert("Already Initialized");
+    Ekotoken = IERC20(_token);
+    init = true;
+  }
 
 
   // fucntion to create a new voting Proposal by Ekolance Admins.
