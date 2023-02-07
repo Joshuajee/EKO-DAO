@@ -6,17 +6,10 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/mudgen/contracts-starter.git"
-  },
-  "author": "Nick Mudge",
+  "author": "Eko DAO",
   "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/mudgen/contracts-starter/issues"
-  },
-  "homepage": "https://github.com/mudgen/contracts-starter#readme",
   "devDependencies": {
+    "@nomicfoundation/hardhat-chai-matchers": "^1.0.5",
     "@nomicfoundation/hardhat-network-helpers": "^1.0.7",
     "@nomiclabs/hardhat-ethers": "^2.0.2",
     "@nomiclabs/hardhat-waffle": "^2.0.1",

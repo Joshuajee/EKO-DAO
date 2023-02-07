@@ -1,7 +1,8 @@
 import { render, screen } from '@testing-library/react';
-import Home from '../../src/pages/';
+import '@testing-library/jest-dom';
+import TopNavBar from '.';
 
 test('renders component', () => {
-  render(<Home />);
+  render(<TopNavBar />);
 
 });

@@ -3,16 +3,16 @@ pragma solidity 0.8.17;
 
 // Example library to show a simple example of diamond storage
 
-library RegistractionLib {
+library CommitmentLib {
 
     bytes32 constant DIAMOND_STORAGE_POSITION = keccak256("diamond.standard.registration.storage");
     
-    struct RegistractionState {
+    struct CommitmentState {
         address myAddress;
         uint256 myNum;
     }
 
-    function diamondStorage() internal pure returns (RegistractionState storage ds) {
+    function diamondStorage() internal pure returns (CommitmentState storage ds) {
         bytes32 position = DIAMOND_STORAGE_POSITION;
         assembly {
             ds.slot := position
@@ -20,22 +20,22 @@ library RegistractionLib {
     }
 
     function setMyAddress(address _myAddress) internal {
-        RegistractionState storage registractionState = diamondStorage();
-        registractionState.myAddress = _myAddress;
+        CommitmentState storage commitmentState = diamondStorage();
+        commitmentState.myAddress = _myAddress;
     }
 
     function getMyAddress() internal view returns (address) {
-        RegistractionState storage registractionState = diamondStorage();
-        return registractionState.myAddress;
+        CommitmentState storage commitmentState = diamondStorage();
+        return commitmentState.myAddress;
     }
 
 }
 
-contract RegistrationFacet {
-    event RegistractionEvent(address something);
+contract CommitmentFacet {
+    event CommitmentEvent(address something);
 
     function Register() external {
-      RegistractionLib.setMyAddress(address(this));
+      CommitmentLib.setMyAddress(address(this));
     }
 
 
