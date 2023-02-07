@@ -27,3 +27,16 @@ export const dashboardRoutes = [
     {name: "Hackathons", link: "/hackathons", icon: <FaAward size={24} />},
     {name: "CrowdFunding", link: "/crowd-funding", icon: <FaHandsHelping size={24} />},
 ]
+
+export const tabs = [
+    {name: "All", link: ""},
+    {name: "Active", link: "?tab=active"},
+    {name: "Won", link: "?tab=won"},
+    {name: "Lost", link: "?tab=lost"}
+]
+
+export const tabsTwo = [
+    {name: "All", link: ""},
+    {name: "Active", link: "?tab=active"},
+    {name: "Completed", link: "?tab=completed"},
+]

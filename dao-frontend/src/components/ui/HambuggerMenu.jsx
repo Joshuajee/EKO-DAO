@@ -32,7 +32,7 @@ const HambuggerMenu = ({open, setOpen}) => {
     useEffect(() => {
         setTimeout(() => {
             setInitialRender("")
-        }, 300)
+        }, 1000)
     }, []);
 
     return (

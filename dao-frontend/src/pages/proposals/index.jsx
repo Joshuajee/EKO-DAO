@@ -1,17 +1,14 @@
 import ProposalCard from '@/components/pages/proposals/ProposalCard';
+import CategoryTab from '@/components/ui/CategoryTab';
 import Container from '@/components/ui/Container';
 import Layout from '@/components/ui/Layout';
 import TopBanner from '@/components/ui/TopBanner';
+import { proposalsDummy } from '@/libs/dummy';
+import { tabs } from '@/libs/routes';
 import Head from 'next/head'
 
 export default function Proposals() {
-
-  const proposals = Array(20).fill({ 
-    id: 100,
-    date: "FEB 03 2023", 
-    topic: "Maker Teleport Temporary Shutdown, DAI Transfers, Starknet Contract Deauthorizations",
-    content: "Temporarily shut down the L2 side of the teleport bridge on Optimism, Arbitrum, and Starknet; DAI transfers for SPF funding, Tech-Ops Core Unit, and GovComms severance; deauthorize the old Starknet contracts."
-  })
+  console.log(proposalsDummy[0])
 
   return (
     <Layout>
@@ -20,9 +17,11 @@ export default function Proposals() {
 
       <Container> 
 
+        <CategoryTab tabs={tabs} />
+
         <div className='grid md:grid-cols-2 gap-4'>
 
-          {proposals.map((proposal, index) =>  <ProposalCard key={index} proposal={proposal} />)}
+          {proposalsDummy.map((proposal, index) =>  <ProposalCard key={index} proposal={proposal} />)}
 
         </div>
 
