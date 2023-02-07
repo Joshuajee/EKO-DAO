@@ -23,6 +23,7 @@ task('accounts', 'Prints the list of accounts', async () => {
 
 const PRIVATE_KEY = process.env.PRIVATE_KEY;
 
+
 module.exports = {
 	solidity: '0.8.17',
 	settings: {
