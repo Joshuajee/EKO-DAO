@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity = 0.8.7;
+pragma solidity = 0.8.17;
 
 
 library StorageLib {
@@ -14,7 +14,7 @@ library StorageLib {
         uint votesFor; // the votes in favour of a proposal
         uint votesAgainst; // the votes against a particular proposal
         // Would need a chainlink integration
-        // bool proposalState; // false when not in voting and true when in voting    
+        // bool proposalState; // False for failed proposals and true for passed proposals   
     }
 
     function getProposalStruct() internal pure returns (Proposal storage ps) {
@@ -71,14 +71,18 @@ library StorageLib {
     } 
 
 
-    // Setting the voting delay of any proposal to 3 hrs ~ 900 blocks
+    // Setting the voting delay of any proposal to 3 hrs ~ 900 blocks ~ 10800 seconds
     // Voting Delay is the time between the creation of a proposal and the time before voting starts
-    uint public constant VOTING_DELAY = 900;
+    uint public constant VOTING_DELAY = 10800;
 
 
-    // Setting the voting period of any proposal to 1 WEEK ~ 50400 blocks
+    // Setting the voting period of any proposal to 1 WEEK ~ 50400 blocks ~ 604800 seconds
     // Voting period is the period of time allocated to voting on a proposal
-    uint public constant VOTING_PERIOD = 50400;
+    uint public constant VOTING_PERIOD = 604800;
+
+    
+    // The minimum amount of Ekotokens required to vote
+    uint public constant MINIMUM_TOKEN_REQUIREMENT = 100000000000000000000;
 
 
     // Events to be emiited on function calls 
