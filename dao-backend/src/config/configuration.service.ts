@@ -17,4 +17,27 @@ export class ConfigurationService {
   get version(): string {
     return this.configService.get<string>('app.version');
   }
+  get dbtype(): string {
+    return this.configService.get<string>('db.type');
+  }
+
+  get dbhost(): string {
+    return this.configService.get<string>('db.host');
+  }
+
+  get dbport(): number {
+    return Number(this.configService.get<number>('db.port'));
+  }
+
+  get dbname(): string {
+    return this.configService.get<string>('db.name');
+  }
+
+  get dbuser(): string {
+    return this.configService.get<string>('db.user');
+  }
+
+  get dbpassword(): string {
+    return this.configService.get<string>('db.password');
+  }
 }
