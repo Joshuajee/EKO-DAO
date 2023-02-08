@@ -2,6 +2,7 @@ const { impersonateAccount, loadFixture } = require("@nomicfoundation/hardhat-ne
 const { expect } = require("chai");
 const { ethers } = require("hardhat");
 const ERC20ABI = require("@openzeppelin/contracts/build/contracts/ERC20.json").abi;
+const ProjectABI = require("../artifacts/contracts/facets/custom/CrowdFundProject.sol/Project.json").abi;
 
 describe("CrowdFunding Facet test", () => {
 
@@ -11,10 +12,10 @@ describe("CrowdFunding Facet test", () => {
 
     //inputs to CrowdFunding campaign project creation
     const projectTitle = "Ekolance";
-    const projectDec = "Ekolance Solidity Training";
-    const targetFund = ethers.utils.parseUnits("4000", 5);
-    const minimumContribution = ethers.utils.parseUnits("50", 5);
-    const projectPeriod = 60*15; // in seconds
+    const projectDec = "Ekolance Solidity Training Workshop";
+    const targetFund = ethers.utils.parseUnits("4000", 6);
+    const minimumContribution = ethers.utils.parseUnits("50", 6);
+    const projectPeriod = 60*60*24*7; // in seconds (1 week)
 
     //input to test cases
     const AmountToDonate = 1000;
@@ -39,25 +40,29 @@ describe("CrowdFunding Facet test", () => {
         //get the balance of the USDC holders 
         const USDCBalanceOfHolder1 = await USDCContractInstance.balanceOf(USDCHolder1);
         const USDCBalanceOfHolder2 = await USDCContractInstance.connect(USDCHolder2_signer).balanceOf(USDCHolder2);
+        
         console.log("The USDC balance of USDCHolder1 is ", ethers.utils.formatUnits(USDCBalanceOfHolder1.toString(),5));
         console.log("The USDC balance of USDCHolder2 is ", ethers.utils.formatUnits(USDCBalanceOfHolder2.toString(),5));
 
         //send ether to one of the USDCHolder for EVM transactions  
         await owner.sendTransaction({to:USDCHolder1, value:ethers.utils.parseUnits("50",18)});
 
-        //create an isstance of CrowdFunding Campaign contract
-        await CrowdFundingFacetInstance.createProject(projectTitle,projectDec,targetFund,minimumContribution,USDC,projectPeriod);  
+        //create an instance of CrowdFunding Campaign contract
+        await CrowdFundingFacetInstance.createCampaign(projectTitle,projectDec,targetFund,minimumContribution,USDC,projectPeriod);  
         const CampaignContract = {...(await CrowdFundingFacetInstance.getProjectDetails(CampaignIndex))}.projectAddress
-        
+        const Project = await ethers.getContractFactory("Project");
+        const CampaignContractInstance  = await Project.attach(CampaignContract);
+        //const CampaignContractInstance =  await new ethers.Contract(CampaignContract,ProjectABI,USDCHolder1_signer)
 
-        return {USDCHolder1_signer,USDCHolder2_signer,owner, CrowdFundingFacetInstance, USDCContractInstance, CampaignContract,TokenDecimal }
+
+        return {USDCHolder1_signer,USDCHolder2_signer,owner, CrowdFundingFacetInstance, USDCContractInstance, CampaignContract,TokenDecimal, CampaignContractInstance }
     }
 
     it("should create project campaign contract and increment project count", async() => {
         const { CrowdFundingFacetInstance} = await loadFixture(CrowdFundingFixture);
 
-        await CrowdFundingFacetInstance.createProject(projectTitle,projectDec,targetFund,minimumContribution,USDC,projectPeriod);  
-        await CrowdFundingFacetInstance.createProject(projectTitle,projectDec,targetFund,minimumContribution,USDC,projectPeriod);       
+        await CrowdFundingFacetInstance.createCampaign(projectTitle,projectDec,targetFund,minimumContribution,USDC,projectPeriod);  
+        await CrowdFundingFacetInstance.createCampaign(projectTitle,projectDec,targetFund,minimumContribution,USDC,projectPeriod);       
         const ProjectContract1 = {...(await CrowdFundingFacetInstance.getProjectDetails(1))}.projectAddress
         const ProjectContract2 = {...(await CrowdFundingFacetInstance.getProjectDetails(2))}.projectAddress       
         
@@ -67,20 +72,15 @@ describe("CrowdFunding Facet test", () => {
         
     }) 
 
-    it("should return count of campaigns raised", async() => {
-        const { USDCContractInstance, CrowdFundingFacetInstance,
-            USDCHolder1_signer, CampaignContract} = await loadFixture(CrowdFundingFixture);
-                
-    })
-
+                            
     it("should allow anyone to donate", async() => {
         const { USDCContractInstance, CrowdFundingFacetInstance,
             USDCHolder1_signer, CampaignContract, TokenDecimal} = await loadFixture(CrowdFundingFixture);
 
-        const DonatedAmount = ethers.utils.parseUnits(AmountToDonate.toString(),TokenDecimal)
-        
+        const DonatedAmount = ethers.utils.parseUnits(AmountToDonate.toString(),TokenDecimal);
+
         await USDCContractInstance.connect(USDCHolder1_signer).approve(
-            CampaignContract, DonatedAmount);
+            CampaignContract, DonatedAmount);               
 
         await expect(CrowdFundingFacetInstance.connect(USDCHolder1_signer).donate(
             CampaignIndex,DonatedAmount)).to.changeTokenBalances(
@@ -88,7 +88,162 @@ describe("CrowdFunding Facet test", () => {
             );
     })
 
+    it("should reject donation if below the minimum expected donation ", async() =>{        
 
+        const { USDCContractInstance, CrowdFundingFacetInstance,
+            USDCHolder1_signer, CampaignContract, CampaignContractInstance} = await loadFixture(CrowdFundingFixture);       
+        
+
+        await USDCContractInstance.connect(USDCHolder1_signer).approve(
+            CampaignContract, AmountToDonate);
+        
+        await expect(CrowdFundingFacetInstance.connect(USDCHolder1_signer).donate(
+            CampaignIndex,AmountToDonate)).to.be.revertedWithCustomError(CampaignContractInstance,"AmountBelowTheMinimun")
+    })
+
+    it("should reject donation if the campaign period has expired", async() => {
+        const { USDCContractInstance, CrowdFundingFacetInstance,CampaignContractInstance,
+            USDCHolder1_signer, CampaignContract, TokenDecimal} = await loadFixture(CrowdFundingFixture);
+        const DonatedAmount = ethers.utils.parseUnits(AmountToDonate.toString(),TokenDecimal);
+        await USDCContractInstance.connect(USDCHolder1_signer).approve(
+            CampaignContract, DonatedAmount);
+        
+        await ethers.provider.send("evm_increaseTime", [projectPeriod]) // add 10 seconds
+        await ethers.provider.send("evm_mine", []) // force mine the next block) 
+
+        await expect(CrowdFundingFacetInstance.connect(USDCHolder1_signer).donate(
+            CampaignIndex,DonatedAmount)).to.be.revertedWithCustomError(CampaignContractInstance,'ProjectExpired')
+            
+            
+    })
+
+    it("should allow admin to withdraw if the project is successful", async() => {
+        const { USDCContractInstance, CrowdFundingFacetInstance,owner,
+            USDCHolder1_signer, CampaignContract, TokenDecimal} = await loadFixture(CrowdFundingFixture);
+        
+        await USDCContractInstance.connect(USDCHolder1_signer).approve(
+            CampaignContract, targetFund);     
+           
+        await CrowdFundingFacetInstance.connect(USDCHolder1_signer).donate(
+            CampaignIndex, targetFund) 
+
+        await expect(CrowdFundingFacetInstance.adminWithdraw(CampaignIndex, targetFund)).to.changeTokenBalances(
+            USDCContractInstance, [CampaignContract,owner],[-targetFund,targetFund]);
+            
+    })
+
+    it("should reject admin withdrawal if the project is ongoing and yet to be successful", async() => {
+        const { USDCContractInstance, CrowdFundingFacetInstance,CampaignContractInstance,
+            CampaignContract,USDCHolder1_signer,TokenDecimal} = await loadFixture(CrowdFundingFixture);
+       
+        const DonatedAmount = ethers.utils.parseUnits(AmountToDonate.toString(),TokenDecimal);  
+                                              
+        await USDCContractInstance.connect(USDCHolder1_signer).approve(
+            CampaignContract, DonatedAmount);       
+                   
+        await CrowdFundingFacetInstance.connect(USDCHolder1_signer).donate(
+            CampaignIndex, DonatedAmount);
+        
+        await expect(CrowdFundingFacetInstance.adminWithdraw(
+            CampaignIndex, DonatedAmount)).to.be.revertedWithCustomError(CampaignContractInstance,'ProjectNotSucessful')
+                
+    })
+
+    it("should reject adminWithdrawal if not the Admin when the project is successful", async() => {
+        const { USDCContractInstance, CrowdFundingFacetInstance,CampaignContractInstance,
+            CampaignContract,USDCHolder1_signer,TokenDecimal} = await loadFixture(CrowdFundingFixture);
+       
+        const DonatedAmount = ethers.utils.parseUnits(AmountToDonate.toString(),TokenDecimal);  
+                                              
+        await USDCContractInstance.connect(USDCHolder1_signer).approve(
+            CampaignContract, DonatedAmount);       
+                   
+        await CrowdFundingFacetInstance.connect(USDCHolder1_signer).donate(
+            CampaignIndex, DonatedAmount);                
+        
+        await expect(CrowdFundingFacetInstance.connect(USDCHolder1_signer).adminWithdraw(
+            CampaignIndex, DonatedAmount)).to.be.revertedWithCustomError(CampaignContractInstance,'Unauthorized')
+    })
+
+    it("should allow donor to withdraw if project failed", async() => {
+        const { USDCContractInstance, CrowdFundingFacetInstance,
+            CampaignContract,USDCHolder1_signer,TokenDecimal} = await loadFixture(CrowdFundingFixture);
+       
+        const DonatedAmount = ethers.utils.parseUnits(AmountToDonate.toString(),TokenDecimal);  
+                                              
+        await USDCContractInstance.connect(USDCHolder1_signer).approve(
+            CampaignContract, DonatedAmount);       
+                   
+        await CrowdFundingFacetInstance.connect(USDCHolder1_signer).donate(
+            CampaignIndex, DonatedAmount); 
+        
+        await ethers.provider.send("evm_increaseTime", [projectPeriod]) // add 10 seconds
+        await ethers.provider.send("evm_mine", []) // force mine the next block) 
+        
+        await expect(CrowdFundingFacetInstance.connect(USDCHolder1_signer).donorWithdraw(
+            CampaignIndex)).to.changeTokenBalances(USDCContractInstance, 
+                [CampaignContract,USDCHolder1],[-DonatedAmount,DonatedAmount]);
+    })
+
+    it("should reject donorWithdrawal if campaign project is still ongoing", async() => {
+        const { USDCContractInstance, CrowdFundingFacetInstance,CampaignContractInstance,
+            CampaignContract,USDCHolder1_signer,TokenDecimal} = await loadFixture(CrowdFundingFixture);     
+        
+        const DonatedAmount = ethers.utils.parseUnits(AmountToDonate.toString(),TokenDecimal); 
+            
+        await USDCContractInstance.connect(USDCHolder1_signer).approve(
+            CampaignContract, DonatedAmount);       
+                   
+        await CrowdFundingFacetInstance.connect(USDCHolder1_signer).donate(
+            CampaignIndex, DonatedAmount);                
+        
+        await expect(CrowdFundingFacetInstance.connect(USDCHolder1_signer).donorWithdraw(
+            CampaignIndex)).to.be.revertedWithCustomError(CampaignContractInstance,'ProjectIsYetToExpired')
+              
+                                                                      
+    }) 
+    
+    it("should reject donorWithdrawal if campaign project is successful", async() => {
+        const { USDCContractInstance, CrowdFundingFacetInstance,CampaignContractInstance,
+            CampaignContract,USDCHolder1_signer,TokenDecimal} = await loadFixture(CrowdFundingFixture);
+       
+        await USDCContractInstance.connect(USDCHolder1_signer).approve(
+            CampaignContract, targetFund);       
+                   
+        await CrowdFundingFacetInstance.connect(USDCHolder1_signer).donate(
+            CampaignIndex, targetFund);  
+        
+        await ethers.provider.send("evm_increaseTime", [projectPeriod]) // add 10 seconds
+        await ethers.provider.send("evm_mine", []) // force mine the next block) 
+
+        await expect(CrowdFundingFacetInstance.connect(USDCHolder1_signer).donorWithdraw(
+            CampaignIndex)).to.be.revertedWithCustomError(CampaignContractInstance,"ProjectIsSucessful")             
+                                                                      
+    })  
+    
+    it("should reject donorWithdrawal if user has no amount donated", async() => {
+        const { USDCContractInstance, CrowdFundingFacetInstance,CampaignContractInstance,
+            CampaignContract,USDCHolder1_signer,TokenDecimal} = await loadFixture(CrowdFundingFixture);
+       
+        const DonatedAmount = ethers.utils.parseUnits(AmountToDonate.toString(),TokenDecimal);  
+                                              
+        await USDCContractInstance.connect(USDCHolder1_signer).approve(
+            CampaignContract, DonatedAmount);       
+                   
+        await CrowdFundingFacetInstance.connect(USDCHolder1_signer).donate(
+            CampaignIndex, DonatedAmount);  
+        
+        await ethers.provider.send("evm_increaseTime", [projectPeriod]) // add 10 seconds
+        await ethers.provider.send("evm_mine", []) // force mine the next block) 
+
+        await CrowdFundingFacetInstance.connect(USDCHolder1_signer).donorWithdraw(CampaignIndex);
+
+        await expect(CrowdFundingFacetInstance.connect(USDCHolder1_signer).donorWithdraw(
+            CampaignIndex)).to.be.revertedWithCustomError(CampaignContractInstance,"zeroDonation")  
+                                                                      
+    })                                                               
+        
+    
 })
 
 

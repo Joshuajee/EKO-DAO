@@ -19,7 +19,7 @@ contract Project {
 
     //events
     event adminWithdrawal (
-        uint256 amountWithdraw,
+        uint256 amountWithdrawn,
         uint256 fundBalance,
         uint256 transactionDate
     );
@@ -31,21 +31,11 @@ contract Project {
     );
 
     event FundingReceived(
-        address contributor, 
+        address donor, 
         uint256 amount, 
         uint256 currentTotal
-    );
-
-    event ProjectDetails(        
-        address projectAddress,
-        string projectTopic,
-        string description,                          
-        uint256 targetFund,
-        uint256 minimumContribution
-                         
-    );
-
-
+    );                          
+             
     //Custom Error
     error Unauthorized();
     error ProjectExpired();
@@ -70,12 +60,8 @@ contract Project {
         _;
     }
 
-    modifier isSucessful(){      
-        if (Database.getProjectRecords().status != Status.Successful) revert ProjectNotSucessful();    
-        _;
-    }
-
-    modifier isFailed(){
+            
+    modifier isSuccessful(){
         if (Database.getProjectRecords().status == Status.Successful) revert ProjectIsSucessful();    
         _;
     }
@@ -88,7 +74,7 @@ contract Project {
         string  memory _projectTopic,
         string  memory _description,
         uint256 _targetFund,
-        uint256 _minimumContribution, 
+        uint256 _minimumDonation, 
         IERC20 _acceptedCurrency,     
         uint256 _projectPeriod
         ) {   
@@ -98,22 +84,14 @@ contract Project {
         state.projectTopic = _projectTopic;
         state.description = _description;
         state.targetFund = _targetFund;
-        state.minimumContribution = _minimumContribution;
+        state.minimumDonation = _minimumDonation;
         stableCoin = _acceptedCurrency;
-        state.totalRecievedFund = 0;       
-        state.amountWithdraw = 0; 
+        state.totalDonationRecieved = 0;       
+        state.amountWithdrawn = 0; 
         state.fundBalance = 0;
-        state.noOfContributors;       
+        state.noOfDonors;       
         state.endDate = block.timestamp + _projectPeriod;
         state.status = Status.Fundraising;
-
-        emit ProjectDetails (        
-        address(this),
-        _projectTopic, 
-        _description,  
-        _targetFund,
-        _minimumContribution                
-        );
    }
 
    
@@ -131,7 +109,7 @@ contract Project {
 
     //View amount donated by a donor 
     function getAmountDonated(address _user) public view returns (uint256 amountDonated){
-            amountDonated = Database.getProjectMappingRecords().contributor[_user];  
+            amountDonated = Database.getProjectMappingRecords().donor[_user];  
              if (amountDonated == 0) {
                  revert zeroDonation();
              }  
@@ -142,36 +120,37 @@ contract Project {
     function donate(address _user, uint256 _amount) public isExpired {
         Database.ProjectState storage state = Database.getProjectRecords(); //instance state variables
 
-        if(_amount < state.minimumContribution) {
+        if(_amount < state.minimumDonation) {
             revert AmountBelowTheMinimun();
         }
 
         bool success = stableCoin.transferFrom(_user ,address(this), _amount);
         if(!success) revert StableCoinTranferFailed();
 
-        if(Database.getProjectMappingRecords().contributor[_user] == 0){ 
+        if(Database.getProjectMappingRecords().donor[_user] == 0){ 
             //validate user is a new donor before inreament the number of contributors
-            state.noOfContributors++;  
+            state.noOfDonors++;  
         }
         
-        Database.getProjectMappingRecords().contributor[_user] += _amount; //map donation to contributor
-        state.totalRecievedFund += _amount; // update the total recived fund
+        Database.getProjectMappingRecords().donor[_user] += _amount; //map donation to contributor
+        state.totalDonationRecieved += _amount; // update the total recived fund
         state.fundBalance += _amount; //update balance
 
-        if (state.totalRecievedFund > state.targetFund){state.status = Status.Successful;}  
+        if (state.totalDonationRecieved >= state.targetFund){state.status = Status.Successful;}  
 
-        emit FundingReceived(_user, _amount, state.totalRecievedFund);
+        emit FundingReceived(_user, _amount, state.totalDonationRecieved);
         
     }
 
     //@dev:Allow admin to withdraw if the project is successful
-    function adminWithdraw(address _user, uint _amount) public isSucessful {
+    function adminWithdraw(address _user, uint _amount) public {
         if (_user != Database.getProjectRecords().admin) revert Unauthorized(); //validate admin
-
+        
         Database.ProjectState storage state = Database.getProjectRecords(); //get state variables location
+        if (state.totalDonationRecieved < state.targetFund) revert ProjectNotSucessful();  
 
         state.fundBalance -= _amount; //update balance
-        state.amountWithdraw += _amount; //update amount withdrawn
+        state.amountWithdrawn += _amount; //update amount withdrawn
 
         bool success = stableCoin.transfer(_user,_amount); //withdraw to admin account
         if(!success) revert StableCoinTranferFailed(); 
@@ -181,19 +160,19 @@ contract Project {
     }
 
     //@dev:Allow donors to withdraw if the Project is failed
-    function donorWithdraw(address _user) public isFailed {
+    function donorWithdraw(address _user) public isSuccessful {
         if (block.timestamp < Database.getProjectRecords().endDate) revert ProjectIsYetToExpired();
 
         Database.ProjectState storage state = Database.getProjectRecords();       
 
-        uint256 amount = Database.getProjectMappingRecords().contributor[_user];
-        if (amount == 0) revert zeroDonation();
+        uint256 amount = Database.getProjectMappingRecords().donor[_user];
+        if (amount == 0) revert zeroDonation();       
 
-        delete Database.getProjectMappingRecords().contributor[_user]; // delete the donor records
-        state.amountWithdraw += amount; //update withdraw amount 
+        delete Database.getProjectMappingRecords().donor[_user]; // delete the donor records
+        state.amountWithdrawn += amount; //update withdraw amount 
         state.fundBalance -= amount;    //update the fundbalance
 
-        bool success = stableCoin.transfer(msg.sender,amount);
+        bool success = stableCoin.transfer(_user,amount);
         if(!success) revert StableCoinTranferFailed();    
         
         emit donorWithdrawal(_user, amount, block.timestamp);

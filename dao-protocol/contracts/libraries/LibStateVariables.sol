@@ -15,39 +15,39 @@ import '../facets/custom/CrowdFundProject.sol';
 
 library Database{  
 
-     //project details
+     
     struct ProjectDetails{
             string ProjectTopic; 
             string ProjectDescription;
             uint256 endDate;
             uint256 targetFund;
-            uint256 totalRecievedFund;  
-            uint256 minimumContribution;
-            uint256 amountWithdraw;
+            uint256 totalDonationRecieved;  
+            uint256 minimumDonation;
+            uint256 amountWithdrawn;
             string acceptedCurrency;
-            uint256 noOfContributors;
+            uint256 noOfDonors;
         }    
 
     
-    //project state variables
+    //State variables of Fund Raising Campaign Project
     struct ProjectState {
-        address admin;
-        address projectAddress;                           
-        uint256 targetFund;
-        uint256 totalRecievedFund;    
-        uint256 minimumContribution;
-        uint256 amountWithdraw;
-        uint256 fundBalance; 
-        uint256 endDate;                
-        string projectTopic;
-        string description;
-        uint256 noOfContributors;
-        Status status;                        
+        address admin; //wallet address of the user that create the project
+        address projectAddress; // address of the camppaign project                          
+        uint256 targetFund; // total amount that determines if the project is a success
+        uint256 totalDonationRecieved; // total amount received from donors  
+        uint256 minimumDonation; // minimum donation acceptable 
+        uint256 amountWithdrawn; // total amount withdrwan either by admin or donors
+        uint256 fundBalance; // total amount in the project 
+        uint256 endDate; //Date and time the project expires              
+        string projectTopic; //campaign title 
+        string description; // campaign descriptions
+        uint256 noOfDonors; // total number of donors
+        Status status;  // campaign project status                       
     } 
 
     //Project Mapping state_varibles
     struct ProjectMappings{
-        mapping (address => uint256) contributor;  
+        mapping (address => uint256) donor;  
     }
 
     //CrowdFund State Variables 

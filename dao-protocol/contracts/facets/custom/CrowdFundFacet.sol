@@ -33,19 +33,19 @@ contract CrowdFundFacet{
   
 
   // @dev Anyone can start a fund rising
- // @return null
+// @return null
 
-    function createProject(
+    function createCampaign(
         string  memory _projectTopic,
         string  memory _description,
         uint256 _targetFund,
-        uint256 _minimumContribution, 
+        uint256 _minimumDonation, 
         IERC20 _acceptedCurrency,     
         uint256 _projectPeriod
     ) public { 
         address _admin = msg.sender;
         uint projectIndex = Database.getCrowdFundRecords().projectCounts++;       
-        Database.getCrowdFundMappingRecords().Projects[projectIndex] = new Project(_admin,_projectTopic,_description,_targetFund, _minimumContribution,_acceptedCurrency,_projectPeriod);
+        Database.getCrowdFundMappingRecords().Projects[projectIndex] = new Project(_admin,_projectTopic,_description,_targetFund, _minimumDonation,_acceptedCurrency,_projectPeriod);
     }
 
 
