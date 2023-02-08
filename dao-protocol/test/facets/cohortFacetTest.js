@@ -12,9 +12,11 @@ describe("CohortFacetTest", async function () {
   let usdc;
   let ekoNft;
   let ekoUsdc;
-  let studentAddress = "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266";
+  let studentAddress;
 
   before(async function () {
+    [owner] = await ethers.getSigners();
+    studentAddress = owner.address;
     diamondAddress = await deployDiamond();
     cohortFactoryFacet = await ethers.getContractAt(
       "CohortFactoryFacet",
@@ -78,7 +80,7 @@ describe("CohortFacetTest", async function () {
     assert.equal(cohortUsdcBalanceAfterEnroll, 10);
   });
 
-  it("should test cohort", async () => {
+  it("should refund student after cohort ended", async () => {
     const tokenId = await ekoNft.safeMint(studentAddress);
     await ekoUsdc.approve(cohortAddress, 10);
 

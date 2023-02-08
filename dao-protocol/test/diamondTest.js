@@ -41,7 +41,7 @@ describe("DiamondTest", async function () {
       addresses.push(address);
     }
 
-    assert.equal(addresses.length, 4);
+    assert.equal(addresses.length, 6);
   });
 
   it("facets should have the right function selectors -- call to facetFunctionSelectors function", async () => {
