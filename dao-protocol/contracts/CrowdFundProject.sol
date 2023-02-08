@@ -1,7 +1,7 @@
 //SPDX-License-Identifier: Unlicense
 pragma solidity 0.8.17;
 
-import "./libraries/LibStateVariables.sol";
+import "./libraries/LibCrowdFund.sol";
 
 interface IERC20 {
   function transfer(address to, uint256 amount) external returns (bool);
@@ -62,25 +62,26 @@ contract Project {
 
   //modifiers
   modifier isAdmin() {
-    if (msg.sender != Database.getProjectRecords().admin) revert Unauthorized();
+    if (msg.sender != LibCrowdFund.getProjectRecords().admin)
+      revert Unauthorized();
     _;
   }
 
   modifier isExpired() {
-    if (block.timestamp > Database.getProjectRecords().endDate)
+    if (block.timestamp > LibCrowdFund.getProjectRecords().endDate)
       revert ProjectExpired();
-    Database.getProjectRecords().status = Status.Expired;
+    LibCrowdFund.getProjectRecords().status = Status.Expired;
     _;
   }
 
   modifier isSucessful() {
-    if (Database.getProjectRecords().status != Status.Successful)
+    if (LibCrowdFund.getProjectRecords().status != Status.Successful)
       revert ProjectNotSucessful();
     _;
   }
 
   modifier isFailed() {
-    if (Database.getProjectRecords().status == Status.Successful)
+    if (LibCrowdFund.getProjectRecords().status == Status.Successful)
       revert ProjectIsSucessful();
     _;
   }
@@ -96,7 +97,7 @@ contract Project {
     IERC20 _acceptedCurrency,
     uint256 _projectPeriod
   ) {
-    Database.ProjectState storage state = Database.getProjectRecords();
+    LibCrowdFund.ProjectState storage state = LibCrowdFund.getProjectRecords();
     state.admin = _admin;
     state.projectAddress = address(this);
     state.projectTopic = _projectTopic;
@@ -131,16 +132,16 @@ contract Project {
   function getProjectDetails()
     public
     pure
-    returns (Database.ProjectState memory details)
+    returns (LibCrowdFund.ProjectState memory details)
   {
-    details = Database.getProjectRecords();
+    details = LibCrowdFund.getProjectRecords();
   }
 
   //View amount donated by a donor
   function getAmountDonated(
     address _user
   ) public view returns (uint256 amountDonated) {
-    amountDonated = Database.getProjectMappingRecords().contributor[_user];
+    amountDonated = LibCrowdFund.getProjectMappingRecords().contributor[_user];
     if (amountDonated == 0) {
       revert zeroDonation();
     }
@@ -149,7 +150,7 @@ contract Project {
   //@dev:Allow anyone to donate the accepted stable Coin if the project is still active
 
   function donate(address _user, uint256 _amount) public isExpired {
-    Database.ProjectState storage state = Database.getProjectRecords(); //instance state variables
+    LibCrowdFund.ProjectState storage state = LibCrowdFund.getProjectRecords(); //instance state variables
 
     if (_amount < state.minimumContribution) {
       revert AmountBelowTheMinimun();
@@ -158,12 +159,12 @@ contract Project {
     bool success = stableCoin.transferFrom(_user, address(this), _amount);
     if (!success) revert StableCoinTranferFailed();
 
-    if (Database.getProjectMappingRecords().contributor[_user] == 0) {
+    if (LibCrowdFund.getProjectMappingRecords().contributor[_user] == 0) {
       //validate user is a new donor before inreament the number of contributors
       state.noOfContributors++;
     }
 
-    Database.getProjectMappingRecords().contributor[_user] += _amount; //map donation to contributor
+    LibCrowdFund.getProjectMappingRecords().contributor[_user] += _amount; //map donation to contributor
     state.totalRecievedFund += _amount; // update the total recived fund
     state.fundBalance += _amount; //update balance
 
@@ -176,9 +177,9 @@ contract Project {
 
   //@dev:Allow admin to withdraw if the project is successful
   function adminWithdraw(address _user, uint _amount) public isSucessful {
-    if (_user != Database.getProjectRecords().admin) revert Unauthorized(); //validate admin
+    if (_user != LibCrowdFund.getProjectRecords().admin) revert Unauthorized(); //validate admin
 
-    Database.ProjectState storage state = Database.getProjectRecords(); //get state variables location
+    LibCrowdFund.ProjectState storage state = LibCrowdFund.getProjectRecords(); //get state variables location
 
     state.fundBalance -= _amount; //update balance
     state.amountWithdraw += _amount; //update amount withdrawn
@@ -191,15 +192,15 @@ contract Project {
 
   //@dev:Allow donors to withdraw if the Project is failed
   function donorWithdraw(address _user) public isFailed {
-    if (block.timestamp < Database.getProjectRecords().endDate)
+    if (block.timestamp < LibCrowdFund.getProjectRecords().endDate)
       revert ProjectIsYetToExpired();
 
-    Database.ProjectState storage state = Database.getProjectRecords();
+    LibCrowdFund.ProjectState storage state = LibCrowdFund.getProjectRecords();
 
-    uint256 amount = Database.getProjectMappingRecords().contributor[_user];
+    uint256 amount = LibCrowdFund.getProjectMappingRecords().contributor[_user];
     if (amount == 0) revert zeroDonation();
 
-    delete Database.getProjectMappingRecords().contributor[_user]; // delete the donor records
+    delete LibCrowdFund.getProjectMappingRecords().contributor[_user]; // delete the donor records
     state.amountWithdraw += amount; //update withdraw amount
     state.fundBalance -= amount; //update the fundbalance
 

@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.17;
 
-import "../libraries/LibStateVariables.sol";
+import "../libraries/LibCrowdFund.sol";
 import "../CrowdFundProject.sol";
 
 contract CrowdFundFacet {
@@ -41,8 +41,10 @@ contract CrowdFundFacet {
     uint256 _projectPeriod
   ) public {
     address _admin = msg.sender;
-    uint projectIndex = Database.getCrowdFundRecords().projectCounts++;
-    Database.getCrowdFundMappingRecords().Projects[projectIndex] = new Project(
+    uint projectIndex = LibCrowdFund.getCrowdFundRecords().projectCounts++;
+    LibCrowdFund.getCrowdFundMappingRecords().Projects[
+      projectIndex
+    ] = new Project(
       _admin,
       _projectTopic,
       _description,
@@ -57,7 +59,7 @@ contract CrowdFundFacet {
   function donate(uint256 _projectIndex, uint256 _tokenAmount) public {
     address _user = msg.sender;
 
-    Project projectAddress = Database.getCrowdFundMappingRecords().Projects[
+    Project projectAddress = LibCrowdFund.getCrowdFundMappingRecords().Projects[
       _projectIndex
     ];
     if (address(projectAddress) == address(0)) {
@@ -73,7 +75,7 @@ contract CrowdFundFacet {
   function adminWithdraw(uint256 _projectIndex, uint256 _tokenAmount) public {
     address _user = msg.sender;
 
-    Project projectAddress = Database.getCrowdFundMappingRecords().Projects[
+    Project projectAddress = LibCrowdFund.getCrowdFundMappingRecords().Projects[
       _projectIndex
     ];
     if (address(projectAddress) == address(0)) {
@@ -89,7 +91,7 @@ contract CrowdFundFacet {
   function donorWithdraw(uint256 _projectIndex) public {
     address _user = msg.sender;
 
-    Project projectAddress = Database.getCrowdFundMappingRecords().Projects[
+    Project projectAddress = LibCrowdFund.getCrowdFundMappingRecords().Projects[
       _projectIndex
     ];
     if (address(projectAddress) == address(0)) {
@@ -104,19 +106,19 @@ contract CrowdFundFacet {
 
   // Get number of projects created
   function returnProjectsCount() external view returns (uint256) {
-    return Database.getCrowdFundRecords().projectCounts;
+    return LibCrowdFund.getCrowdFundRecords().projectCounts;
   }
 
   //Get the details of the last 5 Projects ------- work in progress ------
   function getLast5ProjectDetails() public view {
-    Database.getCrowdFundRecords().projectCounts;
+    LibCrowdFund.getCrowdFundRecords().projectCounts;
   }
 
   //Get project token balance
   function getProjectBalance(
     uint256 _projectIndex
   ) public view returns (uint256) {
-    Project projectAddress = Database.getCrowdFundMappingRecords().Projects[
+    Project projectAddress = LibCrowdFund.getCrowdFundMappingRecords().Projects[
       _projectIndex
     ];
     return Project(projectAddress).getProjectBalance(); // Call function
@@ -125,9 +127,9 @@ contract CrowdFundFacet {
   //Get project details
   function getProjectDetails(
     uint256 _projectIndex
-  ) public view returns (Database.ProjectState memory) {
+  ) public view returns (LibCrowdFund.ProjectState memory) {
     address projectAddress = address(
-      Database.getCrowdFundMappingRecords().Projects[_projectIndex]
+      LibCrowdFund.getCrowdFundMappingRecords().Projects[_projectIndex]
     );
     return Project(projectAddress).getProjectDetails(); // Call function
   }

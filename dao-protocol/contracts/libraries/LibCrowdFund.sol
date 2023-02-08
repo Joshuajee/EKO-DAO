@@ -11,7 +11,7 @@ enum Status {
   Successful
 }
 
-library Database {
+library LibCrowdFund {
   //project details
   struct ProjectDetails {
     string ProjectTopic;
