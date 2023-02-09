@@ -1,10 +1,11 @@
 import { links, routes } from "@/libs/routes"
 import { useRouter } from "next/router"
 import { AiOutlineClockCircle } from "react-icons/ai"
+import ProjectStatus from "./ProjectStatus"
 
-const ProjectCard = ({proposal, expanded}) => {
+const ProjectCard = ({project, expanded}) => {
 
-    const { id, date, topic, content } = proposal
+    const { id, date, topic, content, target, current, donorCount, minDonation } = project
 
     const router = useRouter()
 
@@ -16,6 +17,10 @@ const ProjectCard = ({proposal, expanded}) => {
             
             <div className="flex mb-4">
                 <AiOutlineClockCircle size={18} /> <p className="ml-2 text-sm">PROJECT ACTIVE</p>
+            </div>
+
+            <div className="flex justify-end">
+                <ProjectStatus target={target} current={current} donorCount={donorCount} minDonation={minDonation} />
             </div>
 
             <div className="flex justify-between">

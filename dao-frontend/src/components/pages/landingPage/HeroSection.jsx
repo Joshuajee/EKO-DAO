@@ -1,3 +1,4 @@
+import { links } from "@/libs/routes";
 import Link from "next/link";
 import gradient from "./../../../styles/gradients.module.css";
 
@@ -23,15 +24,13 @@ export default function HeroSection() {
                 Decentralised Learning at your Fingertips
               </h1>
               <p data-aos={"fade-in"} className="mt-6 text-lg leading-8 text-gray-600">
-                Anim aute id magna aliqua ad ad non deserunt sunt. Qui irure qui lorem cupidatat commodo. Elit sunt amet
-                fugiat veniam occaecat fugiat aliqua.
+                Transform the Way You Learn and Fund Your Projects: Welcome to the Future of Decentralized Education with EkoDAO
               </p>
-              <div className="mt-10 flex items-center justify-center gap-x-6">
+              <div data-aos="fade-up" className="mt-10 flex items-center justify-center gap-x-6">
                 <Link
-                  href="/proposals"
-                  className="rounded-md bg-blue-700 px-6 py-2 text-lg font-semibold leading-7 text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                >
-                  Governance
+                  href={"/"}
+                  className="rounded-md bg-blue-700 px-6 py-2 text-lg font-semibold leading-7 text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                  Documentation
                 </Link>
               </div>
             </div>

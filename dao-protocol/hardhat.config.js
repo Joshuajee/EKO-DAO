@@ -28,7 +28,7 @@ module.exports = {
 	solidity: '0.8.17',
 	settings: {
 		optimizer: { enabled: true, runs: 200 }
-	}
+	},
 	// networks: {
 	//   mainnet: {
 	//     url: "https://mainnet.infura.io/v3/",
@@ -55,5 +55,15 @@ module.exports = {
 	//     accounts: [PRIVATE_KEY]
 	//   },
 	// }
+
+	abiExporter: [
+		{
+			path: './abi',
+			pretty: false,
+			flat: true,
+			runOnCompile: true,
+		//	only: ["NFTMarketplace", "RoyaltyToken"]
+		}
+	]
 };
 

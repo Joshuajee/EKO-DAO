@@ -20,6 +20,7 @@
     "@testing-library/user-event": "^14.4.3",
     "aos": "^2.3.4",
     "autoprefixer": "^10.4.13",
+    "date-and-time": "^2.4.2",
     "eslint": "8.31.0",
     "eslint-config-next": "13.1.2",
     "ethers": "^5.7.2",
