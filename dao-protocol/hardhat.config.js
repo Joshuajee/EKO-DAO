@@ -26,5 +26,12 @@ module.exports = {
   settings: {
     optimizer: { enabled: true, runs: 200 },
   },
-  networks: {},
+  networks: {
+    hardhat: {
+        forking:{
+          url:'https://eth-mainnet.g.alchemy.com/v2/L14t96z2IgmC3Nh6z5TpXqQ_e2Eq-pJq',
+          //url:'https://eth-goerli.g.alchemy.com/v2/oQb3MTwwXCTwabfOVCMal6xsPve204OB',
+        }
+      },
+  },
 };
