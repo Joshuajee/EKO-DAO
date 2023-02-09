@@ -5,8 +5,8 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Burnable.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
-contract EkoUSDC is ERC20, ERC20Burnable, Ownable {
-  constructor() ERC20("EkoUSDC", "EKO-USDC") {}
+contract EkoStable is ERC20, ERC20Burnable, Ownable {
+  constructor() ERC20("EkoStable", "EKO-USDC") {}
 
   function mint(address to, uint256 amount) public onlyOwner {
     _mint(to, amount);

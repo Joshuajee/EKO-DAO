@@ -55,9 +55,9 @@ describe("CohortFacetTest", async function () {
 
     await cohort.init(usdc.address, ekoNft.address);
 
-    const ekoUSDCAddress = await cohort.ekoUSDCAddress();
-    const EkoUSDC = await ethers.getContractFactory("EkoUSDC");
-    ekoUsdc = await EkoUSDC.attach(ekoUSDCAddress);
+    const ekoStableAddress = await cohort.ekoStableAddress();
+    const EkoStable = await ethers.getContractFactory("EkoStable");
+    ekoUsdc = await EkoStable.attach(ekoStableAddress);
 
     const studentUsdcBalanceBeforeEnroll = await usdc.balanceOf(studentAddress);
     assert.equal(studentUsdcBalanceBeforeEnroll, 10);

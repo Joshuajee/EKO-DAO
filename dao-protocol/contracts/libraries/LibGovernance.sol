@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.17;
 
-library LibGovernor {
+library LibGovernance {
   struct Proposal {
     string name; // the name of a particular proposal
     address author; // the address of the ekolance admin that creates the proposal
