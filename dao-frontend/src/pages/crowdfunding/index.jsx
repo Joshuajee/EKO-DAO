@@ -1,4 +1,4 @@
-import ProposalCard from '@/components/pages/proposals/ProposalCard';
+import ProjectCard from '@/components/pages/crowdfund/ProjectCard';
 import CategoryTab from '@/components/ui/CategoryTab';
 import Container from '@/components/ui/Container';
 import Layout from '@/components/ui/Layout';
@@ -7,13 +7,16 @@ import { proposalsDummy } from '@/libs/dummy';
 import { tabs } from '@/libs/routes';
 import Head from 'next/head'
 
-export default function Proposals() {
-  console.log(proposalsDummy[0])
+
+export default function Crowdfunding() {
 
   return (
     <Layout>
-      <Head><title>Proposals </title></Head>
-      <TopBanner> Vote on Community Improvement Proposals </TopBanner>
+      <Head>
+        <title> Crowdfunding </title>
+      </Head>
+
+      <TopBanner>Donate to Crowdfunding Campaigns</TopBanner>
 
       <Container> 
 
@@ -21,12 +24,11 @@ export default function Proposals() {
 
         <div className='grid md:grid-cols-2 gap-4'>
 
-          {proposalsDummy.map((proposal, index) =>  <ProposalCard key={index} proposal={proposal} />)}
+          {proposalsDummy.map((proposal, index) =>  <ProjectCard key={index} proposal={proposal} />)}
 
         </div>
 
       </Container>
-    
     </Layout>
   )
 }

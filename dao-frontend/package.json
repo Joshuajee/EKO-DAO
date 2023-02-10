@@ -12,6 +12,9 @@
     "test1": "NODE_OPTIONS=--experimental-vm-modules jest --ci --silent"
   },
   "dependencies": {
+    "@headlessui/react": "^1.7.8",
+    "@heroicons/react": "^2.0.14",
+    "@lottiefiles/lottie-player": "^1.7.1",
     "@next/font": "13.1.2",
     "@reduxjs/toolkit": "^1.9.1",
     "@testing-library/user-event": "^14.4.3",
