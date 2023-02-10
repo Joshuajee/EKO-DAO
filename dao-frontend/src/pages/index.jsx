@@ -1,26 +1,27 @@
 import Head from 'next/head'
-import { useEffect } from 'react'
+import HeroSection from '@/components/pages/landingPage/HeroSection'
+import Feature from '@/components/pages/landingPage/Feature'
+import Layout from '@/components/ui/Layout'
+import FeatureTwo from '@/components/pages/landingPage/FeatureTwo'
 
 
 
 export default function Home() {
 
-
-  useEffect(() => {
-    
-  }, [])
-
   return (
-    <>
+    <Layout>
+
       <Head>
         <title>Eko DAO</title>
         <meta name="description" content="Ekolance, DAO" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main>
-        Hello World
-      </main>
-    </>
+
+      <HeroSection />
+      <Feature />
+      <FeatureTwo />
+
+    </Layout>
   )
 }

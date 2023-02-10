@@ -1,0 +1,28 @@
+import { dollarFormat } from "@/libs/utils"
+
+const ProjectStatus = ({target, current, donorCount, minDonation}) => {
+
+    const currentPercent = current * 100 / target
+
+    return (
+        <div className="block py-4 w-full max-w-xs">
+
+            <div className="text-sm flex flex-col items-end">
+
+                <h4 className="text-right text-sm mb-2">Project Status</h4>
+
+                <p className="font-semibold">Funds Raised: {dollarFormat(current)}</p>
+                <p className="font-semibold">Target: {dollarFormat(target)}</p>
+                <p className="font-semibold">Donors: {donorCount}</p>
+                <p className="font-semibold">Minimum Donation: {dollarFormat(minDonation)}</p>
+
+            </div>
+
+
+            <progress max={100} value={currentPercent} style={{width: "100%", height: "4px"}} />
+
+        </div>
+    )
+}
+
+export default ProjectStatus
