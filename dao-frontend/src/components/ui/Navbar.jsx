@@ -24,7 +24,7 @@ const Navbar = () => {
     return (
         <header class={`${(trigger || open) ? "text-gray-600 bg-white shadow-lg" : "text-black" } fixed w-full body-font z-10 flex justify-center`}>
             <div class="container w-full flex flex-wrap justify-between item-center py-2 lg:py-3 px-2">
-                <Link href={"/"} className="block title-font text-2xl md:text-3xl font-bold text-blue-800">
+                <Link href={"/"} className="pt-2 md:pt-0 block title-font text-2xl md:text-3xl font-bold text-blue-800">
                     EkoDAO
                 </Link>
                 <nav class="hidden lg:ml-auto lg:mr-auto md:flex flex-wrap items-center text-base justify-center">

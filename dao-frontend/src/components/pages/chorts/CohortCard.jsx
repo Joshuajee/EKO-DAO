@@ -1,6 +1,9 @@
+import { useState } from "react"
+import ModalWrapper from "@/components/ui/ModalWrapper"
 import { links, routes } from "@/libs/routes"
 import { useRouter } from "next/router"
 import { AiOutlineClockCircle } from "react-icons/ai"
+import CohortForm from "./CohortForm"
 import CohortStatus from "./CohortStatus"
 
 const CohortCard = ({cohort, expanded}) => {
@@ -8,6 +11,18 @@ const CohortCard = ({cohort, expanded}) => {
     const { id, date, topic, content, fee, students, start, end } = cohort
 
     const router = useRouter()
+
+    const [open, setOpen] = useState(false)
+
+
+    const handleClick = () => {
+        setOpen(true)
+    } 
+
+    const handleClose = () => {
+        setOpen(false)
+    } 
+
 
     return (
         <div className="text-gray-700 bg-white rounded-md p-4 md:px-4 shadow-lg w-full max-h-[500px] overflow-x-hidden overflow-y-auto">
@@ -27,9 +42,13 @@ const CohortCard = ({cohort, expanded}) => {
 
                 { !expanded ? <button onClick={() => router.push(`${links.cohorts}/${id}`)} className="text-gray-600">View Details </button> : <div> </div> }
 
-                <button className="bg-blue-600 hover:bg-blue-800 rounded-lg px-8 py-2 text-white"> Join</button>
+                <button onClick={handleClick} className="bg-blue-600 hover:bg-blue-800 rounded-lg px-8 py-2 text-white"> Join</button>
 
             </div>
+
+            <ModalWrapper title={"Join Cohort"} open={open} handleClose={handleClose}>
+                <CohortForm cohort={cohort} />
+            </ModalWrapper>
             
         </div>
     )

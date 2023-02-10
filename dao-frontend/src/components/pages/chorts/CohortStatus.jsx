@@ -11,8 +11,8 @@ const CohortStatus = ({fee, students, start,  end}) => {
                 <h4 className="text-right text-sm mb-2">Cohort Status</h4>
 
                 <p className="flex font-semibold">
-                    Commitment Fee: {dollarFormat(fee)} 
-                    <AiFillInfoCircle className="ml-2" /> 
+                    Commitment Fee <AiFillInfoCircle className="ml-1" size={18} /> : {dollarFormat(fee)} 
+                    
                 </p>
                 <p className="font-semibold">Students: {students} </p>
                 <p className="font-semibold">Start Date: {date.format(new Date(start), 'ddd, MMM DD YYYY')}</p>

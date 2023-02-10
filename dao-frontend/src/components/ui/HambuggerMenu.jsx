@@ -8,10 +8,14 @@ import { navigation } from '@/libs/routes';
 import NavLink from './NavLink';
 import ModalWrapper from './ModalWrapper';
 import WalletOptions from '../connection/walletsOptions';
-import { useAccount, useDisconnect } from 'wagmi';
+import { useAccount, useDisconnect, useNetwork } from 'wagmi';
+import truncateEthAddress from 'truncate-eth-address';
+import { networkNameByChainId } from '@/libs/utils';
 
 
 const HambuggerMenu = ({open, setOpen}) => {
+
+    const { chain } = useNetwork()
 
     const { width } = useDimension()
 
@@ -51,6 +55,14 @@ const HambuggerMenu = ({open, setOpen}) => {
                             navigation.map((nav, index) => (<NavLink key={index} name={nav.name} link={nav.href} icon={nav.icon} />))
                         }
 
+                        { isConnected && (
+                            <div className='flex flex-col items-center justify-center my-20 text-lg font-semibold'>
+                                <p>Account: {truncateEthAddress(address)} </p>
+                                <p>Network: {networkNameByChainId(chain.id)} </p>
+                                <p>Chain ID: {chain.id} </p>
+                            </div>)
+                        }
+
                         <div className="absolute bottom-4 flex justify-center w-full px-4">
                             <button 
                                 onClick={() => isConnected ? disconnect() : setShowOptions(true)}
@@ -62,6 +74,7 @@ const HambuggerMenu = ({open, setOpen}) => {
                     </div>
 
             </motion.div>
+
 
             <ModalWrapper title={"Choose Wallet"} open={showOptions} handleClose={closeOptions}>
                 <WalletOptions show={showOptions} close={closeOptions}/>
