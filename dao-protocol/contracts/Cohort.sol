@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.17;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
@@ -9,6 +9,7 @@ import { EkoStable } from "./EkoStable.sol";
 contract Cohort {
   struct CohortRecord {
     bytes32 id;
+    string name;
     uint startDate;
     uint endDate;
     uint8 size;
@@ -40,12 +41,14 @@ contract Cohort {
 
   constructor(
     bytes32 _id,
+    string memory _name,
     uint _startDate,
     uint _endDate,
     uint8 _size,
     uint _commitment
   ) {
     cohort.id = _id;
+    cohort.name = _name;
     cohort.startDate = _startDate;
     cohort.endDate = _endDate;
     cohort.size = _size;
