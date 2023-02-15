@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.17;
 
-import '../libraries/LibStateVariables.sol';
-import "./CrowdFundProject.sol";
+import '../libraries/LibCrowdFund.sol';
+import "../CrowdFundProject.sol";
 
 contract CrowdFundFacet{
       event ProjectStarted(
@@ -29,12 +29,11 @@ contract CrowdFundFacet{
 
 
     error ProjectDoesNotExist(uint256 projectIndex);
+    
 
-  
-
-  // @dev Anyone can start a fund rising
-// @return null
-
+    // @dev Anyone can start a fund rising
+    // @return null
+    
     function createCampaign(
         string  memory _projectTopic,
         string  memory _description,
@@ -46,6 +45,7 @@ contract CrowdFundFacet{
         address _admin = msg.sender;
         uint projectIndex = Database.getCrowdFundRecords().projectCounts++;       
         Database.getCrowdFundMappingRecords().Projects[projectIndex] = new Project(_admin,_projectTopic,_description,_targetFund, _minimumDonation,_acceptedCurrency,_projectPeriod);
+
     }
 
 
@@ -95,12 +95,35 @@ function donorWithdraw(uint256 _projectIndex) public {
 
 // Get number of projects created
 function returnProjectsCount() external view returns(uint256){
-   return  Database.getCrowdFundRecords().projectCounts;
+    return  Database.getCrowdFundRecords().projectCounts;
 }
 
 //Get the details of the last 5 Projects ------- work in progress ------
-function getLast5ProjectDetails() public view  {    
-  Database.getCrowdFundRecords().projectCounts;    
+function getLastXProjectDetails(uint X) public view returns(
+    Database.ProjectState [] memory ){ 
+    uint256 start; 
+    uint256 array;
+   
+    uint256 projectCounts = Database.getCrowdFundRecords().projectCounts; 
+    if (X > projectCounts){
+        start = 1;        
+        array = projectCounts;        
+    } 
+    else {
+        start = projectCounts-X+1;         
+        array = X;        
+    }  
+
+    Database.ProjectState [] memory lastCampaigns = new Database.ProjectState[](array);
+    
+    uint256 i=0;
+    for (start; start <= projectCounts;){        
+        lastCampaigns[i]= getProjectDetails(start-1);
+        start++;
+        i++;
+    }
+
+    return lastCampaigns;
     
 }
 
