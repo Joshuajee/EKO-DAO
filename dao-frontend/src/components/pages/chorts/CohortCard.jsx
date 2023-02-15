@@ -42,7 +42,7 @@ const CohortCard = ({cohort, expanded}) => {
 
                 { !expanded ? <button onClick={() => router.push(`${links.cohorts}/${id}`)} className="text-gray-600">View Details </button> : <div> </div> }
 
-                <button onClick={handleClick} className="bg-blue-600 hover:bg-blue-800 rounded-lg px-8 py-2 text-white"> Join</button>
+                { expanded && <button onClick={handleClick} className="bg-blue-600 hover:bg-blue-800 rounded-lg px-8 py-2 text-white"> Join</button> }
 
             </div>
 
