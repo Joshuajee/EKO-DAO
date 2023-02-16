@@ -3,7 +3,7 @@ import Link from "next/link"
 import { useScroll } from "@/hooks/windows"
 import { links } from "@/libs/routes"
 import HambuggerMenu from "./HambuggerMenu"
-import Connection from "../connection"
+import Connection from "../../connection"
 
 
 const navigation = [

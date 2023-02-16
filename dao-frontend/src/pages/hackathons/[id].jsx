@@ -1,5 +1,3 @@
-import CohortCard from '@/components/pages/chorts/CohortCard';
-import StudentList from '@/components/pages/chorts/StudentList';
 import HackathonCard from '@/components/pages/hackathons/HackathonCard';
 import ParticipantList from '@/components/pages/hackathons/ParticipantList';
 import Container from '@/components/ui/Container';
