@@ -2,7 +2,6 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CommonsModule } from './commons/commons.module';
-import { HttpExceptionFilter } from './commons/http-exception.filter';
 import { ConfigurationModule } from './config/configuration.module';
 import { ConfigurationService } from './config/configuration.service';
 import { FeaturesModule } from './features/features.module';
@@ -34,7 +33,7 @@ const env = process.env.NODE_ENV || 'dev';
           migrationsRun: true,
           logging: false,
           maxQueryExecutionTime: 1000,
-          migrations: [`dist/migrations/*.{ts,js}`],
+          migrations: [`dist/db/migrations/*.{ts,js}`],
           connectTimeoutMS: 5000,
         };
       },

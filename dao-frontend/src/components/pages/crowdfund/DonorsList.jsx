@@ -1,3 +1,4 @@
+import SideTableWrapper from "@/components/ui/SideTableWrapper"
 import { getRandomInt } from "@/libs/dummy"
 import { useRouter } from "next/router"
 import { AiOutlineClockCircle } from "react-icons/ai"
@@ -9,46 +10,51 @@ const DonorsList = ({donors}) => {
     return (
         <div className="text-gray-700 bg-white rounded-md p-4 md:px-4 shadow-lg w-full">
 
-            <h2 className="text-black text-xl md:text-2xl font-semibold mb-3">Voters</h2>
+            <h2 className="text-black text-xl md:text-2xl font-semibold mb-3">Donors</h2>
 
-            <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-                <thead class="text-xs text-gray-900 uppercase dark:text-gray-400">
-                    <tr>
-                        <th scope="col" class="px-6 py-3">
-                            Address
-                        </th>
-                        <th scope="col" class="px-6 py-3">
-                            Amount
-                        </th>
-                        <th scope="col" class="px-6 py-3">
-                            Currency
-                        </th>
-                    </tr>
-                </thead>
-                <tbody>
+            <SideTableWrapper>
 
-                    {
-                        donors.map((voter, index) => {
-                            return (
-                                <tr key={index} className="bg-white dark:bg-gray-800">
-                                    <td scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                        {truncateEthAddress(voter.address)}
-                                    </td>
-                                    <td className={`px-6 py-4 ${voter.choice.toLowerCase() === "Yes".toLowerCase() ? "text-green-600" : "text-red-600"}`}>
-                                        {getRandomInt(1, 100000)}
-                                    </td>
+                <table class="w-full text-sm text-left text-gray-500">
 
-                                    <td className={`px-6 py-4 text-green-600`}>
-                                        USDC
-                                    </td>
-                                </tr>
-                            )
-                        })
-                    }
+                    <thead class="text-xs text-gray-900 uppercase">
+                        <tr>
+                            <th scope="col" class="px-6 py-3">
+                                Address
+                            </th>
+                            <th scope="col" class="px-6 py-3">
+                                Amount
+                            </th>
+                            <th scope="col" class="px-6 py-3">
+                                Currency
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
 
-                </tbody>
-            </table>
-       
+                        {
+                            donors.map((voter, index) => {
+                                return (
+                                    <tr key={index} className="bg-white">
+                                        <td scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
+                                            {truncateEthAddress(voter.address)}
+                                        </td>
+                                        <td className={`px-6 py-4`}>
+                                            {getRandomInt(1, 100000)}
+                                        </td>
+
+                                        <td className={`px-6 py-4 `}>
+                                            USDC
+                                        </td>
+                                    </tr>
+                                )
+                            })
+                        }
+
+                    </tbody>
+
+                </table>
+
+            </SideTableWrapper>
 
         </div>
     )

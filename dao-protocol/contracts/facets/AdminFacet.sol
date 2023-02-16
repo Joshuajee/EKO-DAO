@@ -70,17 +70,18 @@ contract AdminFacet is OwnershipFacet {
     }
   }
 
-  // Call the transferOwnership function from OwnershipFacet to set the first superadmin
-  // In the constructor, pass in the first superadmin address and store it as a superadmin
-  constructor(address _firstSuperAdminAddress) {
-    // OwnershipFacet ownershipFacet = OwnershipFacet(address(this));
+  // Initialize the contract with the first superadmin address
+function initialize(address _firstSuperAdminAddress) public {
+    // Store the first superadmin address as a superadmin
     superAdmins[_firstSuperAdminAddress] = true;
-    // ownershipFacet.transferOwnership(_firstSuperAdminAddress);
     // Push the first superadmin address to the list of administrators in diamond storage
-    diamondStorage(DIAMOND_STORAGE_POSITION).admins.push(
-      _firstSuperAdminAddress
-    );
-  }
+    diamondStorage(DIAMOND_STORAGE_POSITION).admins.push(_firstSuperAdminAddress);
+}
+
+// Upgrade the contract by calling the initialize function
+function upgrade(address _firstSuperAdminAddress) public {
+    initialize(_firstSuperAdminAddress);
+}
 
   /**
    * @dev Function to add an administrator

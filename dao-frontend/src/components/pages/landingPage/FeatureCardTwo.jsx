@@ -1,13 +1,11 @@
-const FeatureCardTwo = ({lottie, title, isRight}) => {
+const FeatureCardTwo = ({lottie, title, isRight, children}) => {
 
 
     const rightSide = (
         <div class="flex items-center lg:w-3/5 mx-auto pb-10 mb-10 sm:flex-row flex-col">
             <div class="flex-grow sm:text-left text-center mt-6 sm:mt-0">
                 <h2 class="text-gray-900 text-lg title-font font-semibold mb-2">{title}</h2>
-                <p class="leading-relaxed text-base">
-                    Blue bottle crucifix vinyl post-ironic four dollar toast vegan taxidermy. Gastropub indxgo juice poutine.
-                </p>
+                <p class="leading-relaxed text-base"> {children} </p>
                 <a class="mt-3 text-indigo-500 inline-flex items-center">Learn More
                     <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="w-4 h-4 ml-2" viewBox="0 0 24 24">
                         <path d="M5 12h14M12 5l7 7-7 7"></path>
@@ -19,7 +17,7 @@ const FeatureCardTwo = ({lottie, title, isRight}) => {
                 <lottie-player 
                     src={lottie}  
                     background="transparent"  
-                    speed="1"  loop  autoplay />
+                    speed="1" autoplay />
             </div>
 
         </div>
@@ -38,7 +36,7 @@ const FeatureCardTwo = ({lottie, title, isRight}) => {
 
             <div class="flex-grow sm:text-left text-center mt-6 sm:mt-0">
                 <h2 class="text-gray-900 text-lg title-font font-semibold mb-2">{title}</h2>
-                <p class="leading-relaxed text-base">Blue bottle crucifix vinyl post-ironic four dollar toast vegan taxidermy. Gastropub indxgo juice poutine.</p>
+                <p class="leading-relaxed text-base">{children}</p>
                 <a class="mt-3 text-indigo-500 inline-flex items-center">Learn More
                 <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="w-4 h-4 ml-2" viewBox="0 0 24 24">
                     <path d="M5 12h14M12 5l7 7-7 7"></path>

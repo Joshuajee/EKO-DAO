@@ -34,15 +34,20 @@ describe("CohortFacetTest", async function () {
   });
 
   it("should create new cohort", async () => {
+    const name = "Solidity Developer fall 2023";
     const currentDate = new Date();
     const currentTimestamp = currentDate.getTime();
     const startDate = currentTimestamp + 30;
     const endDate = currentTimestamp + 60;
-    await cohortFactoryFacet.newCohort(1, startDate, endDate, 100, 10);
-    cohortAddress = await cohortFactoryFacet.cohorts(1);
+    await cohortFactoryFacet.newCohort(1, name, startDate, endDate, 100, 10);
+    const cohortsList = await cohortFactoryFacet.cohorts();
+    assert.equal(cohortsList[0].name, name);
+    const cohortData = await cohortFactoryFacet.cohort(1);
+    cohortAddress = cohortData.contractAddress;
     const Cohort = await ethers.getContractFactory("Cohort");
     cohort = await Cohort.attach(cohortAddress);
     const record = await cohort.cohort();
+    assert.equal(record.name, name);
     assert.equal(record.startDate, startDate);
     assert.equal(record.endDate, endDate);
     assert.equal(record.size, 100);
@@ -55,9 +60,9 @@ describe("CohortFacetTest", async function () {
 
     await cohort.init(usdc.address, ekoNft.address);
 
-    const ekoUSDCAddress = await cohort.ekoUSDCAddress();
-    const EkoUSDC = await ethers.getContractFactory("EkoUSDC");
-    ekoUsdc = await EkoUSDC.attach(ekoUSDCAddress);
+    const ekoStableAddress = await cohort.ekoStableAddress();
+    const EkoStable = await ethers.getContractFactory("EkoStable");
+    ekoUsdc = await EkoStable.attach(ekoStableAddress);
 
     const studentUsdcBalanceBeforeEnroll = await usdc.balanceOf(studentAddress);
     assert.equal(studentUsdcBalanceBeforeEnroll, 10);

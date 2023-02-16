@@ -3224,6 +3224,11 @@ data-urls@^3.0.2:
     whatwg-mimetype "^3.0.0"
     whatwg-url "^11.0.0"
 
+date-and-time@^2.4.2:
+  version "2.4.2"
+  resolved "https://registry.yarnpkg.com/date-and-time/-/date-and-time-2.4.2.tgz#3a0382d33e57714c7949301d14bc1a454b8f3807"
+  integrity sha512-h+GwuCLcrDblUt2pXdVuKJJenwNMNtEw1H/eWqBdrkOziTTPzgAkzyCLXZ+QXgtOEheO59cZa8DcObYwE6NLDA==
+
 debug@4, debug@4.3.4, debug@^4.1.0, debug@^4.1.1, debug@^4.3.2, debug@^4.3.4:
   version "4.3.4"
   resolved "https://registry.yarnpkg.com/debug/-/debug-4.3.4.tgz#1319f6579357f2338d3337d2cdd4914bb5dcc865"
