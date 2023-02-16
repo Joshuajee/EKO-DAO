@@ -17,7 +17,7 @@ export default function Proposals() {
 
       <Container> 
 
-        <CategoryTab tabs={tabs} />
+        {/* <CategoryTab tabs={tabs} /> */}
 
         <div className='grid md:grid-cols-2 gap-4'>
 
