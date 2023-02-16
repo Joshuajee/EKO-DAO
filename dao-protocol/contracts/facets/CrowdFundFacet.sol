@@ -28,12 +28,10 @@ contract CrowdFundFacet{
   );
 
 
-    error ProjectDoesNotExist(uint256 projectIndex);
-
-  
+  error ProjectDoesNotExist(uint256 projectIndex);
 
   // @dev Anyone can start a fund rising
-// @return null
+  // @return null
 
     function createCampaign(
         string  memory _projectTopic,
@@ -63,8 +61,14 @@ contract CrowdFundFacet{
     //emit ContributionReceived(address(projectAddress),_tokenAmount,_user);// Trigger event
   }
 
+    Project(projectAddress).donate(_user, _tokenAmount); // Call function
+    //emit ContributionReceived(address(projectAddress),_tokenAmount,_user);// Trigger event
+  }
+
+  // Admin withdraw if project is successful
   // Admin withdraw if project is successful
 
+  function adminWithdraw(uint256 _projectIndex, uint256 _tokenAmount) public {
   function adminWithdraw(uint256 _projectIndex, uint256 _tokenAmount) public {
     address _user = msg.sender;
 
@@ -79,7 +83,9 @@ contract CrowdFundFacet{
 
 
   // Donor withdraw all donated amount if project is failed
+  // Donor withdraw all donated amount if project is failed
 
+  function donorWithdraw(uint256 _projectIndex) public {
   function donorWithdraw(uint256 _projectIndex) public {
     address _user = msg.sender;
 
@@ -94,10 +100,10 @@ contract CrowdFundFacet{
     emit FundWithdrawn(address(projectAddress),amountDonated,_user);// Trigger event
   }
 
-// Get number of projects created
-function returnProjectsCount() external view returns(uint256){
-   return  Database.getCrowdFundRecords().projectCounts;
-}
+  // Get number of projects created
+  function returnProjectsCount() external view returns (uint256) {
+    return Database.getCrowdFundRecords().projectCounts;
+  }
 
 //Get the details of the last 5 Projects ------- work in progress ------
 function getLastXProjectDetails(uint X) public view returns(
@@ -146,4 +152,3 @@ function getProjectDetails(uint256 _projectIndex) public view returns(Database.P
 
 
 }
-
