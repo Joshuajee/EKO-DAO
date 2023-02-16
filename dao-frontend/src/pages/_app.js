@@ -12,6 +12,7 @@ import { ToastContainer } from 'react-toastify';
 import AOS from 'aos'
 import 'aos/dist/aos.css';
 import 'react-toastify/dist/ReactToastify.css';
+import { AuthProvider } from '@/context/AuthContext'
 
 
 const { chains, provider, webSocketProvider } = configureChains(
@@ -61,9 +62,12 @@ const App = ({ Component, pageProps }) => {
 
   return (
     <WagmiConfig client={client}>
-      <Component {...pageProps} />
-      <ToastContainer autoClose={3000} hideProgressBar={true} />
+      <AuthProvider>
+        <Component {...pageProps} />
+        <ToastContainer autoClose={3000} hideProgressBar={true} />
+      </AuthProvider>
     </WagmiConfig> 
+
   )
 }
 

@@ -6,8 +6,8 @@ const LoadingScreen = () => {
         <div className='flex justify-center items-center w-full h-[400px] lg:h-[700px] 2xl:h-[900px]'>
             <Blocks
                 visible={true}
-                height="100"
-                width="100"
+                height="80"
+                width="80"
                 ariaLabel="blocks-loading"
                 wrapperStyle={{}}
                 wrapperClass="blocks-wrapper"

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import CohortCard from '@/components/pages/cohorts/CohortCard';
 import CategoryTab from '@/components/ui/navigation/CategoryTab';
 import Container from '@/components/ui/Container';
@@ -12,11 +12,16 @@ import { contractAddress } from '@/libs/utils';
 import CreateButton from '@/components/ui/CreateButton';
 import CreateCohortForm from '@/components/pages/cohorts/CreateCohortForm';
 import LoadingScreen from '@/components/ui/screens/LoadingScreen';
+import { AuthContext } from '@/context/AuthContext';
 
 
 export default function Cohorts() {
 
     const [show, setShow] = useState(false);
+
+    const { isAdminLoggedIn } = useContext(AuthContext);
+
+    console.log(isAdminLoggedIn)
 
     const  { isConnected } = useAccount()
 
@@ -62,7 +67,7 @@ export default function Cohorts() {
                 )
             }
 
-            { isConnected &&
+            { isAdminLoggedIn &&
                 <CreateButton title={"Create Cohort"} open={open} show={show} close={close}>
                     <CreateCohortForm close={close} />
                 </CreateButton> 
