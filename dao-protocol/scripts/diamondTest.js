@@ -4,9 +4,9 @@ const {
   getSelectors,
   FacetCutAction,
   removeSelectors,
-} = require("../scripts/libraries/diamond.js");
+} = require("./libraries/diamond.js");
 
-const { deployDiamond } = require("../scripts/deploy.js");
+const { deployDiamond } = require("./deploy.js");
 
 const { assert } = require("chai");
 
