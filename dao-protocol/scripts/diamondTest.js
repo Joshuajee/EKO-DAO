@@ -21,7 +21,7 @@ describe("DiamondTest", async function () {
   const addresses = [];
 
   before(async function () {
-    diamondAddress = await deployDiamond();
+    diamondAddress = await deployDiamond(true);
     diamondCutFacet = await ethers.getContractAt(
       "DiamondCutFacet",
       diamondAddress

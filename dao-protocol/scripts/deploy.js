@@ -3,7 +3,7 @@
 
 const { getSelectors, FacetCutAction } = require("./libraries/diamond.js");
 
-async function deployDiamond() {
+async function deployDiamond(test = false) {
   const accounts = await ethers.getSigners();
   const contractOwner = accounts[0];
 
@@ -13,11 +13,14 @@ async function deployDiamond() {
   const DiamondInit = await ethers.getContractFactory("DiamondInit");
   const diamondInit = await DiamondInit.deploy();
   await diamondInit.deployed();
-  console.log("DiamondInit deployed:", diamondInit.address);
 
-  // Deploy facets and set the `facetCuts` variable
-  console.log("");
-  console.log("Deploying facets");
+  if(!test) { 
+    console.log("DiamondInit deployed:", diamondInit.address);
+    // Deploy facets and set the `facetCuts` variable
+    console.log("");
+    console.log("Deploying facets");
+  }
+
   const FacetNames = [
     "DiamondCutFacet",
     "DiamondLoupeFacet",
@@ -32,7 +35,7 @@ async function deployDiamond() {
     const Facet = await ethers.getContractFactory(FacetName);
     const facet = await Facet.deploy();
     await facet.deployed();
-    console.log(`${FacetName} deployed: ${facet.address}`);
+    if(!test) console.log(`${FacetName} deployed: ${facet.address}`);
     facetCuts.push({
       facetAddress: facet.address,
       action: FacetCutAction.Add,
@@ -56,7 +59,7 @@ async function deployDiamond() {
   const Diamond = await ethers.getContractFactory("Diamond");
   const diamond = await Diamond.deploy(facetCuts, diamondArgs);
   await diamond.deployed();
-  console.log("Diamond deployed:", diamond.address);
+  if (!test) console.log("Diamond deployed:", diamond.address);
 
   // returning the address of the diamond
   return diamond.address;

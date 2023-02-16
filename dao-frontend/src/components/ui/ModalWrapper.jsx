@@ -5,7 +5,7 @@ const ModalWrapper = ({title, open, handleClose, children}) => {
     if (!open) return
 
     return (
-        <div className="fixed top-0 left-0 h-screen w-screen">
+        <div className="fixed top-0 left-0 h-screen w-screen z-10">
 
             <div className="fixed h-screen w-screen bg-slate-800 opacity-70"></div>
 

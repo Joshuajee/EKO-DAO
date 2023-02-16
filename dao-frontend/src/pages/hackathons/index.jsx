@@ -1,5 +1,5 @@
 import HackathonCard from '@/components/pages/hackathons/HackathonCard';
-import CategoryTab from '@/components/ui/CategoryTab';
+import CategoryTab from '@/components/ui/navigation/CategoryTab';
 import Container from '@/components/ui/Container';
 import Layout from '@/components/ui/Layout';
 import TopBanner from '@/components/ui/TopBanner';
