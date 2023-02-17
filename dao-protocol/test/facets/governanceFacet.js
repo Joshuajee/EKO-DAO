@@ -22,7 +22,7 @@ describe("Governance Facet test", function () {
     // await EkoStableInstance.transfer(signer2.address, '100000000000000000000');
     // await EkoStableInstance.transfer(signer3.address, '100000000000000000000');
 
-    diamondAddress = await deployDiamond();
+    diamondAddress = await deployDiamond(true);
     const GovernanceFacet = await ethers.getContractAt(
       "GovernanceFacet",
       diamondAddress

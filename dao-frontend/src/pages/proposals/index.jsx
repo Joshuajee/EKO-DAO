@@ -1,5 +1,5 @@
 import ProposalCard from '@/components/pages/proposals/ProposalCard';
-import CategoryTab from '@/components/ui/CategoryTab';
+import CategoryTab from '@/components/ui/navigation/CategoryTab';
 import Container from '@/components/ui/Container';
 import Layout from '@/components/ui/Layout';
 import TopBanner from '@/components/ui/TopBanner';
@@ -17,7 +17,7 @@ export default function Proposals() {
 
       <Container> 
 
-        <CategoryTab tabs={tabs} />
+        {/* <CategoryTab tabs={tabs} /> */}
 
         <div className='grid md:grid-cols-2 gap-4'>
 

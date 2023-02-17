@@ -28,7 +28,7 @@ export class AdminsService {
     return this.adminsRepository.find();
   }
 
-  async getById(id): Promise<Admin> {
+  async getById(id: number): Promise<Admin> {
     try {
       const admin: Admin = await this.adminsRepository.findOneOrFail({
         where: { id },
@@ -36,6 +36,19 @@ export class AdminsService {
       return admin;
     } catch (error) {
       throw new NotFoundException(`Admin ${id} not found`);
+    }
+  }
+
+  async getByWalletAddress(walletAddress: string): Promise<Admin> {
+    try {
+      const admin: Admin = await this.adminsRepository.findOneOrFail({
+        where: { walletAddress },
+      });
+      return admin;
+    } catch (error) {
+      throw new NotFoundException(
+        `Admin with wallet address ${walletAddress} not found`,
+      );
     }
   }
 

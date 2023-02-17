@@ -1,7 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail, IsEnum, Matches } from 'class-validator';
-import { PASSWORD_REGEX } from 'src/commons/constants';
-import { INVALID_PASSWORD } from 'src/commons/messages';
+import { IsEmail, IsEnum, IsString } from 'class-validator';
 import { RolesEnum } from '../enums/roles.enum';
 
 export class AdminDto {
@@ -13,11 +11,11 @@ export class AdminDto {
   email: string;
 
   @ApiProperty({
-    description: "Admin's password",
-    example: 'Password@123',
+    description: "Admin's wallet address",
+    example: '0x72e05ff8738D7919aa346Ad553AF2f1e770c0008',
   })
-  @Matches(PASSWORD_REGEX, { message: INVALID_PASSWORD })
-  password: string;
+  @IsString()
+  walletAddress: string;
 
   @ApiProperty({
     description: "Admin's role",

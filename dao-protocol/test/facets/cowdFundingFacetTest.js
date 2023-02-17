@@ -49,12 +49,14 @@ describe("CrowdFunding Facet test", () => {
         //create an instance of CrowdFunding Campaign contract
         await CrowdFundingFacetInstance.createCampaign(projectTitle,projectDec,targetFund,minimumContribution,USDC,projectPeriod);  
         const CampaignContract = {...(await CrowdFundingFacetInstance.getProjectDetails(CampaignIndex))}.projectAddress
+        console.log(CampaignContract)
         const Project = await ethers.getContractFactory("Project");
         const CampaignContractInstance  = await Project.attach(CampaignContract);
         //const CampaignContractInstance =  await new ethers.Contract(CampaignContract,ProjectABI,USDCHolder1_signer)
 
 
-        return {USDCHolder1_signer,USDCHolder2_signer,owner, CrowdFundingFacetInstance, USDCContractInstance, CampaignContract,TokenDecimal, CampaignContractInstance }
+        return {USDCHolder1_signer,USDCHolder2_signer,owner, CrowdFundingFacetInstance, 
+          USDCContractInstance, CampaignContract,TokenDecimal, CampaignContractInstance }
     }
 
     it("should create project campaign contract and increment project count", async() => {
@@ -240,8 +242,50 @@ describe("CrowdFunding Facet test", () => {
         await expect(CrowdFundingFacetInstance.connect(USDCHolder1_signer).donorWithdraw(
             CampaignIndex)).to.be.revertedWithCustomError(CampaignContractInstance,"zeroDonation")  
                                                                       
-    })                                                               
-        
+    })  
+    
+                           
+  it("should return last 3 campaigns", async() => {
+      const { USDCContractInstance, CrowdFundingFacetInstance,
+          USDCHolder1_signer, CampaignContract, TokenDecimal} = await loadFixture(CrowdFundingFixture);
+
+          const DonatedAmount = ethers.utils.parseUnits(AmountToDonate.toString(),TokenDecimal);
+          
+          await USDCContractInstance.connect(USDCHolder1_signer).approve(
+            CampaignContract, DonatedAmount);
+
+          await CrowdFundingFacetInstance.createCampaign(projectTitle,projectDec,targetFund,minimumContribution,USDC,projectPeriod);  
+          await CrowdFundingFacetInstance.createCampaign(projectTitle,projectDec,targetFund,minimumContribution,USDC,projectPeriod);  
+          await CrowdFundingFacetInstance.createCampaign(projectTitle,projectDec,targetFund,minimumContribution,USDC,projectPeriod);
+          await CrowdFundingFacetInstance.connect(USDCHolder1_signer).donate(
+            CampaignIndex,DonatedAmount);
+                    
+          await ethers.provider.send("evm_increaseTime", [projectPeriod]) // add 10 seconds
+          await ethers.provider.send("evm_mine", []) // force mine the next block) 
+          
+          await CrowdFundingFacetInstance.createCampaign(projectTitle,projectDec,targetFund,minimumContribution,USDC,projectPeriod);                                      
+          await CrowdFundingFacetInstance.createCampaign(projectTitle,projectDec,targetFund,minimumContribution,USDC,projectPeriod); 
+          await CrowdFundingFacetInstance.createCampaign(projectTitle,projectDec,targetFund,minimumContribution,USDC,projectPeriod); 
+          
+          const ProjectContract5 = {...(await CrowdFundingFacetInstance.getProjectDetails(5))}.projectAddress
+          const ProjectContract6 = {...(await CrowdFundingFacetInstance.getProjectDetails(6))}.projectAddress
+          await USDCContractInstance.connect(USDCHolder1_signer).approve(
+            ProjectContract5, 5*DonatedAmount);
+          await USDCContractInstance.connect(USDCHolder1_signer).approve(
+            ProjectContract6, DonatedAmount);
+            
+          await CrowdFundingFacetInstance.connect(USDCHolder1_signer).donate(
+            5,5*DonatedAmount);
+          
+          await CrowdFundingFacetInstance.connect(USDCHolder1_signer).donate(
+            6,ethers.utils.parseUnits("70", 6));
+
+          file = await CrowdFundingFacetInstance.getLastXProjectDetails(8);  
+          console.log(file);                                                                       
+          
+      })
+       
+    
     
 })
 
