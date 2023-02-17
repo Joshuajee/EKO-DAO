@@ -61,48 +61,39 @@ contract CrowdFundFacet{
     //emit ContributionReceived(address(projectAddress),_tokenAmount,_user);// Trigger event
   }
 
-    Project(projectAddress).donate(_user, _tokenAmount); // Call function
-    //emit ContributionReceived(address(projectAddress),_tokenAmount,_user);// Trigger event
-  }
 
   // Admin withdraw if project is successful
-  // Admin withdraw if project is successful
+   function adminWithdraw(uint256 _projectIndex, uint256 _tokenAmount) public {
+        address _user = msg.sender;
 
-  function adminWithdraw(uint256 _projectIndex, uint256 _tokenAmount) public {
-  function adminWithdraw(uint256 _projectIndex, uint256 _tokenAmount) public {
-    address _user = msg.sender;
+        Project projectAddress = Database.getCrowdFundMappingRecords().Projects[_projectIndex];
+        if(address(projectAddress) == address(0)){
+            revert ProjectDoesNotExist(_projectIndex);
+        }
 
-    Project projectAddress = Database.getCrowdFundMappingRecords().Projects[_projectIndex];
-    if(address(projectAddress) == address(0)){
-      revert ProjectDoesNotExist(_projectIndex);
-    }
-
-    Project(projectAddress).adminWithdraw(_user, _tokenAmount); // Call function
-    emit FundWithdrawn(address(projectAddress),_tokenAmount,_user);// Trigger event 
+        Project(projectAddress).adminWithdraw(_user, _tokenAmount); // Call function
+        emit FundWithdrawn(address(projectAddress),_tokenAmount,_user);// Trigger event 
   }
 
 
   // Donor withdraw all donated amount if project is failed
-  // Donor withdraw all donated amount if project is failed
+    function donorWithdraw(uint256 _projectIndex) public {
+        address _user = msg.sender;
 
-  function donorWithdraw(uint256 _projectIndex) public {
-  function donorWithdraw(uint256 _projectIndex) public {
-    address _user = msg.sender;
+        Project projectAddress = Database.getCrowdFundMappingRecords().Projects[_projectIndex];
+        if(address(projectAddress) == address(0)){
+            revert ProjectDoesNotExist(_projectIndex);
+        }
 
-    Project projectAddress = Database.getCrowdFundMappingRecords().Projects[_projectIndex];
-    if(address(projectAddress) == address(0)){
-      revert ProjectDoesNotExist(_projectIndex);
-    }
+        uint256 amountDonated = Project(projectAddress).getAmountDonated(_user);
 
-    uint256 amountDonated = Project(projectAddress).getAmountDonated(_user);
-
-    Project(projectAddress).donorWithdraw(_user); // Call function
-    emit FundWithdrawn(address(projectAddress),amountDonated,_user);// Trigger event
+        Project(projectAddress).donorWithdraw(_user); // Call function
+        emit FundWithdrawn(address(projectAddress),amountDonated,_user);// Trigger event
   }
 
   // Get number of projects created
   function returnProjectsCount() external view returns (uint256) {
-    return Database.getCrowdFundRecords().projectCounts;
+        return Database.getCrowdFundRecords().projectCounts;
   }
 
 //Get the details of the last 5 Projects ------- work in progress ------
@@ -147,8 +138,5 @@ function getProjectDetails(uint256 _projectIndex) public view returns(Database.P
     address projectAddress = address(Database.getCrowdFundMappingRecords().Projects[_projectIndex]);   
     return Project(projectAddress).getProjectDetails();  // Call function
   }
-
-
-
 
 }
