@@ -197,9 +197,83 @@
     "type": "function"
   },
   {
-    "inputs": [],
-    "name": "getLast5ProjectDetails",
-    "outputs": [],
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "X",
+        "type": "uint256"
+      }
+    ],
+    "name": "getLastXProjectDetails",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "address",
+            "name": "admin",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "projectAddress",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "targetFund",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "totalDonationRecieved",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "minimumDonation",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "amountWithdrawn",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "fundBalance",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "endDate",
+            "type": "uint256"
+          },
+          {
+            "internalType": "string",
+            "name": "projectTopic",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "description",
+            "type": "string"
+          },
+          {
+            "internalType": "uint256",
+            "name": "noOfDonors",
+            "type": "uint256"
+          },
+          {
+            "internalType": "enum Status",
+            "name": "status",
+            "type": "uint8"
+          }
+        ],
+        "internalType": "struct Database.ProjectState[]",
+        "name": "",
+        "type": "tuple[]"
+      }
+    ],
     "stateMutability": "view",
     "type": "function"
   },

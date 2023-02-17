@@ -7,6 +7,8 @@ export const dollarFormat = (amount) => {
 
 export const contractAddress = process.env.NEXT_PUBLIC_CONTRACT
 
+export const USDC = process.env.NEXT_PUBLIC_USDC
+
 export const networkNameByChainId = (chainId) => {
 
     switch (chainId) {
