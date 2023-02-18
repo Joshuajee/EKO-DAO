@@ -5,9 +5,9 @@ const {
     FacetCutAction,
     removeSelectors,
     findAddressPositionInFacets
-  } = require('../scripts/libraries/diamond.js')
+  } = require('./libraries/diamond.js')
   
-const { deployDiamond } = require('../scripts/deploy_dao.js')
+const { deployDiamond } = require('./deploy_dao.js')
   
 const { assert } = require('chai')
   
@@ -21,7 +21,7 @@ describe('EkoDAOTest', async function () {
     let ballotFacet
     let crowdFundFacet
     let hackFundFacet
-    let commitmentFacet
+    let registractionFacet
 
 
 
@@ -39,7 +39,7 @@ describe('EkoDAOTest', async function () {
         ballotFacet = await ethers.getContractAt('BallotFacet', diamondAddress)
         crowdFundFacet = await ethers.getContractAt('CrowdFundFacet', diamondAddress)
         hackFundFacet = await ethers.getContractAt('HackFundFacet', diamondAddress)
-        commitmentFacet = await ethers.getContractAt('CommitmentFacet', diamondAddress)
+        registractionFacet = await ethers.getContractAt('RegistrationFacet', diamondAddress)
     })
   
     it('should have seven facets -- call to facetAddresses function', async () => {
@@ -246,7 +246,7 @@ describe('EkoDAOTest', async function () {
             {
                 facetAddress: addresses[6],
                 action: FacetCutAction.Add,
-                functionSelectors: getSelectors(commitmentFacet)
+                functionSelectors: getSelectors(registractionFacet)
             },
             {
                 facetAddress: addresses[7],

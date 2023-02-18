@@ -12,11 +12,15 @@
     "test1": "NODE_OPTIONS=--experimental-vm-modules jest --ci --silent"
   },
   "dependencies": {
+    "@headlessui/react": "^1.7.8",
+    "@heroicons/react": "^2.0.14",
+    "@lottiefiles/lottie-player": "^1.7.1",
     "@next/font": "13.1.2",
     "@reduxjs/toolkit": "^1.9.1",
     "@testing-library/user-event": "^14.4.3",
     "aos": "^2.3.4",
     "autoprefixer": "^10.4.13",
+    "date-and-time": "^2.4.2",
     "eslint": "8.31.0",
     "eslint-config-next": "13.1.2",
     "ethers": "^5.7.2",
@@ -29,10 +33,12 @@
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-icons": "^4.7.1",
+    "react-loader-spinner": "^5.3.4",
     "react-redux": "^8.0.5",
     "react-toastify": "^9.1.1",
     "truncate-eth-address": "^1.0.2",
-    "wagmi": "^0.10.10"
+    "wagmi": "^0.10.10",
+    "words-count": "^2.0.2"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^5.16.5",

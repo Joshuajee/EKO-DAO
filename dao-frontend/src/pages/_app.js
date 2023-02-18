@@ -1,4 +1,5 @@
 import '@/styles/globals.css'
+import React from 'react'
 import { WagmiConfig, createClient, configureChains } from 'wagmi'
 import { polygonMumbai } from 'wagmi/chains'
 import { alchemyProvider } from 'wagmi/providers/alchemy'
@@ -11,6 +12,7 @@ import { ToastContainer } from 'react-toastify';
 import AOS from 'aos'
 import 'aos/dist/aos.css';
 import 'react-toastify/dist/ReactToastify.css';
+import { AuthProvider } from '@/context/AuthContext'
 
 
 const { chains, provider, webSocketProvider } = configureChains(
@@ -54,11 +56,18 @@ const App = ({ Component, pageProps }) => {
     AOS.init({ duration: 500 });
   }, []);
 
+  React.useEffect(() => {
+    import("@lottiefiles/lottie-player");
+  }, [])
+
   return (
     <WagmiConfig client={client}>
-      <Component {...pageProps} />
-      <ToastContainer autoClose={3000} hideProgressBar={true} />
+      <AuthProvider>
+        <Component {...pageProps} />
+        <ToastContainer autoClose={3000} hideProgressBar={true} />
+      </AuthProvider>
     </WagmiConfig> 
+
   )
 }
 
