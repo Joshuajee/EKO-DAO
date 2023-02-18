@@ -41,11 +41,11 @@ export default function Cohorts() {
     })
 
     useEffect(() => {
-        setData(cohorts.data)
-        setIsError(cohorts.isError)
-        setIsSuccess(cohorts.isSuccess)
-        setIsLoading(cohorts.isLoading)
-    }, [cohorts]);
+        if (cohorts?.data) setData([...cohorts?.data].reverse())
+        setIsError(cohorts?.isError)
+        setIsSuccess(cohorts?.isSuccess)
+        setIsLoading(cohorts?.isLoading)
+    }, [cohorts?.data, cohorts?.isError, cohorts?.isSuccess, cohorts?.isLoading]);
 
     return (
         <Layout>
@@ -64,7 +64,6 @@ export default function Cohorts() {
                     }
                 </Container>
             }
-
 
             {
                 (isLoading || isError) && (

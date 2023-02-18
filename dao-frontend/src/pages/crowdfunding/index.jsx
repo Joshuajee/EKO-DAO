@@ -36,17 +36,16 @@ export default function Crowdfunding() {
     address: contractAddress,
     abi: crowdFundFacetABI,
     functionName: 'getLastXProjectDetails',
-    args: [50]
+    args: [50],
+    watch: true,
   })
 
-  console.log(crowdFunds)
-
   useEffect(() => {
-    setData(crowdFunds.data)
-    setIsError(crowdFunds.isError)
-    setIsSuccess(crowdFunds.isSuccess)
-    setIsLoading(crowdFunds.isLoading)
-  }, [crowdFunds]);
+    if (crowdFunds?.data) setData([...crowdFunds?.data].reverse())
+    setIsError(crowdFunds?.isError)
+    setIsSuccess(crowdFunds?.isSuccess)
+    setIsLoading(crowdFunds?.isLoading)
+  }, [crowdFunds?.data, crowdFunds?.isError, crowdFunds?.isSuccess, crowdFunds?.isLoading]);
 
   return (
     <Layout>
@@ -74,9 +73,9 @@ export default function Crowdfunding() {
       }
 
       { isAdminLoggedIn &&
-          <CreateButton title={"Create a new Crowd fund Project"} open={open} show={show} close={close}>
-            <CreateCrowdForm close={close} />
-          </CreateButton> 
+        <CreateButton title={"Create a new Crowd fund Project"} open={open} show={show} close={close}>
+          <CreateCrowdForm close={close} />
+        </CreateButton> 
       }
 
     </Layout>

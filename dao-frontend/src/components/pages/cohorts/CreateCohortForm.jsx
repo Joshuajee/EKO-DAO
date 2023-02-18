@@ -108,12 +108,6 @@ const CreateCohortForm = ({close}) => {
 
             </div>
 
-            {/* <button 
-                disabled={isDisabled()}
-                className="mt-4 rounded-lg w-full bg-blue-500 hover:bg-blue-700 py-2 text-white disabled:bg-gray-400 disabled:hover:bg-gray-400 disabled:text-gray-200"> 
-                Create Cohort 
-            </button> */}
-
             <LoadingButton loading={create?.isLoading} disabled={isDisabled()} > Create Cohort</LoadingButton>
 
         </form>

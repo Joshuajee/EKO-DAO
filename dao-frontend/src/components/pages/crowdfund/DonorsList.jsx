@@ -1,7 +1,6 @@
 import SideTableWrapper from "@/components/ui/SideTableWrapper"
 import { getRandomInt } from "@/libs/dummy"
-import { useRouter } from "next/router"
-import { AiOutlineClockCircle } from "react-icons/ai"
+import { memo } from "react"
 import truncateEthAddress from "truncate-eth-address"
 
 
@@ -60,4 +59,4 @@ const DonorsList = ({donors}) => {
     )
 }
 
-export default DonorsList
+export default memo(DonorsList)

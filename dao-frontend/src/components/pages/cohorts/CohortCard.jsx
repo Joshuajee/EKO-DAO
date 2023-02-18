@@ -5,6 +5,7 @@ import { useRouter } from "next/router"
 import { AiOutlineClockCircle } from "react-icons/ai"
 import CohortForm from "./CohortForm"
 import CohortStatus from "./CohortStatus"
+import { memo } from "react"
 
 const CohortCard = ({cohort, expanded}) => {
 
@@ -55,4 +56,4 @@ const CohortCard = ({cohort, expanded}) => {
     )
 }
 
-export default CohortCard
+export default memo(CohortCard)

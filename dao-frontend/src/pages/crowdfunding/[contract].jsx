@@ -1,15 +1,15 @@
-import CohortCard from '@/components/pages/cohorts/CohortCard';
-import StudentList from '@/components/pages/cohorts/StudentList';
+import DonorsList from '@/components/pages/crowdfund/DonorsList';
+import ProjectCard from '@/components/pages/crowdfund/ProjectCard';
 import Container from '@/components/ui/Container';
 import Layout from '@/components/ui/Layout';
+import LoadingScreen from '@/components/ui/screens/LoadingScreen';
+import { votersDummy } from '@/libs/dummy';
 import Head from 'next/head'
 import { useRouter } from 'next/router';
 import { useContractRead } from 'wagmi';
-import { votersDummy } from '@/libs/dummy';
-import cohortABI from './../../abi/contracts/Cohort.sol/Cohort.json'
-import LoadingScreen from '@/components/ui/screens/LoadingScreen';
+import ProjectABI from '@/abi/contracts/CrowdFundProject.sol/Project.json';
 
-export default function Cohorts() {
+export default function CrowdFund() {
 
   const router = useRouter()
 
@@ -17,14 +17,14 @@ export default function Cohorts() {
 
   const { data, isLoading, isSuccess, isError, } = useContractRead({
     address: contract,
-    abi: cohortABI,
-    functionName: 'cohort',
+    abi: ProjectABI,
+    functionName: 'getProjectDetails',
+    watch: true
   })
 
   return (
     <Layout>
-
-      <Head><title> Chort | Details </title></Head>
+      <Head><title> Crowdfund | Details </title></Head>
 
       { isSuccess && 
           <Container> 
@@ -32,10 +32,10 @@ export default function Cohorts() {
             <div className='mt-20 grid grid-cols-1 md:grid-cols-3 gap-4'>
 
               <div className='col-span-2'>
-                <CohortCard cohort={data} expanded={true}/>  
+                <ProjectCard project={data}  expanded={true}/>  
               </div>
 
-              <StudentList students={votersDummy} /> 
+              <DonorsList donors={votersDummy} />
 
             </div>
 
@@ -47,7 +47,7 @@ export default function Cohorts() {
           <LoadingScreen isError={isError} />
         )
       }
-
+    
     </Layout>
   )
 }

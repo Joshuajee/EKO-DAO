@@ -1,7 +1,7 @@
 import Input from "@/components/ui/form/Input"
 import { useState, useEffect, useLayoutEffect } from "react"
 import wordsCount from 'words-count';
-import { contractAddress, getDate, USDC } from "@/libs/utils"
+import { contractAddress, convertToWEI, getDate, USDC } from "@/libs/utils"
 import { useContractWrite } from "wagmi";
 import crowdFundFacetABI from '../../../abi/contracts/facets/CrowdFundFacet.sol/CrowdFundFacet.json';
 import { toast } from "react-toastify";
@@ -35,7 +35,7 @@ const CreateCrowdForm = ({close}) => {
         address: contractAddress,
         abi: crowdFundFacetABI,
         functionName: 'createCampaign',
-        args: [name, description, target, min, USDC, new Date(duration).getTime()],
+        args: [name, description, convertToWEI(target), convertToWEI(min), USDC, new Date(duration).getTime()],
     })
 
     const submit = (e) => {
@@ -88,21 +88,10 @@ const CreateCrowdForm = ({close}) => {
 
     }, [create.isLoading, create.isSuccess, create.isError, create.error, close])
 
-    /*
-        string  memory _projectTopic,
-        string  memory _description,
-        uint256 _targetFund,
-        uint256 _minimumDonation, 
-        IERC20 _acceptedCurrency,     
-        uint256 _projectPeriod
-
-        */
-
-
     return (
         <form className="text-gray-700" onSubmit={submit}>
 
-            <Input value={name} onChange={setName} id="name" label={"Funding Title"} placeholder="e.g Solidity Bootcamp fall 2023" error={nameError} helperText={"Funding Title should have at least 3 words"}  />
+            <Input value={name} onChange={setName} id="name" label={"Funding Title"} placeholder="e.g Save our Planet" error={nameError} helperText={"Funding Title should have at least 3 words"}  />
 
             <Textarea value={description} onChange={setDescription} id="description" label={"Funding Description"} placeholder="e.g Contribute and saving the planet in a decentralized manner" error={descriptionError} helperText={"Descripion should contain 10 - 50 words"}></Textarea>
 
@@ -115,12 +104,6 @@ const CreateCrowdForm = ({close}) => {
                 <Input type="date" label={"Duration"} min={currentDate} value={duration} onChange={setDuration} />
                 
             </div>
-
-            {/* <button 
-                disabled={isDisabled()}
-                className="mt-4 rounded-lg w-full bg-blue-500 hover:bg-blue-700 py-2 text-white disabled:bg-gray-400 disabled:hover:bg-gray-400 disabled:text-gray-200"> 
-                Create Funding 
-            </button> */}
 
             <LoadingButton loading={create?.isLoading} disabled={isDisabled()} > Create Funding</LoadingButton>
 
