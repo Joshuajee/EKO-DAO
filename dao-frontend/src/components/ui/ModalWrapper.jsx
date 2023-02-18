@@ -18,7 +18,7 @@ const ModalWrapper = ({title, open, handleClose, children}) => {
                         <button className="pr-4 pt-2" onClick={handleClose}><MdClose size={24} /></button>
                     </div>
 
-                    <div className="p-4">
+                    <div className="p-4 overflow-y-auto">
                         {children}
                     </div>
 

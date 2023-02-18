@@ -1,6 +1,7 @@
 import { AiFillInfoCircle } from "react-icons/ai"
 import date from 'date-and-time';
 import { dollarFormat } from "@/libs/utils"
+import { memo } from "react";
 
 const CohortStatus = ({fee, students, start,  end, expanded}) => {
     return (
@@ -35,4 +36,4 @@ const CohortStatus = ({fee, students, start,  end, expanded}) => {
     )
 }
 
-export default CohortStatus
+export default memo(CohortStatus)

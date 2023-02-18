@@ -1,5 +1,5 @@
 import { createContext, useState, useEffect } from "react";
-import { useConnect, useContractRead } from "wagmi";
+import { useAccount, useContractRead } from "wagmi";
 
 
 export const AuthContext = createContext();
@@ -9,14 +9,19 @@ export const AuthProvider = ({children}) => {
     const [isAdmin, setIsAdmin] = useState(false)
     const [isAdminLoggedIn, setIsAdminLoginIn] = useState(false)
 
-    const { address } = useConnect()
+    const { isConnected } = useAccount()
 
-    const { data, isLoading, isError } = useContractRead()
+    //const { data, isLoading, isError } = useContractRead()
     
     useEffect(() => {
-        setIsAdmin(true)
-        setIsAdminLoginIn(true)
-    }, [address]);
+        if (isConnected) {
+            setIsAdmin(true)
+            setIsAdminLoginIn(true)
+        } else {
+            setIsAdmin(false)
+            setIsAdminLoginIn(false)
+        }
+    }, [isConnected]);
 
 
     return(

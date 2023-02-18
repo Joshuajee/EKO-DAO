@@ -1,6 +1,7 @@
 import SideTableWrapper from "@/components/ui/SideTableWrapper"
 import { getRandomInt } from "@/libs/dummy"
 import { useRouter } from "next/router"
+import { memo } from "react"
 import { AiOutlineClockCircle } from "react-icons/ai"
 import truncateEthAddress from "truncate-eth-address"
 
@@ -51,4 +52,4 @@ const StudentList = ({students}) => {
     )
 }
 
-export default StudentList
+export default memo(StudentList)

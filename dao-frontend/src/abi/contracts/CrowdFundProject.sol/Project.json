@@ -42,7 +42,17 @@
   },
   {
     "inputs": [],
+    "name": "AddressCannotBeZero",
+    "type": "error"
+  },
+  {
+    "inputs": [],
     "name": "AmountBelowTheMinimun",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "MustBeContractAddress",
     "type": "error"
   },
   {
@@ -308,7 +318,7 @@
         "type": "tuple"
       }
     ],
-    "stateMutability": "pure",
+    "stateMutability": "view",
     "type": "function"
   }
 ]
