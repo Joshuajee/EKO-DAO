@@ -38,6 +38,7 @@ export default function Cohorts() {
         address: contractAddress,
         abi: cohortFacetABI,
         functionName: 'cohorts',
+        watch: true
     })
 
     useEffect(() => {

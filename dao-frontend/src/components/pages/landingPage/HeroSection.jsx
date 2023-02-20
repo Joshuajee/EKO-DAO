@@ -28,7 +28,8 @@ export default function HeroSection() {
               </p>
               <div data-aos="fade-up" className="mt-10 flex items-center justify-center gap-x-6">
                 <Link
-                  href={"/"}
+                  target={"_blank"}
+                  href={"https://ekodao.gitbook.io/ekodao/"}
                   className="rounded-md bg-blue-700 px-6 py-2 text-lg font-semibold leading-7 text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
                   Documentation
                 </Link>

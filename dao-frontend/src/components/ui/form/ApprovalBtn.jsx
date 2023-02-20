@@ -6,7 +6,7 @@ import USDCABI from '@/abi/contracts/USDC.sol/USDC.json';
 import { USDC } from "@/libs/utils";
 import { toast } from "react-toastify";
 
-const ApprovalBtn = ({contract, setAllowance, allowance, amount, address}) => {
+const ApprovalBtn = ({contract, setAllowance, allowance, amount}) => {
 
     const approval = useContractWrite({
         mode: 'recklesslyUnprepared',
@@ -16,13 +16,15 @@ const ApprovalBtn = ({contract, setAllowance, allowance, amount, address}) => {
         args: [contract, Number(amount) <= 0 ? 0 : ethers.utils.parseUnits(amount, 'ether')],
     })
 
+    console.log(contract)
+
 
     useEffect(() => {
         if (approval?.isSuccess) {
-            toast.success(approval.success)
+            toast.success(approval?.success)
             setAllowance(amount)
         }
-    }, [approval?.isSuccess, setAllowance, amount])
+    }, [approval?.isSuccess, setAllowance, amount, approval?.success])
 
     console.log(approval)
 

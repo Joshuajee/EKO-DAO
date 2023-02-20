@@ -1,7 +1,3 @@
-const { deployDiamond } = require("./deploy");
-// We recommend this pattern to be able to use async/await everywhere
-// and properly handle errors.
-
 const addCohorts = async (diamondAddress) => {
 
   [owner] = await ethers.getSigners();
@@ -27,4 +23,3 @@ if (require.main === module) {
     });
 }
 
-exports.deployDiamond = deployDiamond;
