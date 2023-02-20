@@ -3,13 +3,14 @@ import ModalWrapper from "@/components/ui/ModalWrapper"
 import { links, routes } from "@/libs/routes"
 import { useRouter } from "next/router"
 import { AiOutlineClockCircle } from "react-icons/ai"
-import CohortForm from "./CohortForm"
+import EnrollmentForm from "./EnrollmentForm"
 import CohortStatus from "./CohortStatus"
 import { memo } from "react"
 
+
 const CohortCard = ({cohort, expanded}) => {
 
-    const { name, content, commitment, size, startDate, endDate } = cohort
+    const { name, content, commitment, size, startDate, endDate, close } = cohort
 
     const router = useRouter()
 
@@ -49,7 +50,7 @@ const CohortCard = ({cohort, expanded}) => {
             </div>
 
             <ModalWrapper title={"Join Cohort"} open={open} handleClose={handleClose}>
-                <CohortForm cohort={cohort} />
+                <EnrollmentForm cohort={cohort} close={handleClose} />
             </ModalWrapper>
             
         </div>

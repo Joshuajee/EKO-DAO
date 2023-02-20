@@ -7,18 +7,21 @@ import Input from "@/components/ui/form/Input";
 import { toast } from "react-toastify";
 import ApprovalBtn from "@/components/ui/form/ApprovalBtn";
 import Balance from "@/components/ui/form/Balance";
-import { convertToEther } from "@/libs/utils";
+import { convertToEther, dollarFormat } from "@/libs/utils";
 
 
 const DonationForm = ({project, close}) => {
 
-    const { projectAddress, topic, minimumDonation } = project
+    const { projectAddress, minimumDonation } = project
 
     const [amount, setAmount] = useState(null);
     const [amountError, setAmountError] = useState(false);
 
     const [allowance, setAllowance] = useState(null);
     const [balance, setBalance] = useState(null);
+
+    const [min, setMin] = useState(convertToEther(minimumDonation))
+
 
     const { address } = useAccount()
 
@@ -46,25 +49,36 @@ const DonationForm = ({project, close}) => {
     }, [donation?.isError, donation?.error, donation?.isSuccess, close]);
 
     useEffect(() => {
-        if (convertToEther(minimumDonation) > amount) setAmountError(true)
+        if (Number(min) >= amount) setAmountError(true)
         else setAmountError(false)
-    }, [minimumDonation, amount])
+    }, [min, amount])
+
+    useEffect(() => {
+        setMin(convertToEther(minimumDonation))
+    }, [minimumDonation])
 
     return (
-        <div className="text-gray-700 p-4 md:px-4  w-full">
+        <div className="text-gray-700 w-full">
 
             <Balance 
                 address={address} contract={projectAddress} 
                 allowance={allowance} balance={balance}
                 setAllowance={setAllowance} setBalance={setBalance} />
-
-            <h2 className="text-black text-base md:text-base font-semibold mb-3">{topic}</h2>
+            
+            <p className="mb-3 font-medium">
+                Minimum Donation: {dollarFormat(min)} USDC
+            </p>
 
             <form onSubmit={submit}>
                 
                 <label for="input-group-1" className="text-center block mb-2 text-lg font-medium text-gray-900">Your Donation</label>
 
-                <Input type="number" label={"Donation Amount (USDC)"} value={amount} onChange={setAmount} error={amountError} helperText={"Amount should be greater than zero"} />
+                <Input 
+                    type="number" 
+                    label={"Donation Amount (USDC)"} 
+                    value={amount} onChange={setAmount} 
+                    error={amountError} 
+                    helperText={`Amount should be greater than ${dollarFormat(min)}`} />
 
                 <LoadingButton disabled={allowance < amount} loading={donation?.isLoading}> Donate </LoadingButton>
 

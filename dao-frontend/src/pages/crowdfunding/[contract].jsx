@@ -27,19 +27,19 @@ export default function CrowdFund() {
       <Head><title> Crowdfund | Details </title></Head>
 
       { isSuccess && 
-          <Container> 
+        <Container> 
 
-            <div className='mt-20 grid grid-cols-1 md:grid-cols-3 gap-4'>
+          <div className='mt-20 grid grid-cols-1 md:grid-cols-3 md:gap-4'>
 
-              <div className='col-span-2'>
-                <ProjectCard project={data}  expanded={true}/>  
-              </div>
-
-              <DonorsList donors={votersDummy} />
-
+            <div className='col-span-2 mb-4'>
+              <ProjectCard project={data}  expanded={true}/>  
             </div>
 
-          </Container>
+            <DonorsList donors={votersDummy} />
+
+          </div>
+
+        </Container>
       }
 
       {

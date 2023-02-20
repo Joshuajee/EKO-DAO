@@ -1,7 +1,7 @@
 import Input from "@/components/ui/form/Input"
 import { useState, useEffect, useLayoutEffect } from "react"
 import wordsCount from 'words-count';
-import { contractAddress, getDate } from "@/libs/utils"
+import { contractAddress, convertToEther, convertToWEI, getDate } from "@/libs/utils"
 import { useContractWrite } from "wagmi";
 import cohortFacetABI from '../../../abi/contracts/facets/CohortFactoryFacet.sol/CohortFactoryFacet.json';
 import { toast } from "react-toastify";
@@ -35,7 +35,7 @@ const CreateCohortForm = ({close}) => {
         address: contractAddress,
         abi: cohortFacetABI,
         functionName: 'newCohort',
-        args: [id, name, new Date(startDate).getTime(), new Date(endDate).getTime(), student, commitment],
+        args: [id, name, new Date(startDate).getTime(), new Date(endDate).getTime(), student, convertToWEI(commitment)],
     })
 
     const submit = (e) => {
@@ -82,8 +82,8 @@ const CreateCohortForm = ({close}) => {
             }, 600)
         }
 
-        if (create.error) {
-            toast.error(create.error)
+        if (create?.isError) {
+            toast.error(create?.error?.reason)
         }
 
     }, [create.isLoading, create.isSuccess, create.isError, create.error, close])
