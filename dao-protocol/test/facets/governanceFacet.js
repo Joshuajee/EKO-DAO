@@ -7,11 +7,6 @@ const { deployDiamond } = require('../../scripts/deploy.js');
 
 describe('Governance Facet test', function() {
 	// function Inputs
-	// const MAXIMUM_TOKEN_NO = 1000000000000000000000000000;
-	// const MINIMUM_TOKEN_REQUIREMENT = 100000000000000000000;
-	// const MINIMUM_TOKEN_REQUIREMENT_2 = 200000000000000000000;
-	// const DECIMALS = 10 ** 18;
-
 	const PROPOSAL_NAME_1 = 'Proposal One';
 	const PROPOSAL_DELAY_MINUITES_1 = 0;
 	const PROPOSAL_DELAY_HOURS_1 = 0;
