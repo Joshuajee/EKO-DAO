@@ -318,7 +318,7 @@
         "type": "tuple"
       }
     ],
-    "stateMutability": "view",
+    "stateMutability": "pure",
     "type": "function"
   }
 ]
