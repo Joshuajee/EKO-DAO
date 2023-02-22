@@ -12,7 +12,10 @@ contract CohortFactoryFacet {
     uint _startDate,
     uint _endDate,
     uint8 _size,
-    uint _commitment
+    uint _commitment,
+    string memory _description,
+    address _stableCoin,
+    address _ekoNft
   ) public {
     bytes32 id = keccak256(abi.encodePacked(_id));
     Cohort cohort_ = new Cohort(
@@ -21,9 +24,18 @@ contract CohortFactoryFacet {
       _startDate,
       _endDate,
       _size,
-      _commitment
+      _commitment,
+      _description
     );
-    LibCohort.setCohort(id, _name, _startDate, _endDate, address(cohort_));
+    cohort_.init(_stableCoin, _ekoNft);
+    LibCohort.setCohort(
+      id,
+      _name,
+      _startDate,
+      _endDate,
+      _description,
+      address(cohort_)
+    );
   }
 
   function cohort(uint _id) public view returns (LibCohort.Cohort memory) {
