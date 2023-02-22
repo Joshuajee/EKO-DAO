@@ -39,7 +39,18 @@ describe("CohortFacetTest", async function () {
     const currentTimestamp = currentDate.getTime();
     const startDate = currentTimestamp + 30;
     const endDate = currentTimestamp + 60;
-    await cohortFactoryFacet.newCohort(1, name, startDate, endDate, 100, 10);
+    const description = `This 13-week course is designed for people seeking a career in the blockchain ecosystem as a Solidity developer. The program starts on the 3rd October and is free of charge. The application deadline is 30th of September 2022.`;
+    await cohortFactoryFacet.newCohort(
+      1,
+      name,
+      startDate,
+      endDate,
+      100,
+      10,
+      description,
+      usdc.address,
+      ekoNft.address
+    );
     const cohortsList = await cohortFactoryFacet.cohorts();
     assert.equal(cohortsList[0].name, name);
     const cohortData = await cohortFactoryFacet.cohort(1);
@@ -52,13 +63,12 @@ describe("CohortFacetTest", async function () {
     assert.equal(record.endDate, endDate);
     assert.equal(record.size, 100);
     assert.equal(record.commitment, 10);
+    assert.equal(record.description, description);
   });
 
   it("should enroll student in a cohort", async () => {
     await usdc.mint(studentAddress, 10);
     await usdc.approve(cohortAddress, 10);
-
-    await cohort.init(usdc.address, ekoNft.address);
 
     const ekoStableAddress = await cohort.ekoStableAddress();
     const EkoStable = await ethers.getContractFactory("EkoStable");

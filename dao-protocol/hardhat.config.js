@@ -22,45 +22,28 @@ task("accounts", "Prints the list of accounts", async () => {
  */
 
 module.exports = {
-	solidity: '0.8.17',
-	settings: {
-		optimizer: { enabled: true, runs: 200 }
-	},
-	// networks: {
-	//   mainnet: {
-	//     url: "https://mainnet.infura.io/v3/",
-	//     accounts: [PRIVATE_KEY]
-	//   },
-	//   goerli: {
-	//     url: "https://goerli.infura.io/v3/",
-	//     accounts: [PRIVATE_KEY]
-	//   },
-	//   polygon: {
-	//     url: "https://polygon-rpc.com/",
-	//     accounts: [PRIVATE_KEY]
-	//   },
-	//   mumbai: {
-	//     url: "https://rpc-mumbai.maticvigil.com/",
-	//     accounts: [PRIVATE_KEY]
-	//   },
-	//   bsc: {
-	//     url: "https://bsc-dataseed.binance.org/",
-	//     accounts: [PRIVATE_KEY]
-	//   },
-	//   bsc_testnet: {
-	//     url: "https://data-seed-prebsc-1-s1.binance.org:8545/",
-	//     accounts: [PRIVATE_KEY]
-	//   },
-	// }
+  solidity: "0.8.17",
+  settings: {
+    optimizer: { enabled: true, runs: 200 },
+  },
 
-	abiExporter: [
-		{
-			path: './abi',
-			pretty: false,
-			flat: true,
-			runOnCompile: true,
-		//	only: ["NFTMarketplace", "RoyaltyToken"]
-		}
-	]
+  // npx hardhat run scripts/deploy.js --network mumbai
+  networks: {
+    mumbai: {
+      url: "https://polygon-mumbai.g.alchemy.com/v2/1yHVzG9cEm8g0IJKQA0VO-nczdGW4NgO",
+      accounts: [
+        "0x5cc57113b52c046972de032b77186b16e533f66b269ba078fa98db58589a49aa",
+      ],
+    },
+  },
+
+  abiExporter: [
+    {
+      path: "./abi",
+      pretty: false,
+      flat: true,
+      runOnCompile: true,
+      //	only: ["NFTMarketplace", "RoyaltyToken"]
+    },
+  ],
 };
-

@@ -14,6 +14,7 @@ contract Cohort {
     uint endDate;
     uint8 size;
     uint commitment;
+    string description;
     mapping(address => bool) students;
   }
 
@@ -45,7 +46,8 @@ contract Cohort {
     uint _startDate,
     uint _endDate,
     uint8 _size,
-    uint _commitment
+    uint _commitment,
+    string memory _description
   ) {
     cohort.id = _id;
     cohort.name = _name;
@@ -53,6 +55,7 @@ contract Cohort {
     cohort.endDate = _endDate;
     cohort.size = _size;
     cohort.commitment = _commitment;
+    cohort.description = _description;
   }
 
   function init(address _stableCoin, address _ekoNft) public {

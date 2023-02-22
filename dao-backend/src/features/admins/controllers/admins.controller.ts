@@ -32,6 +32,26 @@ export class AdminsController {
   ) {}
 
   @ApiOperation({
+    summary: 'Create Ekolance super admin wallet',
+  })
+  @ApiResponse({
+    status: HttpStatus.CREATED,
+    description: 'Super admin wallet successfully created',
+  })
+  @ApiResponse({
+    status: HttpStatus.BAD_REQUEST,
+    description: 'Bad request, when request parameters are missing or invalid',
+  })
+  @ApiResponse({
+    status: HttpStatus.UNAUTHORIZED,
+    description: 'Not authorized, when access token is mising or invalid',
+  })
+  @Post('/wallet')
+  createWallet(): Promise<any> {
+    return this.adminsService.createWallet();
+  }
+
+  @ApiOperation({
     summary: 'Create Ekolance admin',
   })
   @ApiResponse({
