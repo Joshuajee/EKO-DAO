@@ -4,9 +4,9 @@ const {
   getSelectors,
   FacetCutAction,
   removeSelectors,
-} = require("./libraries/diamond.js");
+} = require("../scripts/libraries/diamond.js");
 
-const { deployDiamond } = require("./deploy.js");
+const { deployDiamond } = require("../scripts/deploy.js");
 
 const { assert } = require("chai");
 
@@ -21,7 +21,7 @@ describe("DiamondTest", async function () {
   const addresses = [];
 
   before(async function () {
-    diamondAddress = await deployDiamond(true);
+    diamondAddress = await deployDiamond();
     diamondCutFacet = await ethers.getContractAt(
       "DiamondCutFacet",
       diamondAddress
