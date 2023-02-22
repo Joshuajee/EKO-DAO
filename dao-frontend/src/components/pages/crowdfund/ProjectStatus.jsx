@@ -1,4 +1,5 @@
-import { dollarFormat } from "@/libs/utils"
+import { convertToEther, dollarFormat } from "@/libs/utils"
+import { memo } from "react"
 
 const ProjectStatus = ({target, current, donorCount, minDonation}) => {
 
@@ -11,10 +12,10 @@ const ProjectStatus = ({target, current, donorCount, minDonation}) => {
 
                 <h4 className="text-right text-sm mb-2">Project Status</h4>
 
-                <p className="font-semibold">Funds Raised: {dollarFormat(current)}</p>
-                <p className="font-semibold">Target: {dollarFormat(target)}</p>
-                <p className="font-semibold">Donors: {donorCount}</p>
-                <p className="font-semibold">Minimum Donation: {dollarFormat(minDonation)}</p>
+                <p className="font-semibold">Funds Raised: {dollarFormat(convertToEther(current))}</p>
+                <p className="font-semibold">Target: {dollarFormat(convertToEther(target))}</p>
+                <p className="font-semibold">Donors: {donorCount.toString()}</p>
+                <p className="font-semibold">Minimum Donation: {dollarFormat(convertToEther(minDonation))}</p>
 
             </div>
 
@@ -25,4 +26,4 @@ const ProjectStatus = ({target, current, donorCount, minDonation}) => {
     )
 }
 
-export default ProjectStatus
+export default memo(ProjectStatus)

@@ -17,7 +17,7 @@ describe("CohortFacetTest", async function () {
   before(async function () {
     [owner] = await ethers.getSigners();
     studentAddress = owner.address;
-    diamondAddress = await deployDiamond();
+    diamondAddress = await deployDiamond(true);
     cohortFactoryFacet = await ethers.getContractAt(
       "CohortFactoryFacet",
       diamondAddress

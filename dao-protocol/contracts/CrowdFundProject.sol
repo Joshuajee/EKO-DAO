@@ -37,6 +37,8 @@ contract Project {
     );                          
              
     //Custom Error
+    error MustBeContractAddress();
+    error AddressCannotBeZero();
     error Unauthorized();
     error ProjectExpired();
     error ProjectIsYetToExpired();
@@ -48,6 +50,7 @@ contract Project {
     
     
     
+    
     //modifiers 
     modifier isAdmin(){
         if (msg.sender != Database.getProjectRecords().admin) revert Unauthorized();
@@ -55,8 +58,7 @@ contract Project {
     }
 
      modifier isExpired(){        
-        if (block.timestamp > Database.getProjectRecords().endDate) revert ProjectExpired(); 
-        Database.getProjectRecords().status = Status.Expired;       
+        if (block.timestamp > Database.getProjectRecords().endDate) revert ProjectExpired();                
         _;
     }
 
@@ -64,6 +66,16 @@ contract Project {
     modifier isSuccessful(){
         if (Database.getProjectRecords().status == Status.Successful) revert ProjectIsSucessful();    
         _;
+    }
+
+    modifier statusCheck(){
+       Database.ProjectState storage state = Database.getProjectRecords();  
+      if (state.totalDonationRecieved >= state.targetFund){
+      state.status = Status.Successful;}
+  
+      if (block.timestamp > state.endDate){
+      state.status = Status.Expired;} 
+      _;  
     }
 
 
@@ -77,7 +89,11 @@ contract Project {
         uint256 _minimumDonation, 
         IERC20 _acceptedCurrency,     
         uint256 _projectPeriod
-        ) {   
+        ) {
+        
+        if(address(_acceptedCurrency).code.length <= 0) revert MustBeContractAddress(); //validate is constract
+        if(_acceptedCurrency == IERC20(address(0))) revert AddressCannotBeZero();
+
         Database.ProjectState storage state  = Database.getProjectRecords();     
         state.admin = _admin;
         state.projectAddress = address(this);
@@ -102,9 +118,8 @@ contract Project {
     }
 
     //View project descriptions
-    function getProjectDetails() public pure returns (Database.ProjectState memory details){        
-        details = Database.getProjectRecords(); 
-         
+    function getProjectDetails() public pure returns(Database.ProjectState memory details){        
+        details = Database.getProjectRecords();          
     }
 
     //View amount donated by a donor 
@@ -136,7 +151,9 @@ contract Project {
         state.totalDonationRecieved += _amount; // update the total recived fund
         state.fundBalance += _amount; //update balance
 
-        if (state.totalDonationRecieved >= state.targetFund){state.status = Status.Successful;}  
+        if (state.totalDonationRecieved >= state.targetFund){state.status = Status.Successful;}
+        if (block.timestamp > Database.getProjectRecords().endDate){
+          Database.getProjectRecords().status = Status.Expired;}  
 
         emit FundingReceived(_user, _amount, state.totalDonationRecieved);
         

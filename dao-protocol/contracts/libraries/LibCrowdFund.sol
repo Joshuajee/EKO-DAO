@@ -14,22 +14,8 @@ import '../CrowdFundProject.sol';
  
 
 library Database{  
-
-     
-    struct ProjectDetails{
-            string ProjectTopic; 
-            string ProjectDescription;
-            uint256 endDate;
-            uint256 targetFund;
-            uint256 totalDonationRecieved;  
-            uint256 minimumDonation;
-            uint256 amountWithdrawn;
-            string acceptedCurrency;
-            uint256 noOfDonors;
-        }    
-
-    
-    //State variables of Fund Raising Campaign Project
+  //--------------------------------Campaign Project ------------------------------------
+  
     struct ProjectState {
         address admin; //wallet address of the user that create the project
         address projectAddress; // address of the camppaign project                          
@@ -50,23 +36,9 @@ library Database{
         mapping (address => uint256) donor;  
     }
 
-    //CrowdFund State Variables 
-    struct CrowdFundingState {
-        uint256 projectCounts;
-        ProjectDetails [5] details;         
-    }  
-
-    //CrowdFund Mapping State_Variables 
-    struct CrowdFundingMapping{
-        mapping (uint256 => Project) Projects;
-    }
-
-
     bytes32 constant ProjectStateLocation = keccak256("admin.targetFund.TotalReacivedFund.MinimumContribution.amountWithraw.fundBalance.endDate");
     bytes32 constant ProjectMappingLocation = keccak256("contributorAmountMapping");
-    bytes32 constant CrowdFundingStateLocation = keccak256("projectCounts");
-    bytes32 constant CrowdFundingMappingLocation = keccak256("projectsMapping");   
-    
+            
     
     function getProjectRecords() internal pure returns(ProjectState storage ps){
         bytes32 position = ProjectStateLocation;
@@ -84,7 +56,34 @@ library Database{
         }
     }
 
-    
+
+  //-------------------------------- CrowdFundFacet------------------------------------  
+  
+   struct ProjectDetails{
+     string ProjectTopic; 
+     string ProjectDescription;
+     uint256 endDate;
+     uint256 targetFund;
+     uint256 totalDonationRecieved;  
+     uint256 minimumDonation;
+     uint256 amountWithdrawn;
+     string acceptedCurrency;
+     uint256 noOfDonors;
+ }    
+
+  //CrowdFund State Variables 
+  struct CrowdFundingState {
+    uint256 projectCounts;
+    ProjectDetails [5] details;         
+  }  
+  //CrowdFund Mapping State_Variables 
+  struct CrowdFundingMapping{
+    mapping (uint256 => Project) Projects;
+  }
+
+
+    bytes32 constant CrowdFundingStateLocation = keccak256("projectCounts");
+    bytes32 constant CrowdFundingMappingLocation = keccak256("projectsMapping");   
 
     function getCrowdFundRecords() internal pure returns (CrowdFundingState storage cs){
         bytes32 position = CrowdFundingStateLocation;
