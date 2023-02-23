@@ -118,7 +118,7 @@ contract Project {
     }
 
     //View project descriptions
-    function getProjectDetails() public view returns(Database.ProjectState memory details){        
+    function getProjectDetails() public pure returns(Database.ProjectState memory details){        
         details = Database.getProjectRecords();          
     }
 

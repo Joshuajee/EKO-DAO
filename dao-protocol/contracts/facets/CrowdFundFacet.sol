@@ -141,7 +141,7 @@ function getProjectDetails(uint256 _projectIndex) public view returns(Database.P
 //Get project token balance
 function IsUserADonor(uint256 _projectIndex, address _user) public view returns(bool status, uint256 amount) {
     Project projectAddress = Database.getCrowdFundMappingRecords().Projects[_projectIndex]; 
-    (status, amount) = Project(projectAddress).isDonor(_user);  // Call function
+    (status, amount) = Project(projectAddress).isDonor(_user);  // Call isDonor function
   }
 
 }

@@ -30,7 +30,7 @@ library Database{
         string description; // campaign descriptions
         uint256 noOfDonors; // total number of donors
         Status status;  // campaign project status
-        address [] donors; //list of donors                      
+        address [] donors; //track the list of donors                      
     } 
 
     //Project Mapping state_varibles
