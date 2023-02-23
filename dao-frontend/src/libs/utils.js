@@ -1,3 +1,5 @@
+import { ethers } from "ethers"
+
 export const dollarFormat = (amount) => {
     return new Intl.NumberFormat('en-US', {
         style: 'currency',
@@ -6,6 +8,8 @@ export const dollarFormat = (amount) => {
 }
 
 export const contractAddress = process.env.NEXT_PUBLIC_CONTRACT
+
+export const USDC = process.env.NEXT_PUBLIC_USDC
 
 export const networkNameByChainId = (chainId) => {
 
@@ -37,4 +41,14 @@ export const getDate = () => {
 
     return (`${year}-${month}-${date.getDate()}`)
 
+}
+
+export const convertToEther = (price) => {
+    if (!price) return 0
+    return (ethers.utils.formatUnits(price.toString(), 'ether')).toString()
+}
+
+export const convertToWEI = (amount) => {
+    if (!amount) return 0
+    return Number(amount) <= 0 ? 0 : ethers.utils.parseUnits(amount, 'ether')
 }

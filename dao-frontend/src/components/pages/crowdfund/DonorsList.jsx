@@ -1,14 +1,13 @@
 import SideTableWrapper from "@/components/ui/SideTableWrapper"
 import { getRandomInt } from "@/libs/dummy"
-import { useRouter } from "next/router"
-import { AiOutlineClockCircle } from "react-icons/ai"
+import { memo } from "react"
 import truncateEthAddress from "truncate-eth-address"
 
 
 const DonorsList = ({donors}) => {
 
     return (
-        <div className="text-gray-700 bg-white rounded-md p-4 md:px-4 shadow-lg w-full">
+        <div className="text-gray-70 bg-white rounded-md p-4 shadow-lg ">
 
             <h2 className="text-black text-xl md:text-2xl font-semibold mb-3">Donors</h2>
 
@@ -24,9 +23,6 @@ const DonorsList = ({donors}) => {
                             <th scope="col" class="px-6 py-3">
                                 Amount
                             </th>
-                            <th scope="col" class="px-6 py-3">
-                                Currency
-                            </th>
                         </tr>
                     </thead>
                     <tbody>
@@ -39,11 +35,7 @@ const DonorsList = ({donors}) => {
                                             {truncateEthAddress(voter.address)}
                                         </td>
                                         <td className={`px-6 py-4`}>
-                                            {getRandomInt(1, 100000)}
-                                        </td>
-
-                                        <td className={`px-6 py-4 `}>
-                                            USDC
+                                            $ {getRandomInt(1, 100000)} USDC
                                         </td>
                                     </tr>
                                 )
@@ -60,4 +52,4 @@ const DonorsList = ({donors}) => {
     )
 }
 
-export default DonorsList
+export default memo(DonorsList)

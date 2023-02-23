@@ -24,9 +24,9 @@ export default function Hackathons() {
 
       <Container> 
 
-        <div className='mt-20 grid grid-cols-1 md:grid-cols-3 gap-4'>
+        <div className='mt-20 grid grid-cols-1 md:grid-cols-3 md:gap-4'>
 
-          <div className='col-span-2'><HackathonCard proposal={proposal}  expanded={true}/>  </div>
+          <div className='col-span-2 mb-4'><HackathonCard proposal={proposal}  expanded={true}/>  </div>
 
           <ParticipantList participant={votersDummy} />
 

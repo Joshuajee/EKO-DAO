@@ -64,7 +64,7 @@ const App = ({ Component, pageProps }) => {
     <WagmiConfig client={client}>
       <AuthProvider>
         <Component {...pageProps} />
-        <ToastContainer autoClose={3000} hideProgressBar={true} />
+        <ToastContainer autoClose={3000} hideProgressBar={true} position="bottom-right" />
       </AuthProvider>
     </WagmiConfig> 
 

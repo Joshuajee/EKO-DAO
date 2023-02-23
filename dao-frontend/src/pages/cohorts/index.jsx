@@ -1,4 +1,4 @@
-import { useState, useContext } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import CohortCard from '@/components/pages/cohorts/CohortCard';
 import CategoryTab from '@/components/ui/navigation/CategoryTab';
 import Container from '@/components/ui/Container';
@@ -19,11 +19,12 @@ export default function Cohorts() {
 
     const [show, setShow] = useState(false);
 
+    const [data, setData] = useState(null)
+    const [isSuccess, setIsSuccess] = useState(false)
+    const [isError, setIsError] = useState(false)
+    const [isLoading, setIsLoading] = useState(true)
+
     const { isAdminLoggedIn } = useContext(AuthContext);
-
-    console.log(isAdminLoggedIn)
-
-    const  { isConnected } = useAccount()
 
     const open = () => {
         setShow(true)
@@ -33,11 +34,19 @@ export default function Cohorts() {
         setShow(false)
     }
 
-    const { data, isSuccess, isError, isLoading } = useContractRead({
+    const cohorts = useContractRead({
         address: contractAddress,
         abi: cohortFacetABI,
         functionName: 'cohorts',
+        watch: true
     })
+
+    useEffect(() => {
+        if (cohorts?.data) setData([...cohorts?.data].reverse())
+        setIsError(cohorts?.isError)
+        setIsSuccess(cohorts?.isSuccess)
+        setIsLoading(cohorts?.isLoading)
+    }, [cohorts?.data, cohorts?.isError, cohorts?.isSuccess, cohorts?.isLoading]);
 
     return (
         <Layout>
@@ -48,24 +57,20 @@ export default function Cohorts() {
 
             { isSuccess &&
                 <Container> 
-
-                    {/* <CategoryTab tabs={tabsTwo} /> */}
                     {
                         data &&
                             <div className='grid md:grid-cols-2 gap-4'>
                                 {data?.map((cohort, index) =>  <CohortCard key={index} cohort={cohort} />)}
                             </div>
                     }
-
                 </Container>
             }
-
 
             {
                 (isLoading || isError) && (
                     <LoadingScreen />
                 )
-            }
+            } 
 
             { isAdminLoggedIn &&
                 <CreateButton title={"Create Cohort"} open={open} show={show} close={close}>
