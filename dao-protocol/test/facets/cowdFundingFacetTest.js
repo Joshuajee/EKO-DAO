@@ -128,7 +128,7 @@ describe("CrowdFunding Facet test", () => {
         await CrowdFundingFacetInstance.connect(USDCHolder1_signer).donate(
             CampaignIndex, targetFund) 
 
-        await expect(CrowdFundingFacetInstance.adminWithdraw(CampaignIndex, targetFund)).to.changeTokenBalances(
+        await expect(CrowdFundingFacetInstance.adminWithdraw(CampaignIndex)).to.changeTokenBalances(
             USDCContractInstance, [CampaignContract,owner],[-targetFund,targetFund]);
             
     })
@@ -146,7 +146,7 @@ describe("CrowdFunding Facet test", () => {
             CampaignIndex, DonatedAmount);
         
         await expect(CrowdFundingFacetInstance.adminWithdraw(
-            CampaignIndex, DonatedAmount)).to.be.revertedWithCustomError(CampaignContractInstance,'ProjectNotSucessful')
+            CampaignIndex)).to.be.revertedWithCustomError(CampaignContractInstance,'ProjectNotSucessful')
                 
     })
 
@@ -163,7 +163,41 @@ describe("CrowdFunding Facet test", () => {
             CampaignIndex, DonatedAmount);                
         
         await expect(CrowdFundingFacetInstance.connect(USDCHolder1_signer).adminWithdraw(
-            CampaignIndex, DonatedAmount)).to.be.revertedWithCustomError(CampaignContractInstance,'Unauthorized')
+            CampaignIndex)).to.be.revertedWithCustomError(CampaignContractInstance,'Unauthorized')
+    })
+
+    it("should reject admin withdrawal if the project is ongoing and yet to be successful", async() => {
+        const { USDCContractInstance, CrowdFundingFacetInstance,CampaignContractInstance,
+            CampaignContract,USDCHolder1_signer,TokenDecimal} = await loadFixture(CrowdFundingFixture);
+   
+        const DonatedAmount = ethers.utils.parseUnits(AmountToDonate.toString(),TokenDecimal);  
+                                          
+        await USDCContractInstance.connect(USDCHolder1_signer).approve(
+            CampaignContract, DonatedAmount);       
+               
+        await CrowdFundingFacetInstance.connect(USDCHolder1_signer).donate(
+            CampaignIndex, DonatedAmount);
+    
+        await expect(CrowdFundingFacetInstance.adminWithdraw(
+            CampaignIndex)).to.be.revertedWithCustomError(CampaignContractInstance,'ProjectNotSucessful')
+            
+    })
+
+    it("should reject donation if the project is successful and admin has withdrawn the fund", async() => {
+        const { USDCContractInstance, CrowdFundingFacetInstance,
+            USDCHolder1_signer, CampaignContract, CampaignContractInstance} = await loadFixture(CrowdFundingFixture);
+        
+        await USDCContractInstance.connect(USDCHolder1_signer).approve(
+            CampaignContract, targetFund);     
+           
+        await CrowdFundingFacetInstance.connect(USDCHolder1_signer).donate(
+            CampaignIndex, targetFund);
+
+        await CrowdFundingFacetInstance.adminWithdraw(CampaignIndex);           
+        
+        await expect(CrowdFundingFacetInstance.donate(CampaignIndex,targetFund)
+        ).to.be.revertedWithCustomError(CampaignContractInstance,"CampaignSuccessfulAndCompleted");               
+            
     })
 
     it("should allow donor to withdraw if project failed", async() => {
@@ -247,42 +281,51 @@ describe("CrowdFunding Facet test", () => {
                            
   it("should return last 3 campaigns", async() => {
       const { USDCContractInstance, CrowdFundingFacetInstance,
-          USDCHolder1_signer, CampaignContract, TokenDecimal} = await loadFixture(CrowdFundingFixture);
+        USDCHolder1_signer, USDCHolder2_signer, owner, CampaignContract, TokenDecimal} = await loadFixture(CrowdFundingFixture);
 
-          const DonatedAmount = ethers.utils.parseUnits(AmountToDonate.toString(),TokenDecimal);
-          
-          await USDCContractInstance.connect(USDCHolder1_signer).approve(
-            CampaignContract, DonatedAmount);
+        const DonatedAmount = ethers.utils.parseUnits(AmountToDonate.toString(),TokenDecimal);
+        
+        await owner.sendTransaction({to:USDCHolder1, value:ethers.utils.parseUnits("1",18)});
 
-          await CrowdFundingFacetInstance.createCampaign(projectTitle,projectDec,targetFund,minimumContribution,USDC,projectPeriod);  
-          await CrowdFundingFacetInstance.createCampaign(projectTitle,projectDec,targetFund,minimumContribution,USDC,projectPeriod);  
-          await CrowdFundingFacetInstance.createCampaign(projectTitle,projectDec,targetFund,minimumContribution,USDC,projectPeriod);
-          await CrowdFundingFacetInstance.connect(USDCHolder1_signer).donate(
+        await USDCContractInstance.connect(USDCHolder1_signer).approve(
+            CampaignContract, DonatedAmount);      
+
+        await CrowdFundingFacetInstance.createCampaign(projectTitle,projectDec,targetFund,minimumContribution,USDC,projectPeriod);  
+        await CrowdFundingFacetInstance.createCampaign(projectTitle,projectDec,targetFund,minimumContribution,USDC,projectPeriod);  
+        await CrowdFundingFacetInstance.createCampaign(projectTitle,projectDec,targetFund,minimumContribution,USDC,projectPeriod);
+        await CrowdFundingFacetInstance.connect(USDCHolder1_signer).donate(
             CampaignIndex,DonatedAmount);
                     
-          await ethers.provider.send("evm_increaseTime", [projectPeriod]) // add 10 seconds
-          await ethers.provider.send("evm_mine", []) // force mine the next block) 
+        await ethers.provider.send("evm_increaseTime", [projectPeriod]) // add 10 seconds
+        await ethers.provider.send("evm_mine", []) // force mine the next block) 
           
-          await CrowdFundingFacetInstance.createCampaign(projectTitle,projectDec,targetFund,minimumContribution,USDC,projectPeriod);                                      
-          await CrowdFundingFacetInstance.createCampaign(projectTitle,projectDec,targetFund,minimumContribution,USDC,projectPeriod); 
-          await CrowdFundingFacetInstance.createCampaign(projectTitle,projectDec,targetFund,minimumContribution,USDC,projectPeriod); 
+        await CrowdFundingFacetInstance.createCampaign(projectTitle,projectDec,targetFund,minimumContribution,USDC,projectPeriod);                                      
+        await CrowdFundingFacetInstance.createCampaign(projectTitle,projectDec,targetFund,minimumContribution,USDC,projectPeriod); 
+        await CrowdFundingFacetInstance.createCampaign(projectTitle,projectDec,targetFund,minimumContribution,USDC,projectPeriod); 
           
-          const ProjectContract5 = {...(await CrowdFundingFacetInstance.getProjectDetails(5))}.projectAddress
-          const ProjectContract6 = {...(await CrowdFundingFacetInstance.getProjectDetails(6))}.projectAddress
-          await USDCContractInstance.connect(USDCHolder1_signer).approve(
+        const ProjectContract5 = {...(await CrowdFundingFacetInstance.getProjectDetails(5))}.projectAddress
+        const ProjectContract6 = {...(await CrowdFundingFacetInstance.getProjectDetails(6))}.projectAddress
+        await USDCContractInstance.connect(USDCHolder1_signer).approve(
             ProjectContract5, 5*DonatedAmount);
-          await USDCContractInstance.connect(USDCHolder1_signer).approve(
+        await USDCContractInstance.connect(USDCHolder1_signer).approve(
+            ProjectContract6, DonatedAmount);
+        await USDCContractInstance.connect(USDCHolder2_signer).approve(
             ProjectContract6, DonatedAmount);
             
-          await CrowdFundingFacetInstance.connect(USDCHolder1_signer).donate(
+        await CrowdFundingFacetInstance.connect(USDCHolder1_signer).donate(
             5,5*DonatedAmount);
           
-          await CrowdFundingFacetInstance.connect(USDCHolder1_signer).donate(
+        await CrowdFundingFacetInstance.connect(USDCHolder1_signer).donate(
+            6,ethers.utils.parseUnits("70", 6));
+        
+        await CrowdFundingFacetInstance.connect(USDCHolder2_signer).donate(
             6,ethers.utils.parseUnits("70", 6));
 
-          file = await CrowdFundingFacetInstance.getLastXProjectDetails(8);  
-          console.log(file);                                                                       
-          
+        file = await CrowdFundingFacetInstance.getLastXProjectDetails(8);  
+          console.log(file); 
+        
+        donor = await CrowdFundingFacetInstance.IsUserADonor(5,USDCHolder2);
+          console.log(donor);
       })
        
     
