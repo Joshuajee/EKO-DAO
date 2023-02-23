@@ -42,7 +42,17 @@
   },
   {
     "inputs": [],
+    "name": "AddressCannotBeZero",
+    "type": "error"
+  },
+  {
+    "inputs": [],
     "name": "AmountBelowTheMinimun",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "MustBeContractAddress",
     "type": "error"
   },
   {

@@ -8,11 +8,11 @@ const Footer = () => {
     return (
         <footer className="p-4 bg-blue-600 text-slate-200 shadow md:px-6 md:py-8 font-medium text-sm">
 
-            <nav class="lg:ml-auto lg:mr-auto flex flex-wrap flex-col md:flex-row text-base">
+            {/* <nav class="lg:ml-auto lg:mr-auto flex flex-wrap flex-col md:flex-row text-base">
                 {
                    navigation.map((nav, index) => <Link className="mr-2 lg:mr-5 my-2 md:my-0 font-medium hover:text-white" key={index} href={nav.href}>{nav.name}</Link>)
                 }
-            </nav>
+            </nav> */}
 
             <div class="flex justify-between mt-4 text-white">
 

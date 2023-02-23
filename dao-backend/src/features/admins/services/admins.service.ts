@@ -4,6 +4,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Web3Helper } from 'src/commons/helpers/web3-helper';
 import { Repository } from 'typeorm';
 import { AdminDto } from '../dtos/admin.dto';
 import { Admin } from '../entities/admin.entity';
@@ -13,7 +14,12 @@ export class AdminsService {
   constructor(
     @InjectRepository(Admin)
     private readonly adminsRepository: Repository<Admin>,
+    private readonly web3Helper: Web3Helper,
   ) {}
+
+  async createWallet(): Promise<any> {
+    return this.web3Helper.createAccount();
+  }
 
   async create(adminDto: AdminDto): Promise<void> {
     try {

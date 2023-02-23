@@ -40,4 +40,8 @@ export class ConfigurationService {
   get dbpassword(): string {
     return this.configService.get<string>('db.password');
   }
+
+  get providerUrl(): string {
+    return this.configService.get<string>('bc.providerUrl');
+  }
 }

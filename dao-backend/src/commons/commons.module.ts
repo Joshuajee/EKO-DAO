@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { HttpExceptionFilter } from './http-exception.filter';
+import { HttpExceptionFilter } from './filters/http-exception.filter';
 import { SwaggerModule } from './swagger/swagger.module';
 
 @Module({

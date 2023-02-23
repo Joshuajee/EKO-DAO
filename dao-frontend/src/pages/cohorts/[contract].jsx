@@ -15,10 +15,11 @@ export default function Cohorts() {
 
   const { contract } = router.query
 
-  const { data, isLoading, isSuccess, isError, } = useContractRead({
+  const { data, isLoading, isSuccess, isError } = useContractRead({
     address: contract,
     abi: cohortABI,
     functionName: 'cohort',
+    //watch: true
   })
 
   return (
@@ -29,9 +30,9 @@ export default function Cohorts() {
       { isSuccess && 
           <Container> 
 
-            <div className='mt-20 grid grid-cols-1 md:grid-cols-3 gap-4'>
+            <div className='mt-20 grid grid-cols-1 md:grid-cols-3 md:gap-4'>
 
-              <div className='col-span-2'>
+              <div className='col-span-2 mb-4'>
                 <CohortCard cohort={data} expanded={true}/>  
               </div>
 
@@ -44,7 +45,7 @@ export default function Cohorts() {
 
       {
         (isLoading || isError) && (
-          <LoadingScreen />
+          <LoadingScreen isError={isError} />
         )
       }
 

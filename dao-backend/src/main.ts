@@ -1,7 +1,8 @@
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { HttpExceptionFilter } from './commons/http-exception.filter';
+import { HttpExceptionFilter } from './commons/filters/http-exception.filter';
+import { Web3Helper } from './commons/helpers/web3-helper';
 import { SwaggerService } from './commons/swagger/swagger.service';
 import { ConfigurationService } from './config/configuration.service';
 
@@ -13,5 +14,7 @@ async function bootstrap() {
   swagger.init(app);
   const appConfig: ConfigurationService = app.get(ConfigurationService);
   await app.listen(appConfig.port);
+  const web3Helper: Web3Helper = app.get(Web3Helper);
+  web3Helper.instantiateWeb3(appConfig.providerUrl);
 }
 bootstrap();

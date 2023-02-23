@@ -21,4 +21,10 @@ This project contains two folders.
 ## Installation
 1. Clone this repo:
 2. Navigate to any of the folders and follow the readme.md file instructions.
+
+### Mock Token Address on Polygon Testnet Mumbai
+
+USDC:  0x5679C57F0becc7Fd063E47D5F2DDfA5d97687854
+EkoStable:  0x1076579bf47c78Fb4d9af38BAFAf067d77bf64a0
+EkoNFT:  0x3bB009bC5289D75394Bb06ecA7cAf537281E363D
   

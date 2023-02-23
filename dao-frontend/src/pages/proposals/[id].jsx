@@ -23,9 +23,9 @@ export default function Proposal() {
 
       <Container> 
 
-        <div className='mt-20 grid grid-cols-1 md:grid-cols-3 gap-4'>
+        <div className='mt-20 grid grid-cols-1 md:grid-cols-3 md:gap-4'>
 
-          <div className='col-span-2'><ProposalCard proposal={proposal} expanded={true} />  </div>
+          <div className='col-span-2 mb-4'><ProposalCard proposal={proposal} expanded={true} />  </div>
 
           <VotersList voters={votersDummy} />
 
