@@ -9,7 +9,8 @@ import '../CrowdFundProject.sol';
     enum Status {
         Fundraising,
         Expired,
-        Successful
+        Successful,
+        Completed
     }  
  
 
@@ -28,7 +29,8 @@ library Database{
         string projectTopic; //campaign title 
         string description; // campaign descriptions
         uint256 noOfDonors; // total number of donors
-        Status status;  // campaign project status                       
+        Status status;  // campaign project status
+        address [] donors; //track the list of donors                      
     } 
 
     //Project Mapping state_varibles

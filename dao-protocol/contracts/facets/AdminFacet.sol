@@ -3,6 +3,7 @@ pragma solidity 0.8.17;
 
 import "../libraries/LibAdmin.sol";
 
+// This contract defines the AdminFacet which can be used to manage admins in the contract.
 contract AdminFacet {
   function setAdmin(address _admin, LibAdmin.Roles _role) external {
     LibAdmin.setAdmin(_admin, _role);
