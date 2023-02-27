@@ -14,6 +14,7 @@ library LibAdmin {
 
   // This enum defines the different roles an admin can have.
   enum Roles {
+    NONE,
     SUPER_ADMIN,
     ADMIN
   }
@@ -41,10 +42,9 @@ library LibAdmin {
     }
   }
 
-  // This function initializes the contract by setting the sender as the super admin.
-  function init() internal {
+  function init(address _admin) internal {
     Admins storage admins = diamondStorage();
-    admins.roles[msg.sender] = Roles.SUPER_ADMIN;
+    admins.roles[_admin] = Roles.SUPER_ADMIN;
   }
 
   // This function allows a super admin to set the role of a specified admin

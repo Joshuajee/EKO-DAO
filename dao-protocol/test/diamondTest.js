@@ -36,12 +36,12 @@ describe("DiamondTest", async function () {
     );
   });
 
-  it("should have three facets -- call to facetAddresses function", async () => {
+  it("should have 7 facets -- call to facetAddresses function", async () => {
     for (const address of await diamondLoupeFacet.facetAddresses()) {
       addresses.push(address);
     }
 
-    assert.equal(addresses.length, 6);
+    assert.equal(addresses.length, 7);
   });
 
   it("facets should have the right function selectors -- call to facetFunctionSelectors function", async () => {

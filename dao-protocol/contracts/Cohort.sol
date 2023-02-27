@@ -4,10 +4,11 @@ pragma solidity ^0.8.17;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 import { EkoStable } from "./EkoStable.sol";
 
-contract Cohort {
-  struct CohortRecord {
+contract Cohort is Ownable {
+  struct CohortData {
     bytes32 id;
     string name;
     uint startDate;
@@ -15,10 +16,15 @@ contract Cohort {
     uint8 size;
     uint commitment;
     string description;
-    mapping(address => bool) students;
   }
 
-  CohortRecord public cohort;
+  struct Students {
+    uint count;
+    mapping(address => bool) values;
+  }
+
+  CohortData public cohort;
+  Students public students;
 
   IERC20 stableCoin;
   IERC721 ekoNft;
@@ -28,12 +34,14 @@ contract Cohort {
   modifier enrollmentRequirementsFulfilled(uint256 amount) {
     if (amount < cohort.commitment) revert("Must submit all fees to enroll");
     if (block.timestamp >= cohort.startDate) revert("Cohort already started");
-    if (cohort.students[msg.sender]) revert("Student already enrolled");
+    if (students.values[msg.sender]) revert("Student already enrolled");
+    if (students.count == cohort.size)
+      revert("No more room for a new student, please wait for the next cohort");
     _;
   }
 
   modifier refundRequirementsFulfilled(uint256 amount, uint256 _certificateId) {
-    if (!cohort.students[msg.sender])
+    if (!students.values[msg.sender])
       revert("Must be a student to claim fees back");
     if (ekoNft.ownerOf(_certificateId) != msg.sender)
       revert("Completion certificate does not belong to the sender");
@@ -58,7 +66,8 @@ contract Cohort {
     cohort.description = _description;
   }
 
-  function init(address _stableCoin, address _ekoNft) public {
+  function init(address _stableCoin, address _ekoNft) public onlyOwner {
+    if (ekoStableAddress != address(0)) revert("Cohort already initialized");
     stableCoin = IERC20(_stableCoin);
     ekoNft = IERC721(_ekoNft);
     ekoStable = new EkoStable();
@@ -69,7 +78,8 @@ contract Cohort {
     uint256 amount
   ) public payable enrollmentRequirementsFulfilled(amount) {
     stableCoin.transferFrom(msg.sender, address(this), amount);
-    cohort.students[msg.sender] = true;
+    students.values[msg.sender] = true;
+    students.count++;
     ekoStable.mint(msg.sender, amount);
   }
 

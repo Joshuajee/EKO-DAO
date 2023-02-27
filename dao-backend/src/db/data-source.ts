@@ -7,8 +7,8 @@ export const dataSourceOptions: DataSourceOptions = {
   username: 'postgres',
   password: 'password',
   database: 'ekolance-dao',
-  entities: [`dist/**/*.entity.{ts,js}`],
-  migrations: [`dist/migrations/*.{ts,js}`],
+  entities: [`dist/features/**/entities/*.entity.{ts,js}`],
+  migrations: [`dist/db/migrations/*.{ts,js}`],
 };
 
 const dataSource = new DataSource(dataSourceOptions);

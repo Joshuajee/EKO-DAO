@@ -5,26 +5,23 @@ import "../libraries/LibAdmin.sol";
 
 // This contract defines the AdminFacet which can be used to manage admins in the contract.
 contract AdminFacet {
-
-  // The constructor initializes the contract 
-  //by calling the init() function in the LibAdmin library, 
-  //which sets the sender as the super admin.
-  constructor() {
-    LibAdmin.init();
-  }
-
-  // This function allows a super admin to set the role of a specified admin.
-  function setAdmin(address _admin, LibAdmin.Roles _role) public {
+  function setAdmin(address _admin, LibAdmin.Roles _role) external {
     LibAdmin.setAdmin(_admin, _role);
   }
 
-  // This function allows a super admin to remove the role of a specified admin.
-  function removeAdmin(address _admin) public {
+  function removeAdmin(address _admin) external {
     LibAdmin.removeAdmin(_admin);
   }
 
-  // This function gets the role of a specified admin.
-  function getAdmin(address _admin) public view returns (LibAdmin.Roles) {
+  function getAdmin(address _admin) external view returns (LibAdmin.Roles) {
     return LibAdmin.getAdmin(_admin);
+  }
+
+  function isSuperAdmin(address _admin) external view returns (bool) {
+    return LibAdmin.isSuperAdmin(_admin);
+  }
+
+  function isAdmin(address _admin) external view returns (bool) {
+    return LibAdmin.isAdmin(_admin);
   }
 }

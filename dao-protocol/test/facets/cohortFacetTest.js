@@ -47,17 +47,22 @@ describe("CohortFacetTest", async function () {
       endDate,
       100,
       10,
-      description,
-      usdc.address,
-      ekoNft.address
+      description
     );
+
     const cohortsList = await cohortFactoryFacet.cohorts();
     assert.equal(cohortsList[0].name, name);
     const cohortData = await cohortFactoryFacet.cohort(1);
     cohortAddress = cohortData.contractAddress;
+    await cohortFactoryFacet.initCohort(
+      cohortAddress,
+      usdc.address,
+      ekoNft.address
+    );
     const Cohort = await ethers.getContractFactory("Cohort");
     cohort = await Cohort.attach(cohortAddress);
     const record = await cohort.cohort();
+
     assert.equal(record.name, name);
     assert.equal(record.startDate, startDate);
     assert.equal(record.endDate, endDate);
@@ -84,7 +89,6 @@ describe("CohortFacetTest", async function () {
     assert.equal(cohortUsdcBalanceBeforeEnroll, 0);
 
     await cohort.enroll(10);
-
     const studentUsdcBalanceAfterEnroll = await usdc.balanceOf(studentAddress);
     assert.equal(studentUsdcBalanceAfterEnroll, 0);
     const studentEkoUsdcBalanceAfterEnroll = await ekoUsdc.balanceOf(
