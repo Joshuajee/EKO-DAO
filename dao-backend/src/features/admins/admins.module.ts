@@ -7,7 +7,6 @@ import { AuthService } from './auth/auth.service';
 import { JwtModule } from '@nestjs/jwt';
 import { JwtStrategy } from './auth/jwt.strategy';
 import { PassportModule } from '@nestjs/passport';
-import { Web3Helper } from 'src/commons/helpers/web3-helper';
 
 @Module({
   imports: [
@@ -19,6 +18,6 @@ import { Web3Helper } from 'src/commons/helpers/web3-helper';
     }),
   ],
   controllers: [AdminsController],
-  providers: [AdminsService, AuthService, JwtStrategy, Web3Helper],
+  providers: [AdminsService, AuthService, JwtStrategy],
 })
 export class AdminsModule {}

@@ -1,9 +1,6 @@
 /* global ethers task */
-//require('@nomiclabs/hardhat-waffle');
-require("dotenv").config();
 require("@nomicfoundation/hardhat-chai-matchers");
 require("@nomiclabs/hardhat-ethers");
-require("hardhat-abi-exporter");
 
 // This is a sample Hardhat task. To learn how to create your own go to
 // https://hardhat.org/guides/create-task.html
@@ -21,8 +18,6 @@ task("accounts", "Prints the list of accounts", async () => {
 /**
  * @type import('hardhat/config').HardhatUserConfig
  */
-
-const PRIVATE_KEY = process.env.PRIVATE_KEY;
 
 module.exports = {
   solidity: "0.8.17",

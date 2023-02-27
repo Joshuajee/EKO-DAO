@@ -10,6 +10,7 @@ library LibAdmin {
   }
 
   enum Roles {
+    NONE,
     SUPER_ADMIN,
     ADMIN
   }
@@ -34,9 +35,9 @@ library LibAdmin {
     }
   }
 
-  function init() internal {
+  function init(address _admin) internal {
     Admins storage admins = diamondStorage();
-    admins.roles[msg.sender] = Roles.SUPER_ADMIN;
+    admins.roles[_admin] = Roles.SUPER_ADMIN;
   }
 
   function setAdmin(address _admin, Roles _role) internal onlySuperAdmin {

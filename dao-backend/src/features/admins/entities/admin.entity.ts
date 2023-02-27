@@ -32,4 +32,11 @@ export class Admin extends BaseEntity {
 
   @UpdateDateColumn()
   updated_at: Date;
+
+  constructor(email: string, walletAddress: string, role: RolesEnum) {
+    super();
+    this.email = email;
+    this.walletAddress = walletAddress;
+    this.role = role;
+  }
 }
