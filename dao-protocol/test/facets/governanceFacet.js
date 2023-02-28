@@ -17,6 +17,11 @@ describe('Governance Facet test', function() {
 	const PROPOSAL_DELAY_HOURS_2 = 2;
 	const PROPOSAL_VOTING_DAYS_2 = 1;
 
+	const PROPOSAL_NAME_3 = 'Proposal Three';
+	const PROPOSAL_DELAY_MINUITES_3 = 0;
+	const PROPOSAL_DELAY_HOURS_3 = 2;
+	const PROPOSAL_VOTING_DAYS_3 = 1;
+
 	GovernanceFixture = async () => {
 		const [ owner, signer1, signer2, signer3 ] = await ethers.getSigners();
 
@@ -240,7 +245,7 @@ describe('Governance Facet test', function() {
 		expect(await secondProposal.state).to.equal(5);
 	});
 
-	it('should bea able to get last 15 proposals that have not started', async () => {
+	it('should be able to get proposals that have not started within a particular range', async () => {
 		const { GovernanceFacet } = await loadFixture(GovernanceFixture);
 
 		await GovernanceFacet.newProposal(
@@ -250,12 +255,19 @@ describe('Governance Facet test', function() {
 			PROPOSAL_VOTING_DAYS_2
 		);
 
-		const notStarted = await GovernanceFacet.getNotStarted();
+		await GovernanceFacet.newProposal(
+			PROPOSAL_NAME_3,
+			PROPOSAL_DELAY_MINUITES_3,
+			PROPOSAL_DELAY_HOURS_3,
+			PROPOSAL_VOTING_DAYS_3
+		);
 
-		expect(await notStarted[0].name).to.equal(PROPOSAL_NAME_2);
+		const notStarted = await GovernanceFacet.getNotStarted(2, 1);
+
+		expect(await notStarted[0].name).to.equal(PROPOSAL_NAME_3);
 	});
 
-	it('should be able to get the last 15 propsals that are ongoing', async () => {
+	it('should be able to get proposals that are ongoing within a particular range', async () => {
 		const { GovernanceFacet } = await loadFixture(GovernanceFixture);
 
 		await GovernanceFacet.newProposal(
@@ -265,12 +277,26 @@ describe('Governance Facet test', function() {
 			PROPOSAL_VOTING_DAYS_1
 		);
 
-		const ongoing = await GovernanceFacet.getOngoing();
+		await GovernanceFacet.newProposal(
+			PROPOSAL_NAME_2,
+			PROPOSAL_DELAY_MINUITES_2,
+			PROPOSAL_DELAY_HOURS_2,
+			PROPOSAL_VOTING_DAYS_2
+		);
+
+		await GovernanceFacet.newProposal(
+			PROPOSAL_NAME_3,
+			PROPOSAL_DELAY_MINUITES_3,
+			PROPOSAL_DELAY_HOURS_3,
+			PROPOSAL_VOTING_DAYS_3
+		);
+
+		const ongoing = await GovernanceFacet.getOngoing(3, 3);
 
 		expect(await ongoing[0].name).to.equal(PROPOSAL_NAME_1);
 	});
 
-	it('should be able to get the last 15 proposals that were won', async () => {
+	it('should be able to get proposals that have ended and were won within a particular range', async () => {
 		const { GovernanceFacet } = await loadFixture(GovernanceFixture);
 
 		await GovernanceFacet.newProposal(
@@ -278,6 +304,20 @@ describe('Governance Facet test', function() {
 			PROPOSAL_DELAY_MINUITES_1,
 			PROPOSAL_DELAY_HOURS_1,
 			PROPOSAL_VOTING_DAYS_1
+		);
+
+		await GovernanceFacet.newProposal(
+			PROPOSAL_NAME_2,
+			PROPOSAL_DELAY_MINUITES_2,
+			PROPOSAL_DELAY_HOURS_2,
+			PROPOSAL_VOTING_DAYS_2
+		);
+
+		await GovernanceFacet.newProposal(
+			PROPOSAL_NAME_3,
+			PROPOSAL_DELAY_MINUITES_3,
+			PROPOSAL_DELAY_HOURS_3,
+			PROPOSAL_VOTING_DAYS_3
 		);
 
 		await GovernanceFacet.voteFor('1');
@@ -286,12 +326,12 @@ describe('Governance Facet test', function() {
 
 		await GovernanceFacet.endVoting('1');
 
-		const won = await GovernanceFacet.getWon();
+		const won = await GovernanceFacet.getWon(3, 3);
 
 		expect(await won[0].name).to.equal(PROPOSAL_NAME_1);
 	});
 
-	it('should be able to get the last 15 proposals that were lost', async () => {
+	it('should be able to get proposals that have ended and were lost within a particular range', async () => {
 		const { GovernanceFacet } = await loadFixture(GovernanceFixture);
 
 		await GovernanceFacet.newProposal(
@@ -301,18 +341,32 @@ describe('Governance Facet test', function() {
 			PROPOSAL_VOTING_DAYS_1
 		);
 
+		await GovernanceFacet.newProposal(
+			PROPOSAL_NAME_2,
+			PROPOSAL_DELAY_MINUITES_2,
+			PROPOSAL_DELAY_HOURS_2,
+			PROPOSAL_VOTING_DAYS_2
+		);
+
+		await GovernanceFacet.newProposal(
+			PROPOSAL_NAME_3,
+			PROPOSAL_DELAY_MINUITES_3,
+			PROPOSAL_DELAY_HOURS_3,
+			PROPOSAL_VOTING_DAYS_3
+		);
+
 		await GovernanceFacet.voteAgainst('1');
 
 		await helpers.time.increase(24 * 60 * 60);
 
 		await GovernanceFacet.endVoting('1');
 
-		const lost = await GovernanceFacet.getLost();
+		const lost = await GovernanceFacet.getLost(3, 3);
 
 		expect(await lost[0].name).to.equal(PROPOSAL_NAME_1);
 	});
 
-	it('should be able to get the last 15 proposals that ended in stalemate', async () => {
+	it('should be able to get proposals that have ended in a stalemate within a particular range', async () => {
 		const { GovernanceFacet, signer1 } = await loadFixture(GovernanceFixture);
 
 		await GovernanceFacet.newProposal(
@@ -320,6 +374,20 @@ describe('Governance Facet test', function() {
 			PROPOSAL_DELAY_MINUITES_1,
 			PROPOSAL_DELAY_HOURS_1,
 			PROPOSAL_VOTING_DAYS_1
+		);
+
+		await GovernanceFacet.newProposal(
+			PROPOSAL_NAME_2,
+			PROPOSAL_DELAY_MINUITES_2,
+			PROPOSAL_DELAY_HOURS_2,
+			PROPOSAL_VOTING_DAYS_2
+		);
+
+		await GovernanceFacet.newProposal(
+			PROPOSAL_NAME_3,
+			PROPOSAL_DELAY_MINUITES_3,
+			PROPOSAL_DELAY_HOURS_3,
+			PROPOSAL_VOTING_DAYS_3
 		);
 
 		await GovernanceFacet.voteFor('1');
@@ -330,7 +398,7 @@ describe('Governance Facet test', function() {
 
 		await GovernanceFacet.endVoting('1');
 
-		const stalemate = await GovernanceFacet.getStalemate();
+		const stalemate = await GovernanceFacet.getStalemate(3, 3);
 
 		expect(await stalemate[0].name).to.equal(PROPOSAL_NAME_1);
 	});
@@ -339,17 +407,31 @@ describe('Governance Facet test', function() {
 		const { GovernanceFacet } = await loadFixture(GovernanceFixture);
 
 		await GovernanceFacet.newProposal(
+			PROPOSAL_NAME_1,
+			PROPOSAL_DELAY_MINUITES_1,
+			PROPOSAL_DELAY_HOURS_1,
+			PROPOSAL_VOTING_DAYS_1
+		);
+
+		await GovernanceFacet.newProposal(
 			PROPOSAL_NAME_2,
 			PROPOSAL_DELAY_MINUITES_2,
 			PROPOSAL_DELAY_HOURS_2,
 			PROPOSAL_VOTING_DAYS_2
 		);
 
+		await GovernanceFacet.newProposal(
+			PROPOSAL_NAME_3,
+			PROPOSAL_DELAY_MINUITES_3,
+			PROPOSAL_DELAY_HOURS_3,
+			PROPOSAL_VOTING_DAYS_3
+		);
+
 		await helpers.time.increase(2 * 60 * 60);
 
-		await GovernanceFacet.startVoting('1');
+		await GovernanceFacet.startVoting('2');
 
-		const ongoing = await GovernanceFacet.getOngoing();
+		const ongoing = await GovernanceFacet.getOngoing(2, 2);
 
 		expect(await ongoing[0].name).to.equal(PROPOSAL_NAME_2);
 	});

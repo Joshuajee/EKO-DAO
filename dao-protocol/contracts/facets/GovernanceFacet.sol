@@ -56,6 +56,14 @@ contract GovernanceFacet {
     }
   }
 
+  // modifier to check the user max count input
+  modifier minmaxcount(uint a){
+    if (a > 50 || a < 0){
+      revert("input >50 or <0");
+    }
+     _ ;
+  }
+
   //Ekotoken contract address is passed on Governance contract initialization
   function intializeGovernance(
     address _token,
@@ -89,7 +97,7 @@ contract GovernanceFacet {
     uint _delayminutes,
     uint _delayHours,
     uint _votingDays
-    ) external noEmptiness(_name) {
+    ) external noEmptiness(_name) notZero(_votingDays){
     LibGovernance.Tracker storage pt = LibGovernance.getProposalTracker();
     LibGovernance.Mappings storage mp = LibGovernance.getMappingStruct();
     pt.Proposal_Tracker += 1;
@@ -307,24 +315,113 @@ contract GovernanceFacet {
     mp.proposal[Proposal_ID].state = LibGovernance.State.deleted;
     emit LibGovernance.Delete_Proposal(msg.sender, Proposal_ID);
   }
+
+  function getNumberOfNotStarted(
+    uint start,
+    uint count
+  ) internal minmaxcount(count) existingId(start) view returns(uint) {
+    LibGovernance.Mappings storage mp = LibGovernance.getMappingStruct();
+
+    uint counter = start - count;
+    uint count1;
+    for (uint i= start; i > counter ;i--){
+      if (mp.notStarted[i]){
+        count1++;
+      }else{
+        continue;
+      }
+    }
+    return count1;
+  }
+  function getNumberOfOngoing(
+    uint start,
+    uint count
+  ) internal minmaxcount(count) existingId(start) view returns(uint) {
+    LibGovernance.Mappings storage mp = LibGovernance.getMappingStruct();
+
+    uint counter = start - count;
+    uint count1;
+    for (uint i= start; i > counter ;i--){
+      if (mp.ongoing[i]){
+        count1++;
+      }else{
+        continue;
+      }
+    }
+    return count1;
+  }
+  function getNumberOfWon(
+    uint start,
+    uint count
+  ) internal minmaxcount(count) existingId(start) view returns(uint) {
+    LibGovernance.Mappings storage mp = LibGovernance.getMappingStruct();
+
+    uint counter = start - count;
+    uint count1;
+    for (uint i= start; i > counter ;i--){
+      if (mp.won[i]){
+        count1++;
+      }else{
+        continue;
+      }
+    }
+    return count1;
+  }
+  function getNumberOfLost(
+    uint start,
+    uint count
+  ) internal minmaxcount(count) existingId(start) view returns(uint) {
+    LibGovernance.Mappings storage mp = LibGovernance.getMappingStruct();
+
+    uint counter = start - count;
+    uint count1;
+    for (uint i= start; i > counter ;i--){
+      if (mp.lost[i]){
+        count1++;
+      }else{
+        continue;
+      }
+    }
+    return count1;
+  }
+  function getNumberOfStalemate(
+    uint start,
+    uint count
+  ) internal minmaxcount(count) existingId(start) view returns(uint) {
+    LibGovernance.Mappings storage mp = LibGovernance.getMappingStruct();
+
+    uint counter = start - count;
+    uint count1;
+    for (uint i= start; i > counter ;i--){
+      if (mp.stalemate [i]){
+        count1++;
+      }else{
+        continue;
+      }
+    }
+    return count1;
+  }
   
   // returns the last 15 proposals that have not started
-  function getNotStarted() external view returns(LibGovernance.Proposal[] memory ){
-    LibGovernance.Proposal storage ps = LibGovernance.getProposalStruct();
-    LibGovernance.Mappings storage mp = LibGovernance.getMappingStruct();
-    LibGovernance.Tracker storage pt = LibGovernance.getProposalTracker();
-    LibGovernance.Proposal[] memory Not_Started = new LibGovernance.Proposal[](15);
-    bytes memory checker = bytes(Not_Started[14].name); 
-    uint Proposal_ID = pt.Proposal_Tracker;
-    uint count = 0;
-    for (uint i= Proposal_ID; i > 0;i--){
-      if(checker.length != 0){
-        break;
+  function getNotStarted(
+    uint start, 
+    uint count
+    ) external minmaxcount(count) existingId(start) view returns(LibGovernance.Proposal[] memory ){
+      if(start < count ){
+        revert("start < count");
       }
+    LibGovernance.Mappings storage mp = LibGovernance.getMappingStruct();
+
+    uint count1 = getNumberOfNotStarted(start,count);
+    
+    LibGovernance.Proposal[] memory Not_Started = new LibGovernance.Proposal[](count1);
+
+    uint counter = start - count;
+    uint count2;
+    for (uint i= start; i > counter;i--){
       if (mp.notStarted[i]){
-        ps = mp.proposal[i];
-        Not_Started[count] = mp.proposal[i];
-        count++;
+        Not_Started[count2] = mp.proposal[i];
+        count2++;
         continue;
       }
     }
@@ -332,22 +429,25 @@ contract GovernanceFacet {
   }
   
   // returns the last 15 proposals that are ongoing
-  function getOngoing() external view returns(LibGovernance.Proposal[] memory ){
-    LibGovernance.Proposal storage ps = LibGovernance.getProposalStruct();
-    LibGovernance.Mappings storage mp = LibGovernance.getMappingStruct();
-    LibGovernance.Tracker storage pt = LibGovernance.getProposalTracker();
-    LibGovernance.Proposal[] memory Ongoing = new LibGovernance.Proposal[](15);
-    bytes memory checker = bytes(Ongoing[14].name); 
-    uint Proposal_ID = pt.Proposal_Tracker;
-    uint count = 0;
-    for (uint i= Proposal_ID; i > 0;i--){
-      if(checker.length != 0){
-        break;
+  function getOngoing(
+    uint start, 
+    uint count
+    ) external minmaxcount(count) existingId(start) view returns(LibGovernance.Proposal[] memory ){
+      if(start < count ){
+        revert("start < count");
       }
+    LibGovernance.Mappings storage mp = LibGovernance.getMappingStruct();
+
+    uint count1 = getNumberOfOngoing(start,count);
+    
+    LibGovernance.Proposal[] memory Ongoing = new LibGovernance.Proposal[](count1);
+
+    uint counter = start - count;
+    uint count2;
+    for (uint i= start; i > counter;i--){
       if (mp.ongoing[i]){
-        ps = mp.proposal[i];
-        Ongoing[count] = mp.proposal[i];
-        count++;
+        Ongoing[count2] = mp.proposal[i];
+        count2++;
         continue;
       }
     }
@@ -355,22 +455,25 @@ contract GovernanceFacet {
   }
 
   // returns the last 15 proposals that have finshed and are won
-  function getWon() external view returns(LibGovernance.Proposal[] memory ){
-    LibGovernance.Proposal storage ps = LibGovernance.getProposalStruct();
-    LibGovernance.Mappings storage mp = LibGovernance.getMappingStruct();
-    LibGovernance.Tracker storage pt = LibGovernance.getProposalTracker();
-    LibGovernance.Proposal[] memory Won = new LibGovernance.Proposal[](15);
-    bytes memory checker = bytes(Won[14].name); 
-    uint Proposal_ID = pt.Proposal_Tracker;
-    uint count = 0;
-    for (uint i= Proposal_ID; i > 0;i--){
-      if(checker.length != 0){
-        break;
+  function getWon(
+    uint start, 
+    uint count
+    ) external minmaxcount(count) existingId(start) view returns(LibGovernance.Proposal[] memory ){
+      if(start < count ){
+        revert("start < count");
       }
+    LibGovernance.Mappings storage mp = LibGovernance.getMappingStruct();
+
+    uint count1 = getNumberOfWon(start,count);
+    
+    LibGovernance.Proposal[] memory Won = new LibGovernance.Proposal[](count1);
+
+    uint counter = start - count;
+    uint count2;
+    for (uint i= start; i > counter;i--){
       if (mp.won[i]){
-        ps = mp.proposal[i];
-        Won[count] = mp.proposal[i];
-        count++;
+        Won[count2] = mp.proposal[i];
+        count2++;
         continue;
       }
     }
@@ -378,22 +481,25 @@ contract GovernanceFacet {
   }
 
   // returns the last 15 proposals that have finshed and are lost
-  function getLost() external view returns(LibGovernance.Proposal[] memory ){
-    LibGovernance.Proposal storage ps = LibGovernance.getProposalStruct();
-    LibGovernance.Mappings storage mp = LibGovernance.getMappingStruct();
-    LibGovernance.Tracker storage pt = LibGovernance.getProposalTracker();
-    LibGovernance.Proposal[] memory Lost = new LibGovernance.Proposal[](15);
-    bytes memory checker = bytes(Lost[14].name); 
-    uint Proposal_ID = pt.Proposal_Tracker;
-    uint count = 0;
-    for (uint i= Proposal_ID; i > 0;i--){
-      if(checker.length != 0){
-        break;
+  function getLost(
+    uint start, 
+    uint count
+    ) external minmaxcount(count) existingId(start) view returns(LibGovernance.Proposal[] memory ){
+      if(start < count ){
+        revert("start < count");
       }
+    LibGovernance.Mappings storage mp = LibGovernance.getMappingStruct();
+
+    uint count1 = getNumberOfLost(start,count);
+    
+    LibGovernance.Proposal[] memory Lost = new LibGovernance.Proposal[](count1); 
+
+    uint counter = start - count;
+    uint count2;
+    for (uint i= start; i > counter;i--){
       if (mp.lost[i]){
-        ps = mp.proposal[i];
-        Lost[count] = mp.proposal[i];
-        count++;
+        Lost[count2] = mp.proposal[i];
+        count2++;
         continue;
       }
     }
@@ -401,22 +507,25 @@ contract GovernanceFacet {
   }
 
   // returns the last 15 proposals that have finshed and ended as a stalemate
-  function getStalemate() external view returns(LibGovernance.Proposal[] memory ){
-    LibGovernance.Proposal storage ps = LibGovernance.getProposalStruct();
-    LibGovernance.Mappings storage mp = LibGovernance.getMappingStruct();
-    LibGovernance.Tracker storage pt = LibGovernance.getProposalTracker();
-    LibGovernance.Proposal[] memory Stalemate = new LibGovernance.Proposal[](15);
-    bytes memory checker = bytes(Stalemate[14].name); 
-    uint Proposal_ID = pt.Proposal_Tracker;
-    uint count = 0;
-    for (uint i= Proposal_ID; i > 0;i--){
-      if(checker.length != 0){
-        break;
+  function getStalemate(
+    uint start, 
+    uint count
+    ) external minmaxcount(count) existingId(start) view returns(LibGovernance.Proposal[] memory ){
+      if(start < count ){
+        revert("start < count");
       }
+    LibGovernance.Mappings storage mp = LibGovernance.getMappingStruct();
+
+    uint count1 = getNumberOfStalemate(start,count);
+    
+    LibGovernance.Proposal[] memory Stalemate = new LibGovernance.Proposal[](count1);
+
+    uint counter = start - count;
+    uint count2;
+    for (uint i= start; i > counter;i--){
       if (mp.stalemate[i]){
-        ps = mp.proposal[i];
-        Stalemate[count] = mp.proposal[i];
-        count++;
+        Stalemate[count2] = mp.proposal[i];
+        count2++;
         continue;
       }
     }
