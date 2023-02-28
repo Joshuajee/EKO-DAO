@@ -2,9 +2,13 @@ import {
   BadRequestException,
   ConflictException,
   Injectable,
+  NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { COHORT_FACTORY_FACET_ABI } from 'src/commons/constants/abis';
+import {
+  COHORT_ABI,
+  COHORT_FACTORY_FACET_ABI,
+} from 'src/commons/constants/abis';
 import { Web3Helper } from 'src/commons/helpers/web3-helper';
 import { ConfigurationService } from 'src/config/configuration.service';
 import { Repository } from 'typeorm';
@@ -49,7 +53,7 @@ export class CohortsService {
         this.configService.superAdminPrivateKey,
       );
       const result = await CohortFcatoryFacet.methods.cohort(id).call();
-      return { cohort: result.contractAddress };
+      return { id: id, cohort: result.contractAddress };
     } catch (error) {
       console.error(error);
       throw new BadRequestException();
@@ -74,10 +78,41 @@ export class CohortsService {
     }
   }
 
+  async getById(id: number): Promise<{ [key: string]: any }> {
+    try {
+      const cohortDB: Cohort = await this.cohortsRepository.findOneOrFail({
+        where: { id },
+      });
+      const CohortFcatoryFacet = this.getCohortFcatoryFacet();
+      const result = await CohortFcatoryFacet.methods.cohort(id).call();
+      const Cohort = this.getCohort(result.contractAddress);
+      const cohortBC = await Cohort.methods.cohort().call();
+      const cohort = {
+        name: cohortBC.name,
+        startDate: cohortBC.startDate,
+        endDate: cohortBC.endDate,
+        size: cohortBC.size,
+        commitment: cohortBC.commitment,
+        briefDescription: cohortBC.description,
+        exhaustiveDescription: cohortDB.description,
+        createdAt: cohortDB.createdAt,
+        updatedAt: cohortDB.updatedAt,
+      };
+      return cohort;
+    } catch (error) {
+      console.error(error);
+      throw new NotFoundException(`Cohort ${id} not found`);
+    }
+  }
+
   getCohortFcatoryFacet() {
     return this.web3Helper.getContractInstance(
       COHORT_FACTORY_FACET_ABI,
       this.configService.diamondAddress,
     );
+  }
+
+  getCohort(address: string) {
+    return this.web3Helper.getContractInstance(COHORT_ABI, address);
   }
 }

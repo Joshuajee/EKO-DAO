@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Get,
   HttpStatus,
   Param,
   Post,
@@ -12,6 +13,7 @@ import {
   ApiResponse,
   ApiBearerAuth,
   ApiTags,
+  ApiParam,
 } from '@nestjs/swagger';
 import { CohortDto } from '../dtos/cohort.dto';
 import { InitCohortDto } from '../dtos/init-cohort.dto';
@@ -47,6 +49,12 @@ export class CohortsController {
   @ApiOperation({
     summary: 'Init Ekolance cohort',
   })
+  @ApiParam({
+    description: 'Ekolance cohort contract address',
+    name: 'address',
+    required: true,
+    type: 'string',
+  })
   @ApiResponse({
     status: HttpStatus.CREATED,
     description: 'Cohort successfully initialized',
@@ -67,5 +75,33 @@ export class CohortsController {
     @Body() initCohortDto: InitCohortDto,
   ): Promise<void> {
     return this.cohortsService.init(address, initCohortDto);
+  }
+
+  @ApiOperation({
+    summary: 'Get an Ekolance cohort',
+  })
+  @ApiParam({
+    description: 'Ekolance cohort id',
+    name: 'id',
+    required: true,
+    type: 'number',
+  })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Cohort info successfully returned',
+  })
+  @ApiResponse({
+    status: HttpStatus.UNAUTHORIZED,
+    description: 'Not authorized, when access token is mising or invalid',
+  })
+  @ApiResponse({
+    status: HttpStatus.NOT_FOUND,
+    description: 'Cohort not found',
+  })
+  @ApiBearerAuth('access-token')
+  @UseGuards(AuthGuard('jwt'))
+  @Get(':id')
+  getById(@Param('id') id: number): { [key: string]: any } {
+    return this.cohortsService.getById(id);
   }
 }

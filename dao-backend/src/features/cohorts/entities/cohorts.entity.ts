@@ -19,8 +19,8 @@ export class Cohort extends BaseEntity {
   description: string;
 
   @CreateDateColumn({ update: false })
-  created_at: Date;
+  createdAt: Date;
 
   @UpdateDateColumn()
-  updated_at: Date;
+  updatedAt: Date;
 }
