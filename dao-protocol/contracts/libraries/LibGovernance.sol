@@ -14,6 +14,7 @@
 
     struct Proposal {
       string name; // the name of a particular proposal
+      string description; //  the description containing detailed information on a proposal
       address author; // the address of the ekolance admin that creates the proposal
       uint id; // the Proposal ID of the propsosal
       uint creationTime; // the time at which a proposal is made

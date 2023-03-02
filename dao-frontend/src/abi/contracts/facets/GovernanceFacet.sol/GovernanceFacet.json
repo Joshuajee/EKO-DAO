@@ -23,6 +23,11 @@
         "internalType": "uint256",
         "name": "Proposal_ID",
         "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "voter",
+        "type": "address"
       }
     ],
     "name": "checkIfVoted",
@@ -85,6 +90,11 @@
             "type": "string"
           },
           {
+            "internalType": "string",
+            "name": "description",
+            "type": "string"
+          },
+          {
             "internalType": "address",
             "name": "author",
             "type": "address"
@@ -123,11 +133,6 @@
             "internalType": "enum LibGovernance.State",
             "name": "state",
             "type": "uint8"
-          },
-          {
-            "internalType": "string",
-            "name": "description",
-            "type": "string"
           }
         ],
         "internalType": "struct LibGovernance.Proposal[]",
@@ -174,6 +179,11 @@
             "type": "string"
           },
           {
+            "internalType": "string",
+            "name": "description",
+            "type": "string"
+          },
+          {
             "internalType": "address",
             "name": "author",
             "type": "address"
@@ -212,11 +222,6 @@
             "internalType": "enum LibGovernance.State",
             "name": "state",
             "type": "uint8"
-          },
-          {
-            "internalType": "string",
-            "name": "description",
-            "type": "string"
           }
         ],
         "internalType": "struct LibGovernance.Proposal[]",
@@ -263,6 +268,11 @@
             "type": "string"
           },
           {
+            "internalType": "string",
+            "name": "description",
+            "type": "string"
+          },
+          {
             "internalType": "address",
             "name": "author",
             "type": "address"
@@ -301,11 +311,6 @@
             "internalType": "enum LibGovernance.State",
             "name": "state",
             "type": "uint8"
-          },
-          {
-            "internalType": "string",
-            "name": "description",
-            "type": "string"
           }
         ],
         "internalType": "struct LibGovernance.Proposal[]",
@@ -339,79 +344,8 @@
             "type": "string"
           },
           {
-            "internalType": "address",
-            "name": "author",
-            "type": "address"
-          },
-          {
-            "internalType": "uint256",
-            "name": "id",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "creationTime",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "votingDelay",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "votingPeriod",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "votesFor",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "votesAgainst",
-            "type": "uint256"
-          },
-          {
-            "internalType": "enum LibGovernance.State",
-            "name": "state",
-            "type": "uint8"
-          },
-          {
             "internalType": "string",
             "name": "description",
-            "type": "string"
-          }
-        ],
-        "internalType": "struct LibGovernance.Proposal[]",
-        "name": "",
-        "type": "tuple[]"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "start",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "count",
-        "type": "uint256"
-      }
-    ],
-    "name": "getStalemate",
-    "outputs": [
-      {
-        "components": [
-          {
-            "internalType": "string",
-            "name": "name",
             "type": "string"
           },
           {
@@ -453,11 +387,6 @@
             "internalType": "enum LibGovernance.State",
             "name": "state",
             "type": "uint8"
-          },
-          {
-            "internalType": "string",
-            "name": "description",
-            "type": "string"
           }
         ],
         "internalType": "struct LibGovernance.Proposal[]",
@@ -491,6 +420,11 @@
             "type": "string"
           },
           {
+            "internalType": "string",
+            "name": "description",
+            "type": "string"
+          },
+          {
             "internalType": "address",
             "name": "author",
             "type": "address"
@@ -529,11 +463,6 @@
             "internalType": "enum LibGovernance.State",
             "name": "state",
             "type": "uint8"
-          },
-          {
-            "internalType": "string",
-            "name": "description",
-            "type": "string"
           }
         ],
         "internalType": "struct LibGovernance.Proposal[]",
@@ -676,6 +605,11 @@
             "type": "string"
           },
           {
+            "internalType": "string",
+            "name": "description",
+            "type": "string"
+          },
+          {
             "internalType": "address",
             "name": "author",
             "type": "address"
@@ -714,11 +648,6 @@
             "internalType": "enum LibGovernance.State",
             "name": "state",
             "type": "uint8"
-          },
-          {
-            "internalType": "string",
-            "name": "description",
-            "type": "string"
           }
         ],
         "internalType": "struct LibGovernance.Proposal",

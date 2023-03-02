@@ -79,6 +79,11 @@
             "type": "string"
           },
           {
+            "internalType": "string",
+            "name": "description",
+            "type": "string"
+          },
+          {
             "internalType": "address",
             "name": "author",
             "type": "address"
@@ -117,11 +122,6 @@
             "internalType": "enum LibGovernance.State",
             "name": "state",
             "type": "uint8"
-          },
-          {
-            "internalType": "string",
-            "name": "description",
-            "type": "string"
           }
         ],
         "indexed": true,

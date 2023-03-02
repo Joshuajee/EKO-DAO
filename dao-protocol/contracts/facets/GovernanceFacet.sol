@@ -21,12 +21,17 @@ contract GovernanceFacet {
 
   // A modifier that is used to ensure that a user can not input an empty string
   modifier noEmptiness(string memory name) {
-    string memory a = "";
-    if (keccak256(abi.encodePacked(name)) == keccak256(abi.encodePacked(a))) {
+    if (keccak256(abi.encodePacked(name)) == keccak256(abi.encodePacked(""))) {
       revert("Can't be empty");
     } else {
       _;
     }
+    // uint byteLength = bytes(name).length;
+    // if (byteLength == 0){
+    //   revert ("Can't be empty");
+    // } else{
+    //   _;
+    // }
   }
 
   // modifier to protect against address zero
@@ -95,16 +100,18 @@ contract GovernanceFacet {
   // fucntion to create a new voting Proposal by Ekolance Admins.
   function newProposal(
     string calldata _name,
+    string calldata _description,
     uint _delayminutes,
     uint _delayHours,
     uint _votingDays
-    ) external noEmptiness(_name) notZero(_votingDays){
+    ) external noEmptiness(_name) noEmptiness(_description) notZero(_votingDays){
     LibGovernance.Tracker storage pt = LibGovernance.getProposalTracker();
     LibGovernance.Mappings storage mp = LibGovernance.getMappingStruct();
     pt.Proposal_Tracker += 1;
     uint Proposal_ID = pt.Proposal_Tracker;
     LibGovernance.Proposal memory _newProposal = LibGovernance.Proposal({
       name: _name,
+      description: _description,
       author: msg.sender,
       id: Proposal_ID,
       creationTime: block.timestamp,
@@ -305,11 +312,12 @@ contract GovernanceFacet {
 
   // function to check if the caller has voted on a particular proposal
   function checkIfVoted(
-    uint Proposal_ID
-  ) external existingId(Proposal_ID) view returns(bool) {
+    uint Proposal_ID,
+    address voter
+  ) external existingId(Proposal_ID) addressValidation(voter) view returns(bool) {
     LibGovernance.Mappings storage mp = LibGovernance.getMappingStruct();
 
-    return mp.proposalVoter[Proposal_ID][msg.sender].voted;
+    return mp.proposalVoter[Proposal_ID][voter].voted;
   }
 
   // function to delete the last proposal that has been created.
@@ -540,30 +548,30 @@ contract GovernanceFacet {
   }
 
   // returns proposals that have finshed and ended as a stalemate within a specified range
-  function getStalemate(
-    uint start, 
-    uint count
-    ) external minmaxcount(count) existingId(start) view returns(LibGovernance.Proposal[] memory ){
-      if(start < count ){
-        revert("start < count");
-      }
-    LibGovernance.Mappings storage mp = LibGovernance.getMappingStruct();
+  // function getStalemate(
+  //   uint start, 
+  //   uint count
+  //   ) external minmaxcount(count) existingId(start) view returns(LibGovernance.Proposal[] memory ){
+  //     if(start < count ){
+  //       revert("start < count");
+  //     }
+  //   LibGovernance.Mappings storage mp = LibGovernance.getMappingStruct();
 
-    uint count1 = getNumberOfStalemate(start,count);
+  //   uint count1 = getNumberOfStalemate(start,count);
     
-    LibGovernance.Proposal[] memory Stalemate = new LibGovernance.Proposal[](count1);
+  //   LibGovernance.Proposal[] memory Stalemate = new LibGovernance.Proposal[](count1);
 
-    uint counter = start - count;
-    uint count2;
-    for (uint i= start; i > counter;i--){
-      if (mp.stalemate[i]){
-        Stalemate[count2] = mp.proposal[i];
-        count2++;
-        continue;
-      }
-    }
-    return Stalemate;
-  }
+  //   uint counter = start - count;
+  //   uint count2;
+  //   for (uint i= start; i > counter;i--){
+  //     if (mp.stalemate[i]){
+  //       Stalemate[count2] = mp.proposal[i];
+  //       count2++;
+  //       continue;
+  //     }
+  //   }
+  //   return Stalemate;
+  // }
 
   // function to start voting on a proposal
   function startVoting(
