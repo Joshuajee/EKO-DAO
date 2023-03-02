@@ -123,6 +123,11 @@
             "internalType": "enum LibGovernance.State",
             "name": "state",
             "type": "uint8"
+          },
+          {
+            "internalType": "string",
+            "name": "description",
+            "type": "string"
           }
         ],
         "internalType": "struct LibGovernance.Proposal[]",
@@ -207,6 +212,11 @@
             "internalType": "enum LibGovernance.State",
             "name": "state",
             "type": "uint8"
+          },
+          {
+            "internalType": "string",
+            "name": "description",
+            "type": "string"
           }
         ],
         "internalType": "struct LibGovernance.Proposal[]",
@@ -291,6 +301,11 @@
             "internalType": "enum LibGovernance.State",
             "name": "state",
             "type": "uint8"
+          },
+          {
+            "internalType": "string",
+            "name": "description",
+            "type": "string"
           }
         ],
         "internalType": "struct LibGovernance.Proposal[]",
@@ -362,6 +377,11 @@
             "internalType": "enum LibGovernance.State",
             "name": "state",
             "type": "uint8"
+          },
+          {
+            "internalType": "string",
+            "name": "description",
+            "type": "string"
           }
         ],
         "internalType": "struct LibGovernance.Proposal[]",
@@ -433,6 +453,11 @@
             "internalType": "enum LibGovernance.State",
             "name": "state",
             "type": "uint8"
+          },
+          {
+            "internalType": "string",
+            "name": "description",
+            "type": "string"
           }
         ],
         "internalType": "struct LibGovernance.Proposal[]",
@@ -504,6 +529,11 @@
             "internalType": "enum LibGovernance.State",
             "name": "state",
             "type": "uint8"
+          },
+          {
+            "internalType": "string",
+            "name": "description",
+            "type": "string"
           }
         ],
         "internalType": "struct LibGovernance.Proposal[]",
@@ -537,6 +567,11 @@
       {
         "internalType": "string",
         "name": "_name",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "_description",
         "type": "string"
       },
       {
@@ -679,6 +714,11 @@
             "internalType": "enum LibGovernance.State",
             "name": "state",
             "type": "uint8"
+          },
+          {
+            "internalType": "string",
+            "name": "description",
+            "type": "string"
           }
         ],
         "internalType": "struct LibGovernance.Proposal",

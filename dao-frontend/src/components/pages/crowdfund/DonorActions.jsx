@@ -7,13 +7,13 @@ import LoadingButton from "@/components/ui/form/LoadingButton";
 import { toast } from "react-toastify";
 import { AuthContext } from "@/context/AuthContext";
 
-const DonorActions = ({status, contract}) => {
+const DonorActions = ({status, contract, expired}) => {
 
     const { address, isConnected } = useAccount()
 
     const { isAdminLoggedIn } = useContext(AuthContext);
 
-    const { data, isLoading, isSuccess, isError } = useContractRead({
+    const { data } = useContractRead({
         address: contract,
         abi: ProjectABI,
         functionName: 'isDonor',
@@ -35,14 +35,6 @@ const DonorActions = ({status, contract}) => {
         args: [address],
     })
 
-
-    console.log({ data, isLoading, isSuccess, isError })
-
-    
-    console.log(isAdminLoggedIn)
-
-    console.log(status)
-
     useEffect(() => {
         if (donorWithdraw.isError) 
             return toast.error(donorWithdraw?.error?.reason)
@@ -51,6 +43,7 @@ const DonorActions = ({status, contract}) => {
             return toast.error(adminWithdraw?.error?.reason)
 
     }, [adminWithdraw.isError, adminWithdraw?.error, donorWithdraw.isError, donorWithdraw?.error]);
+
 
     return (
         <div className="block py-4 w-full">
@@ -63,7 +56,7 @@ const DonorActions = ({status, contract}) => {
                             <strong> {dollarFormat(convertToEther(data?.[1]?.toString())) } USD </strong> 
                             to this Campaign
                         </p> 
-                        { status === 1 &&
+                        { (status < 1 && expired) &&
                             <button 
                                 onClick={donorWithdraw?.write}
                                 className="mt-2 md:mt-0 bg-yellow-600 hover:bg-yellow-700 rounded-lg px-8 py-2 text-white"> 

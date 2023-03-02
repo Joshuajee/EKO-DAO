@@ -9,17 +9,21 @@ import Badge from "@/components/ui/Badge"
 import DonorActions from "./DonorActions"
 import { useAccount } from "wagmi"
 import { toast } from "react-toastify"
+import Countdown from "react-countdown"
 
 const ProjectCard = ({project, contract, expanded}) => {
 
     const [open, setOpen] = useState(false);
     const [projectStatus, setProjectStatus] = useState()
+    const [deadline, setDeadline] = useState(0)
+    const [currentTime, setCurrentTime] = useState(0)
+    const expired = deadline < currentTime
 
     const { 
         projectTopic, description, noOfDonors, fundBalance, 
         minimumDonation, projectAddress, targetFund, status,
+        endDate
     } = project
-
 
     const router = useRouter()
 
@@ -46,10 +50,22 @@ const ProjectCard = ({project, contract, expanded}) => {
                 setProjectStatus({color: "gray", status: "Executed"})
                 break
             default:
-                setProjectStatus({color: "blue", status: "Active"})
+                if (deadline < currentTime)
+                    setProjectStatus({color: "red", status: "Expired"})
+                else 
+                    setProjectStatus({color: "blue", status: "Active"})
                 break
         }
-    }, [status]);
+    }, [status, deadline, currentTime]);
+
+    useEffect(() => {
+        setDeadline(Number(endDate.toString()) * 1000)
+        setCurrentTime(Number(new Date()))
+    }, [endDate])
+
+    console.log(status)
+
+    console.log(Number(currentTime))
 
     return (
         <div className="w-full text-gray-700 bg-white rounded-md p-4 md:px-4 shadow-lg">
@@ -62,6 +78,10 @@ const ProjectCard = ({project, contract, expanded}) => {
                 <p className="ml-2 text-sm">Project {projectStatus?.status}</p> 
             </Badge>
 
+            <div className="text-base flex mt-2 font-medium">
+                <p className="mr-2">Time Left: </p> <Countdown date={Number(endDate.toString()) * 1000} />
+            </div>
+
             <div className="flex justify-end">
                 <ProjectStatus target={targetFund.toString()} current={fundBalance.toString()} donorCount={noOfDonors.toString()} minDonation={minimumDonation.toString()} />
             </div>
@@ -70,7 +90,7 @@ const ProjectCard = ({project, contract, expanded}) => {
 
                 { !expanded ? <button onClick={() => router.push(`${links.crowdfunding}/${projectAddress}`)} className="text-gray-600">View Details </button> : <div> </div> }
 
-                { status != 3 &&  <button onClick={handleClick} className="bg-green-600 hover:bg-green-700 rounded-lg px-8 py-2 text-white"> Donate </button> }
+                { (status === 1 || !expired) &&  <button onClick={handleClick} className="bg-green-600 hover:bg-green-700 rounded-lg px-8 py-2 text-white"> Donate </button> }
 
             </div>
 
@@ -78,7 +98,7 @@ const ProjectCard = ({project, contract, expanded}) => {
                 <DonationForm project={project} close={handleClose} />
             </ModalWrapper>
 
-            {expanded && <DonorActions status={status} contract={contract} />}
+            {expanded && <DonorActions expired={expired} status={status} contract={contract} />}
             
         </div>
     )

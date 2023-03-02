@@ -11,6 +11,7 @@ import { AuthContext } from '@/context/AuthContext';
 import { useContractRead } from 'wagmi';
 import { contractAddress } from '@/libs/utils';
 import proposalFacetABI from '@/abi/contracts/facets/AdminFacet.sol/AdminFacet.json';
+import CreateProposalForm from '@/components/pages/proposals/CreateProposalForm';
 
 export default function Proposals() {
 
@@ -73,7 +74,7 @@ export default function Proposals() {
 
       { isAdminLoggedIn &&
         <CreateButton title={"Create a new Crowd fund Project"} open={open} show={show} close={close}>
-          <CreateCrowdForm close={close} />
+          <CreateProposalForm close={close} />
         </CreateButton> 
       }
     
