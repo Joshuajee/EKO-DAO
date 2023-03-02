@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: MIT
+
 pragma solidity 0.8.17;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
@@ -302,6 +303,15 @@ contract GovernanceFacet {
     }
   }
 
+  // function to check if the caller has voted on a particular proposal
+  function checkIfVoted(
+    uint Proposal_ID
+  ) external existingId(Proposal_ID) view returns(bool) {
+    LibGovernance.Mappings storage mp = LibGovernance.getMappingStruct();
+
+    return mp.proposalVoter[Proposal_ID][msg.sender].voted;
+  }
+
   // function to delete the last proposal that has been created.
   function deleteProposal(
     uint Proposal_ID
@@ -402,7 +412,30 @@ contract GovernanceFacet {
     return count1;
   }
   
-  // returns the last 15 proposals that have not started
+  // returns proposals within a specified range.
+  function getProposals(
+    uint start, 
+    uint count
+    ) external minmaxcount(count) existingId(start) view returns(LibGovernance.Proposal[] memory ){
+      if(start < count ){
+        revert("start < count");
+      }
+    LibGovernance.Mappings storage mp = LibGovernance.getMappingStruct();
+
+    uint counter = start - count;
+
+    LibGovernance.Proposal[] memory Proposals = new LibGovernance.Proposal[](count);
+
+    uint count2;
+    for (uint i= start; i > counter;i--){
+      Proposals[count2] = mp.proposal[i];
+      count2++;
+      continue;
+    }
+    return Proposals;
+  }
+
+  // returns proposals that have not started within a sepcified range
   function getNotStarted(
     uint start, 
     uint count
@@ -428,7 +461,7 @@ contract GovernanceFacet {
     return Not_Started;
   }
   
-  // returns the last 15 proposals that are ongoing
+  // returns proposals that are ongoing within a soecified range
   function getOngoing(
     uint start, 
     uint count
@@ -454,7 +487,7 @@ contract GovernanceFacet {
     return Ongoing;
   }
 
-  // returns the last 15 proposals that have finshed and are won
+  // returns proposals that have finshed and are won within a specified range
   function getWon(
     uint start, 
     uint count
@@ -480,7 +513,7 @@ contract GovernanceFacet {
     return Won;
   }
 
-  // returns the last 15 proposals that have finshed and are lost
+  // returns proposals that have finshed and are lost within a specified range
   function getLost(
     uint start, 
     uint count
@@ -506,7 +539,7 @@ contract GovernanceFacet {
     return Lost;
   }
 
-  // returns the last 15 proposals that have finshed and ended as a stalemate
+  // returns proposals that have finshed and ended as a stalemate within a specified range
   function getStalemate(
     uint start, 
     uint count

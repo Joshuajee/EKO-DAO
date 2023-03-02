@@ -116,7 +116,7 @@ describe('Governance Facet test', function() {
 	});
 
 	it('should be able to vote for or against a proposal', async () => {
-		const { GovernanceFacet, owner, signer1 } = await loadFixture(GovernanceFixture);
+		const { GovernanceFacet, signer1 } = await loadFixture(GovernanceFixture);
 
 		await GovernanceFacet.newProposal(
 			PROPOSAL_NAME_1,
@@ -221,6 +221,25 @@ describe('Governance Facet test', function() {
 		expect(secondProposalAfter.votesFor).to.equal('1');
 	});
 
+	it('shoould be able to allow a user check if they voted on a paarticular proposal', async () => {
+		const { GovernanceFacet, signer1 } = await loadFixture(GovernanceFixture);
+
+		await GovernanceFacet.newProposal(
+			PROPOSAL_NAME_1,
+			PROPOSAL_DELAY_MINUITES_1,
+			PROPOSAL_DELAY_HOURS_1,
+			PROPOSAL_VOTING_DAYS_1
+		);
+
+		await GovernanceFacet.voteFor('1');
+
+		const firstUserVoted = await GovernanceFacet.checkIfVoted(1);
+		const secondUserVoted = await GovernanceFacet.connect(signer1).checkIfVoted(1);
+
+		expect(firstUserVoted).to.equal(true);
+		expect(secondUserVoted).to.equal(false);
+	});
+
 	it('should be able to delete a proposal still in voting delay', async () => {
 		const { GovernanceFacet } = await loadFixture(GovernanceFixture);
 
@@ -243,6 +262,37 @@ describe('Governance Facet test', function() {
 		const secondProposal = await GovernanceFacet.viewProposal('2');
 
 		expect(await secondProposal.state).to.equal(5);
+	});
+
+	it('should be able to get proposals within a particular range', async () => {
+		const { GovernanceFacet } = await loadFixture(GovernanceFixture);
+
+		await GovernanceFacet.newProposal(
+			PROPOSAL_NAME_1,
+			PROPOSAL_DELAY_MINUITES_1,
+			PROPOSAL_DELAY_HOURS_1,
+			PROPOSAL_VOTING_DAYS_1
+		);
+
+		await GovernanceFacet.newProposal(
+			PROPOSAL_NAME_2,
+			PROPOSAL_DELAY_MINUITES_2,
+			PROPOSAL_DELAY_HOURS_2,
+			PROPOSAL_VOTING_DAYS_2
+		);
+
+		await GovernanceFacet.newProposal(
+			PROPOSAL_NAME_3,
+			PROPOSAL_DELAY_MINUITES_3,
+			PROPOSAL_DELAY_HOURS_3,
+			PROPOSAL_VOTING_DAYS_3
+		);
+
+		const proposals = await GovernanceFacet.getProposals(3, 3);
+
+		expect(await proposals[0].name).to.equal(PROPOSAL_NAME_3);
+		expect(await proposals[1].name).to.equal(PROPOSAL_NAME_2);
+		expect(await proposals[2].name).to.equal(PROPOSAL_NAME_1);
 	});
 
 	it('should be able to get proposals that have not started within a particular range', async () => {
