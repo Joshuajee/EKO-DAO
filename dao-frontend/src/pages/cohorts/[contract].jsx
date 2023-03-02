@@ -4,8 +4,7 @@ import Container from '@/components/ui/Container';
 import Layout from '@/components/ui/Layout';
 import Head from 'next/head'
 import { useRouter } from 'next/router';
-import { useContractRead } from 'wagmi';
-import { votersDummy } from '@/libs/dummy';
+import { useAccount, useContractRead } from 'wagmi';
 import cohortABI from './../../abi/contracts/Cohort.sol/Cohort.json'
 import LoadingScreen from '@/components/ui/screens/LoadingScreen';
 
@@ -29,16 +28,24 @@ export default function Cohorts() {
 
       { isSuccess && 
           <Container> 
+            
+            <div className='mt-20 flex justify-center w-full'>
+              <div className='max-w-5xl w-full'> 
+                <CohortCard cohort={data} expanded={true}/> 
+              </div>
+            </div>
 
-            <div className='mt-20 grid grid-cols-1 md:grid-cols-3 md:gap-4'>
+            {/* <div className='mt-20 grid grid-cols-1 md:grid-cols-3 md:gap-4'>
 
-              <div className='col-span-2 mb-4'>
-                <CohortCard cohort={data} expanded={true}/>  
+              <div className='mt-20 flex justify-center w-full'>
+                <div className='max-w-5xl w-full'> 
+                  <CohortCard cohort={data} expanded={true}/> 
+                </div>
               </div>
 
               <StudentList students={votersDummy} /> 
 
-            </div>
+            </div> */}
 
           </Container>
       }

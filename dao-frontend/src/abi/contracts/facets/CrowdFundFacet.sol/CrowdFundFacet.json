@@ -117,8 +117,32 @@
         "type": "uint256"
       },
       {
+        "internalType": "address",
+        "name": "_user",
+        "type": "address"
+      }
+    ],
+    "name": "IsUserADonor",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "status",
+        "type": "bool"
+      },
+      {
         "internalType": "uint256",
-        "name": "_tokenAmount",
+        "name": "amount",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_projectIndex",
         "type": "uint256"
       }
     ],
@@ -267,6 +291,11 @@
             "internalType": "enum Status",
             "name": "status",
             "type": "uint8"
+          },
+          {
+            "internalType": "address[]",
+            "name": "donors",
+            "type": "address[]"
           }
         ],
         "internalType": "struct Database.ProjectState[]",
@@ -367,6 +396,11 @@
             "internalType": "enum Status",
             "name": "status",
             "type": "uint8"
+          },
+          {
+            "internalType": "address[]",
+            "name": "donors",
+            "type": "address[]"
           }
         ],
         "internalType": "struct Database.ProjectState",

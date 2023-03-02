@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: MIT
+
 pragma solidity 0.8.17;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
@@ -20,12 +21,17 @@ contract GovernanceFacet {
 
   // A modifier that is used to ensure that a user can not input an empty string
   modifier noEmptiness(string memory name) {
-    string memory a = "";
-    if (keccak256(abi.encodePacked(name)) == keccak256(abi.encodePacked(a))) {
+    if (keccak256(abi.encodePacked(name)) == keccak256(abi.encodePacked(""))) {
       revert("Can't be empty");
     } else {
       _;
     }
+    // uint byteLength = bytes(name).length;
+    // if (byteLength == 0){
+    //   revert ("Can't be empty");
+    // } else{
+    //   _;
+    // }
   }
 
   // modifier to protect against address zero
@@ -94,24 +100,22 @@ contract GovernanceFacet {
   // fucntion to create a new voting Proposal by Ekolance Admins.
   function newProposal(
     string calldata _name,
-    uint _delayminutes,
-    uint _delayHours,
-    uint _votingDays
-    ) external noEmptiness(_name) notZero(_votingDays){
+    string calldata _description,
+    uint _delay,
+    uint _votingDuration
+    ) external noEmptiness(_name) noEmptiness(_description) notZero(_votingDuration){
     LibGovernance.Tracker storage pt = LibGovernance.getProposalTracker();
     LibGovernance.Mappings storage mp = LibGovernance.getMappingStruct();
     pt.Proposal_Tracker += 1;
     uint Proposal_ID = pt.Proposal_Tracker;
     LibGovernance.Proposal memory _newProposal = LibGovernance.Proposal({
       name: _name,
+      description: _description,
       author: msg.sender,
       id: Proposal_ID,
       creationTime: block.timestamp,
-      votingDelay: (_delayminutes * 60) + (_delayHours * 60 * 60) +
-        block.timestamp,
-      votingPeriod: (_delayminutes * 60) + (_delayHours * 60 * 60) + 
-        (_votingDays * 60 *60 * 24) +
-        block.timestamp,
+      votingDelay: block.timestamp + _delay,
+      votingPeriod: block.timestamp + _delay + _votingDuration,
       votesFor: 0,
       votesAgainst: 0,
       state : LibGovernance.State.notStarted
@@ -302,6 +306,16 @@ contract GovernanceFacet {
     }
   }
 
+  // function to check if the caller has voted on a particular proposal
+  function checkIfVoted(
+    uint Proposal_ID,
+    address voter
+  ) external existingId(Proposal_ID) addressValidation(voter) view returns(bool) {
+    LibGovernance.Mappings storage mp = LibGovernance.getMappingStruct();
+
+    return mp.proposalVoter[Proposal_ID][voter].voted;
+  }
+
   // function to delete the last proposal that has been created.
   function deleteProposal(
     uint Proposal_ID
@@ -402,7 +416,30 @@ contract GovernanceFacet {
     return count1;
   }
   
-  // returns the last 15 proposals that have not started
+  // returns proposals within a specified range.
+  function getProposals(
+    uint start, 
+    uint count
+    ) external minmaxcount(count) existingId(start) view returns(LibGovernance.Proposal[] memory ){
+      if(start < count ){
+        revert("start < count");
+      }
+    LibGovernance.Mappings storage mp = LibGovernance.getMappingStruct();
+
+    uint counter = start - count;
+
+    LibGovernance.Proposal[] memory Proposals = new LibGovernance.Proposal[](count);
+
+    uint count2;
+    for (uint i= start; i > counter;i--){
+      Proposals[count2] = mp.proposal[i];
+      count2++;
+      continue;
+    }
+    return Proposals;
+  }
+
+  // returns proposals that have not started within a sepcified range
   function getNotStarted(
     uint start, 
     uint count
@@ -428,7 +465,7 @@ contract GovernanceFacet {
     return Not_Started;
   }
   
-  // returns the last 15 proposals that are ongoing
+  // returns proposals that are ongoing within a soecified range
   function getOngoing(
     uint start, 
     uint count
@@ -454,7 +491,7 @@ contract GovernanceFacet {
     return Ongoing;
   }
 
-  // returns the last 15 proposals that have finshed and are won
+  // returns proposals that have finshed and are won within a specified range
   function getWon(
     uint start, 
     uint count
@@ -480,7 +517,7 @@ contract GovernanceFacet {
     return Won;
   }
 
-  // returns the last 15 proposals that have finshed and are lost
+  // returns proposals that have finshed and are lost within a specified range
   function getLost(
     uint start, 
     uint count
@@ -506,31 +543,31 @@ contract GovernanceFacet {
     return Lost;
   }
 
-  // returns the last 15 proposals that have finshed and ended as a stalemate
-  function getStalemate(
-    uint start, 
-    uint count
-    ) external minmaxcount(count) existingId(start) view returns(LibGovernance.Proposal[] memory ){
-      if(start < count ){
-        revert("start < count");
-      }
-    LibGovernance.Mappings storage mp = LibGovernance.getMappingStruct();
+  // returns proposals that have finshed and ended as a stalemate within a specified range
+  // function getStalemate(
+  //   uint start, 
+  //   uint count
+  //   ) external minmaxcount(count) existingId(start) view returns(LibGovernance.Proposal[] memory ){
+  //     if(start < count ){
+  //       revert("start < count");
+  //     }
+  //   LibGovernance.Mappings storage mp = LibGovernance.getMappingStruct();
 
-    uint count1 = getNumberOfStalemate(start,count);
+  //   uint count1 = getNumberOfStalemate(start,count);
     
-    LibGovernance.Proposal[] memory Stalemate = new LibGovernance.Proposal[](count1);
+  //   LibGovernance.Proposal[] memory Stalemate = new LibGovernance.Proposal[](count1);
 
-    uint counter = start - count;
-    uint count2;
-    for (uint i= start; i > counter;i--){
-      if (mp.stalemate[i]){
-        Stalemate[count2] = mp.proposal[i];
-        count2++;
-        continue;
-      }
-    }
-    return Stalemate;
-  }
+  //   uint counter = start - count;
+  //   uint count2;
+  //   for (uint i= start; i > counter;i--){
+  //     if (mp.stalemate[i]){
+  //       Stalemate[count2] = mp.proposal[i];
+  //       count2++;
+  //       continue;
+  //     }
+  //   }
+  //   return Stalemate;
+  // }
 
   // function to start voting on a proposal
   function startVoting(

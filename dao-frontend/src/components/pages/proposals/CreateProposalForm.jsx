@@ -8,24 +8,25 @@ import { toast } from "react-toastify";
 import LoadingButton from "@/components/ui/form/LoadingButton";
 import Textarea from "@/components/ui/form/Textarea";
 import Select from "@/components/ui/form/Select";
-import { durationLists } from "@/libs/constants";
+import { delays, durationLists } from "@/libs/constants";
 
-const currentDate = getDate()
-
-const CreateCrowdForm = ({close}) => {
+const CreateProposalForm = ({close}) => {
 
     const [name, setName] = useState("");
 
     const [description, setDescription] = useState("");
+    const [delay, setDelay] = useState(delays[0]?.value);
     const [duration, setDuration] = useState(durationLists[0]?.value);
 
     const [target, setTarget] = useState(null);
     const [min, setMin] = useState(null);
 
     // Errors 
+    const [idError, setIdError] = useState(false);
     const [nameError, setNameError] = useState(false);
 
     const [descriptionError, setDescriptionError] = useState(false);
+    const [durationError, setDurationError] = useState(false);
 
     const [targetError, setTargetError] = useState(false);
     const [minError, setMinError] = useState(false);
@@ -34,11 +35,10 @@ const CreateCrowdForm = ({close}) => {
         mode: 'recklesslyUnprepared',
         address: contractAddress,
         abi: crowdFundFacetABI,
-        functionName: 'createCampaign',
-        args: [name, description, convertToWEI(target), convertToWEI(min), USDC, duration],
+        functionName: 'newProposal',
+        args: [name, description, convertToWEI(target), convertToWEI(min), USDC, new Date(duration).getTime()],
     })
 
-    console.log(duration)
 
     const submit = (e) => {
         e.preventDefault()
@@ -46,7 +46,7 @@ const CreateCrowdForm = ({close}) => {
     }
 
     const isDisabled = () => {
-        return nameError || descriptionError || targetError || minError
+        return nameError || descriptionError 
     }
 
     // Verify Name
@@ -85,7 +85,7 @@ const CreateCrowdForm = ({close}) => {
         }
 
         if (create.error) {
-            toast.error(create?.error?.reason)
+            toast.error(create.error)
         }
 
     }, [create.isLoading, create.isSuccess, create.isError, create.error, close])
@@ -93,17 +93,15 @@ const CreateCrowdForm = ({close}) => {
     return (
         <form className="text-gray-700" onSubmit={submit}>
 
-            <Input value={name} onChange={setName} id="name" label={"Funding Title"} placeholder="e.g Save our Planet" error={nameError} helperText={"Funding Title should have at least 3 words"}  />
+            <Input value={name} onChange={setName} id="name" label={"Proposal Title"} placeholder="e.g Save our Planet" error={nameError} helperText={"Proposal Title should have at least 3 words"}  />
 
             <Textarea value={description} onChange={setDescription} id="description" label={"Funding Description"} placeholder="e.g Contribute and saving the planet in a decentralized manner" error={descriptionError} helperText={"Descripion should contain 10 - 50 words"}></Textarea>
 
             <div className="grid grid-cols-2 gap-4">
 
-                <Input type="number" label={"Minimum Donation (USDC)"} value={min} onChange={setMin} error={minError} helperText={"Minimum Donation should be greater than zero"}  />
+                <Select label={"Voting Delay"} id={"delays"} lists={delays} onChange={setDelay} />
 
-                <Input type="number" label={"Target Donation (USDC)"} value={target} onChange={setTarget} error={targetError} helperText={"Target should be greater than zero"} />
-
-                <Select id={"duration"} label={"Duration"}  lists={durationLists} onChange={setDuration} />
+                <Select label={"Voting Duration"} id={"duration"} lists={durationLists} onChange={setDuration} />
 
             </div>
 
@@ -113,4 +111,4 @@ const CreateCrowdForm = ({close}) => {
     )
 }
 
-export default CreateCrowdForm
+export default CreateProposalForm

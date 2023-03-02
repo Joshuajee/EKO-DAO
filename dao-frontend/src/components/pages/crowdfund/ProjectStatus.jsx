@@ -1,7 +1,7 @@
 import { convertToEther, dollarFormat } from "@/libs/utils"
 import { memo } from "react"
 
-const ProjectStatus = ({target, current, donorCount, minDonation}) => {
+const ProjectStatus = ({target, current, donorCount, minDonation }) => {
 
     const currentPercent = current * 100 / target
 

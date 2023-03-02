@@ -3,83 +3,16 @@
     "inputs": [
       {
         "internalType": "address",
-        "name": "_user",
-        "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "_contractOwner",
+        "name": "_admin",
         "type": "address"
       }
     ],
-    "name": "NotContractOwner",
-    "type": "error"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "previousOwner",
-        "type": "address"
-      },
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "newOwner",
-        "type": "address"
-      }
-    ],
-    "name": "OwnershipTransferred",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "address",
-        "name": "_ekoStable",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "string",
-        "name": "_symbol",
-        "type": "string"
-      }
-    ],
-    "name": "TokenAdded",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "string",
-        "name": "_symbol",
-        "type": "string"
-      }
-    ],
-    "name": "TokenAlreadyExists",
-    "type": "event"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "string",
-        "name": "",
-        "type": "string"
-      }
-    ],
-    "name": "acceptedEkoStables",
+    "name": "getAdmin",
     "outputs": [
       {
-        "internalType": "bool",
+        "internalType": "enum LibAdmin.Roles",
         "name": "",
-        "type": "bool"
+        "type": "uint8"
       }
     ],
     "stateMutability": "view",
@@ -88,51 +21,12 @@
   {
     "inputs": [
       {
-        "internalType": "string",
-        "name": "_ekoStable",
-        "type": "string"
-      }
-    ],
-    "name": "addAcceptedEkoStable",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
         "internalType": "address",
-        "name": "_adminAddress",
+        "name": "_admin",
         "type": "address"
       }
     ],
-    "name": "addAdmin",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "_superAdminAddress",
-        "type": "address"
-      }
-    ],
-    "name": "addSuperAdmin",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "name": "administrators",
+    "name": "isAdmin",
     "outputs": [
       {
         "internalType": "bool",
@@ -147,55 +41,16 @@
     "inputs": [
       {
         "internalType": "address",
+        "name": "_admin",
+        "type": "address"
+      }
+    ],
+    "name": "isSuperAdmin",
+    "outputs": [
+      {
+        "internalType": "bool",
         "name": "",
-        "type": "address"
-      }
-    ],
-    "name": "ekoStables",
-    "outputs": [
-      {
-        "internalType": "uint8",
-        "name": "decimals",
-        "type": "uint8"
-      },
-      {
-        "internalType": "string",
-        "name": "name",
-        "type": "string"
-      },
-      {
-        "internalType": "string",
-        "name": "symbol",
-        "type": "string"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "string",
-        "name": "",
-        "type": "string"
-      }
-    ],
-    "name": "ekoStablesBySymbol",
-    "outputs": [
-      {
-        "internalType": "uint8",
-        "name": "decimals",
-        "type": "uint8"
-      },
-      {
-        "internalType": "string",
-        "name": "name",
-        "type": "string"
-      },
-      {
-        "internalType": "string",
-        "name": "symbol",
-        "type": "string"
+        "type": "bool"
       }
     ],
     "stateMutability": "view",
@@ -205,46 +60,7 @@
     "inputs": [
       {
         "internalType": "address",
-        "name": "_firstSuperAdminAddress",
-        "type": "address"
-      }
-    ],
-    "name": "initialize",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "owner",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "owner_",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "string",
-        "name": "_ekoStable",
-        "type": "string"
-      }
-    ],
-    "name": "removeAcceptedEkoStable",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "_adminAddress",
+        "name": "_admin",
         "type": "address"
       }
     ],
@@ -257,84 +73,16 @@
     "inputs": [
       {
         "internalType": "address",
-        "name": "_superAdminAddress",
-        "type": "address"
-      }
-    ],
-    "name": "removeSuperAdmin",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "_ekoStable",
+        "name": "_admin",
         "type": "address"
       },
       {
-        "internalType": "uint8",
-        "name": "_decimals",
+        "internalType": "enum LibAdmin.Roles",
+        "name": "_role",
         "type": "uint8"
-      },
-      {
-        "internalType": "string",
-        "name": "_name",
-        "type": "string"
-      },
-      {
-        "internalType": "string",
-        "name": "_symbol",
-        "type": "string"
       }
     ],
-    "name": "setEkoStableProperties",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "name": "superAdmins",
-    "outputs": [
-      {
-        "internalType": "bool",
-        "name": "",
-        "type": "bool"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "_newOwner",
-        "type": "address"
-      }
-    ],
-    "name": "transferOwnership",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "_firstSuperAdminAddress",
-        "type": "address"
-      }
-    ],
-    "name": "upgrade",
+    "name": "setAdmin",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"

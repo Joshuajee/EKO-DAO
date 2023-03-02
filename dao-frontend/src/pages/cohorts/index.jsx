@@ -1,12 +1,10 @@
 import { useState, useEffect, useContext } from 'react';
 import CohortCard from '@/components/pages/cohorts/CohortCard';
-import CategoryTab from '@/components/ui/navigation/CategoryTab';
 import Container from '@/components/ui/Container';
 import Layout from '@/components/ui/Layout';
 import TopBanner from '@/components/ui/TopBanner';
-import { tabsTwo } from '@/libs/routes';
 import Head from 'next/head'
-import { useAccount, useContractRead } from 'wagmi';
+import { useContractRead } from 'wagmi';
 import cohortFacetABI from './../../abi/contracts/facets/CohortFactoryFacet.sol/CohortFactoryFacet.json'
 import { contractAddress } from '@/libs/utils';
 import CreateButton from '@/components/ui/CreateButton';
@@ -48,6 +46,9 @@ export default function Cohorts() {
         setIsLoading(cohorts?.isLoading)
     }, [cohorts?.data, cohorts?.isError, cohorts?.isSuccess, cohorts?.isLoading]);
 
+
+    const isSuccessful = isSuccess && cohorts?.data?.length > 0
+
     return (
         <Layout>
 
@@ -55,7 +56,7 @@ export default function Cohorts() {
 
             <TopBanner>Register For Cohorts</TopBanner>
 
-            { isSuccess &&
+            { isSuccessful &&
                 <Container> 
                     {
                         data &&
@@ -67,15 +68,17 @@ export default function Cohorts() {
             }
 
             {
-                (isLoading || isError) && (
-                    <LoadingScreen />
+                (
+                    isLoading || isError || !isSuccessful) && (
+                        <LoadingScreen isError={!isLoading} />
                 )
             } 
 
-            { isAdminLoggedIn &&
-                <CreateButton title={"Create Cohort"} open={open} show={show} close={close}>
-                    <CreateCohortForm close={close} />
-                </CreateButton> 
+            { 
+                isAdminLoggedIn &&
+                    <CreateButton title={"Create Cohort"} open={open} show={show} close={close}>
+                        <CreateCohortForm close={close} />
+                    </CreateButton> 
             }
 
         </Layout>

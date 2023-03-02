@@ -23,6 +23,30 @@
         "internalType": "uint256",
         "name": "Proposal_ID",
         "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "voter",
+        "type": "address"
+      }
+    ],
+    "name": "checkIfVoted",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "Proposal_ID",
+        "type": "uint256"
       }
     ],
     "name": "deleteProposal",
@@ -44,7 +68,18 @@
     "type": "function"
   },
   {
-    "inputs": [],
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "start",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "count",
+        "type": "uint256"
+      }
+    ],
     "name": "getLost",
     "outputs": [
       {
@@ -52,6 +87,11 @@
           {
             "internalType": "string",
             "name": "name",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "description",
             "type": "string"
           },
           {
@@ -117,7 +157,18 @@
     "type": "function"
   },
   {
-    "inputs": [],
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "start",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "count",
+        "type": "uint256"
+      }
+    ],
     "name": "getNotStarted",
     "outputs": [
       {
@@ -125,6 +176,11 @@
           {
             "internalType": "string",
             "name": "name",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "description",
             "type": "string"
           },
           {
@@ -190,7 +246,18 @@
     "type": "function"
   },
   {
-    "inputs": [],
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "start",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "count",
+        "type": "uint256"
+      }
+    ],
     "name": "getOngoing",
     "outputs": [
       {
@@ -201,63 +268,8 @@
             "type": "string"
           },
           {
-            "internalType": "address",
-            "name": "author",
-            "type": "address"
-          },
-          {
-            "internalType": "uint256",
-            "name": "id",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "creationTime",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "votingDelay",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "votingPeriod",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "votesFor",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "votesAgainst",
-            "type": "uint256"
-          },
-          {
-            "internalType": "enum LibGovernance.State",
-            "name": "state",
-            "type": "uint8"
-          }
-        ],
-        "internalType": "struct LibGovernance.Proposal[]",
-        "name": "",
-        "type": "tuple[]"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "getStalemate",
-    "outputs": [
-      {
-        "components": [
-          {
             "internalType": "string",
-            "name": "name",
+            "name": "description",
             "type": "string"
           },
           {
@@ -310,7 +322,94 @@
     "type": "function"
   },
   {
-    "inputs": [],
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "start",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "count",
+        "type": "uint256"
+      }
+    ],
+    "name": "getProposals",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "string",
+            "name": "name",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "description",
+            "type": "string"
+          },
+          {
+            "internalType": "address",
+            "name": "author",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "id",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "creationTime",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "votingDelay",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "votingPeriod",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "votesFor",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "votesAgainst",
+            "type": "uint256"
+          },
+          {
+            "internalType": "enum LibGovernance.State",
+            "name": "state",
+            "type": "uint8"
+          }
+        ],
+        "internalType": "struct LibGovernance.Proposal[]",
+        "name": "",
+        "type": "tuple[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "start",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "count",
+        "type": "uint256"
+      }
+    ],
     "name": "getWon",
     "outputs": [
       {
@@ -318,6 +417,11 @@
           {
             "internalType": "string",
             "name": "name",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "description",
             "type": "string"
           },
           {
@@ -395,18 +499,18 @@
         "type": "string"
       },
       {
+        "internalType": "string",
+        "name": "_description",
+        "type": "string"
+      },
+      {
         "internalType": "uint256",
-        "name": "_delayminutes",
+        "name": "_delay",
         "type": "uint256"
       },
       {
         "internalType": "uint256",
-        "name": "_delayHours",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_votingDays",
+        "name": "_votingDuration",
         "type": "uint256"
       }
     ],
@@ -493,6 +597,11 @@
           {
             "internalType": "string",
             "name": "name",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "description",
             "type": "string"
           },
           {
