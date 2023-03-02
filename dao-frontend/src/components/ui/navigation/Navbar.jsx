@@ -11,7 +11,8 @@ const navigation = [
     { name: 'Join Cohort', href: links.cohorts },
     { name: 'Proposals', href: links.proposals },
     { name: 'Hackathons', href: links.hackathons },
-    { name: 'CrowdFunding', href: links.crowdfunding }
+    { name: 'CrowdFunding', href: links.crowdfunding },
+    { name: 'Get USDC', href: links.faucet }
 ]
 
 const Navbar = () => {

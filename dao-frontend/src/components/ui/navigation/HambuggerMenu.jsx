@@ -64,14 +64,14 @@ const HambuggerMenu = ({open, setOpen}) => {
                         }
 
                         { isConnected && (
-                            <div className='flex flex-col items-center justify-center my-20 text-lg font-semibold'>
+                            <div className='flex flex-col items-center justify-center my-10 text-lg font-semibold'>
                                 <p>Account: {truncateEthAddress(address)} </p>
                                 <p>Network: {networkNameByChainId(chain.id)} </p>
                                 <p>Chain ID: {chain.id} </p>
                             </div>)
                         }
 
-                        <div className="absolute bottom-4 flex justify-center w-full px-4">
+                        <div className="absolute bottom-8 flex justify-center w-full px-4">
                             <button 
                                 onClick={() => isConnected ? disconnect() : setShowOptions(true)}
                                 className={`${ isConnected ? "bg-red-800 rounded-lg hover:bg-red-600" : "bg-blue-800 rounded-lg hover:bg-blue-600" } text-white py-3 px-20 w-full`}> 
@@ -82,7 +82,6 @@ const HambuggerMenu = ({open, setOpen}) => {
                     </div>
 
             </motion.div>
-
 
             <ModalWrapper title={"Choose Wallet"} open={showOptions} handleClose={closeOptions}>
                 <WalletOptions show={showOptions} close={closeOptions}/>
