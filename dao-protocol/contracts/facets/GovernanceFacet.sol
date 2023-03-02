@@ -101,10 +101,9 @@ contract GovernanceFacet {
   function newProposal(
     string calldata _name,
     string calldata _description,
-    uint _delayminutes,
-    uint _delayHours,
-    uint _votingDays
-    ) external noEmptiness(_name) noEmptiness(_description) notZero(_votingDays){
+    uint _delay,
+    uint _votingDuration
+    ) external noEmptiness(_name) noEmptiness(_description) notZero(_votingDuration){
     LibGovernance.Tracker storage pt = LibGovernance.getProposalTracker();
     LibGovernance.Mappings storage mp = LibGovernance.getMappingStruct();
     pt.Proposal_Tracker += 1;
@@ -115,11 +114,8 @@ contract GovernanceFacet {
       author: msg.sender,
       id: Proposal_ID,
       creationTime: block.timestamp,
-      votingDelay: (_delayminutes * 60) + (_delayHours * 60 * 60) +
-        block.timestamp,
-      votingPeriod: (_delayminutes * 60) + (_delayHours * 60 * 60) + 
-        (_votingDays * 60 *60 * 24) +
-        block.timestamp,
+      votingDelay: block.timestamp + _delay,
+      votingPeriod: block.timestamp + _delay + _votingDuration,
       votesFor: 0,
       votesAgainst: 0,
       state : LibGovernance.State.notStarted

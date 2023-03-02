@@ -8,16 +8,15 @@ import { toast } from "react-toastify";
 import LoadingButton from "@/components/ui/form/LoadingButton";
 import Textarea from "@/components/ui/form/Textarea";
 import Select from "@/components/ui/form/Select";
-import { delays } from "@/libs/constants";
-
-const currentDate = getDate()
+import { delays, durationLists } from "@/libs/constants";
 
 const CreateProposalForm = ({close}) => {
 
     const [name, setName] = useState("");
 
     const [description, setDescription] = useState("");
-    const [duration, setDuration] = useState(null);
+    const [delay, setDelay] = useState(delays[0]?.value);
+    const [duration, setDuration] = useState(durationLists[0]?.value);
 
     const [target, setTarget] = useState(null);
     const [min, setMin] = useState(null);
@@ -47,7 +46,7 @@ const CreateProposalForm = ({close}) => {
     }
 
     const isDisabled = () => {
-        return idError || nameError || descriptionError || durationError || targetError || minError
+        return nameError || descriptionError 
     }
 
     // Verify Name
@@ -100,9 +99,9 @@ const CreateProposalForm = ({close}) => {
 
             <div className="grid grid-cols-2 gap-4">
 
-                <Select label={"Voting Delay"} id={"delays"} lists={delays} />
+                <Select label={"Voting Delay"} id={"delays"} lists={delays} onChange={setDelay} />
 
-                <Select label={"Voting D"} id={"delays"} lists={delays} />
+                <Select label={"Voting Duration"} id={"duration"} lists={durationLists} onChange={setDuration} />
 
             </div>
 

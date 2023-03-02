@@ -32,12 +32,23 @@ export default function Proposals() {
     setShow(false)
   }
 
+  const proposalCount = useContractRead({
+    address: contractAddress,
+    abi: proposalFacetABI,
+    functionName: 'getNumberOfProposals',
+   
+  })
+
+  //getNumberOfProposals
   const proposals = useContractRead({
     address: contractAddress,
     abi: proposalFacetABI,
     functionName: 'proposals',
-    watch: true
+    //watch: true,
+    //enabled: proposalCount.data
   })
+
+  console.log(proposalCount)
 
   useEffect(() => {
     if (proposals?.data) setData([...proposals?.data].reverse())
