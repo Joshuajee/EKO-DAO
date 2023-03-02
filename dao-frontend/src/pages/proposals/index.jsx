@@ -68,7 +68,7 @@ export default function Proposals() {
 
       {
         (isLoading || isError || !isSuccessful) && (
-          <LoadingScreen isError={!isSuccessful} />
+          <LoadingScreen isError={!isLoading} />
         )
       }
 

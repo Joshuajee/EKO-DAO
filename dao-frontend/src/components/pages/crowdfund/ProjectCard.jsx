@@ -63,10 +63,6 @@ const ProjectCard = ({project, contract, expanded}) => {
         setCurrentTime(Number(new Date()))
     }, [endDate])
 
-    console.log(status)
-
-    console.log(Number(currentTime))
-
     return (
         <div className="w-full text-gray-700 bg-white rounded-md p-4 md:px-4 shadow-lg">
             {/* <h3 className="mb-3 text-sm">POSTED {date} | PROJECT ID </h3> */}

@@ -70,7 +70,7 @@ export default function Cohorts() {
             {
                 (
                     isLoading || isError || !isSuccessful) && (
-                        <LoadingScreen isError={!isSuccessful} />
+                        <LoadingScreen isError={!isLoading} />
                 )
             } 
 
