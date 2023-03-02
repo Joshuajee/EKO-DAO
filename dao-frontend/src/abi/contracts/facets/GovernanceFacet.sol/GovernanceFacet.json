@@ -505,17 +505,12 @@
       },
       {
         "internalType": "uint256",
-        "name": "_delayminutes",
+        "name": "_delay",
         "type": "uint256"
       },
       {
         "internalType": "uint256",
-        "name": "_delayHours",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_votingDays",
+        "name": "_votingDuration",
         "type": "uint256"
       }
     ],

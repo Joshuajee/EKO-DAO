@@ -11,6 +11,7 @@ import { AuthContext } from '@/context/AuthContext';
 import { useContractRead } from 'wagmi';
 import { contractAddress } from '@/libs/utils';
 import proposalFacetABI from '@/abi/contracts/facets/AdminFacet.sol/AdminFacet.json';
+import CreateProposalForm from '@/components/pages/proposals/CreateProposalForm';
 
 export default function Proposals() {
 
@@ -31,12 +32,23 @@ export default function Proposals() {
     setShow(false)
   }
 
+  const proposalCount = useContractRead({
+    address: contractAddress,
+    abi: proposalFacetABI,
+    functionName: 'getNumberOfProposals',
+   
+  })
+
+  //getNumberOfProposals
   const proposals = useContractRead({
     address: contractAddress,
     abi: proposalFacetABI,
     functionName: 'proposals',
-    watch: true
+    //watch: true,
+    //enabled: proposalCount.data
   })
+
+  console.log(proposalCount)
 
   useEffect(() => {
     if (proposals?.data) setData([...proposals?.data].reverse())
@@ -67,13 +79,13 @@ export default function Proposals() {
 
       {
         (isLoading || isError || !isSuccessful) && (
-          <LoadingScreen isError={!isSuccessful} />
+          <LoadingScreen isError={!isLoading} />
         )
       }
 
       { isAdminLoggedIn &&
         <CreateButton title={"Create a new Crowd fund Project"} open={open} show={show} close={close}>
-          <CreateCrowdForm close={close} />
+          <CreateProposalForm close={close} />
         </CreateButton> 
       }
     

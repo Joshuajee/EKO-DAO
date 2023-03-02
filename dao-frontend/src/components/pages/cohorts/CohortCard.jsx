@@ -8,6 +8,7 @@ import CohortStatus from "./CohortStatus"
 import { memo } from "react"
 import { useAccount } from "wagmi"
 import { toast } from "react-toastify"
+import CohortActions from "./CohortActions"
 
 
 const CohortCard = ({cohort, expanded}) => {
@@ -56,6 +57,8 @@ const CohortCard = ({cohort, expanded}) => {
             <ModalWrapper title={"Join Cohort"} open={open} handleClose={handleClose}>
                 <EnrollmentForm cohort={cohort} close={handleClose} />
             </ModalWrapper>
+
+            <CohortActions />
             
         </div>
     )

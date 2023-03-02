@@ -71,7 +71,7 @@ export default function Crowdfunding() {
 
       {
         (isLoading || isError || !isSuccessful) && (
-          <LoadingScreen isError={!isSuccessful} />
+          <LoadingScreen isError={!isLoading} />
         )
       }
 

@@ -2,12 +2,10 @@ import { convertToEther, dollarFormat } from "@/libs/utils"
 import { memo, useEffect, useContext } from "react"
 import { useAccount, useContractRead, useContractWrite } from "wagmi"
 import ProjectABI from '@/abi/contracts/CrowdFundProject.sol/Project.json';
-import { Contract } from "ethers";
-import LoadingButton from "@/components/ui/form/LoadingButton";
 import { toast } from "react-toastify";
 import { AuthContext } from "@/context/AuthContext";
 
-const DonorActions = ({status, contract, expired}) => {
+const CohortActions = ({status, contract, expired}) => {
 
     const { address, isConnected } = useAccount()
 
@@ -28,10 +26,10 @@ const DonorActions = ({status, contract, expired}) => {
         args: [address],
     })
 
-    const adminWithdraw = useContractWrite({
+    const initCohort = useContractWrite({
         address: contract,
         abi: ProjectABI,
-        functionName: 'adminWithdraw',
+        functionName: 'initCohort',
         args: [address],
     })
 
@@ -39,10 +37,10 @@ const DonorActions = ({status, contract, expired}) => {
         if (donorWithdraw.isError) 
             return toast.error(donorWithdraw?.error?.reason)
     
-        if (adminWithdraw.isError) 
-            return toast.error(adminWithdraw?.error?.reason)
+        if (initCohort.isError) 
+            return toast.error(initCohort?.error?.reason)
 
-    }, [adminWithdraw.isError, adminWithdraw?.error, donorWithdraw.isError, donorWithdraw?.error]);
+    }, [initCohort.isError, initCohort?.error, donorWithdraw.isError, donorWithdraw?.error]);
 
 
     return (
@@ -67,12 +65,12 @@ const DonorActions = ({status, contract, expired}) => {
                     </div>)
             }
 
-        { (status === 2 && isAdminLoggedIn) &&
+        { (isAdminLoggedIn) &&
             <div className="flex justify-center">
                 <button 
-                    onClick={adminWithdraw?.write}
-                    className="mt-4 bg-blue-600 hover:bg-blue-700 rounded-lg px-8 py-2 text-white"> 
-                    Withdraw funds Admin
+                    onClick={initCohort?.write}
+                    className="mt-4 bg-yellow-600 hover:bg-yellow-700 rounded-lg px-8 py-2 text-white"> 
+                    Initialize Cohort
                 </button>
             </div>
         }
@@ -81,4 +79,4 @@ const DonorActions = ({status, contract, expired}) => {
     )
 }
 
-export default memo(DonorActions)
+export default memo(CohortActions)

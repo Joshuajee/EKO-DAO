@@ -52,3 +52,4 @@ export const convertToWEI = (amount) => {
     if (!amount) return 0
     return Number(amount) <= 0 ? 0 : ethers.utils.parseUnits(amount, 'ether')
 }
+

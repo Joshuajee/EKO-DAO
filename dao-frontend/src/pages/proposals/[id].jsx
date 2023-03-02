@@ -17,6 +17,8 @@ export default function Proposal() {
 
   if (!proposal) return null
 
+  //getProposals
+
   return (
     <Layout>
       <Head><title> Proposal </title></Head>
