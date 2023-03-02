@@ -6,17 +6,22 @@ import { AiOutlineClockCircle } from "react-icons/ai"
 import EnrollmentForm from "./EnrollmentForm"
 import CohortStatus from "./CohortStatus"
 import { memo } from "react"
+import { useAccount } from "wagmi"
+import { toast } from "react-toastify"
 
 
 const CohortCard = ({cohort, expanded}) => {
 
-    const { name, content, commitment, size, startDate, endDate, close } = cohort
+    const { name, content, commitment, size, startDate, endDate, description } = cohort
+
+    const { isConnected } = useAccount()
 
     const router = useRouter()
 
     const [open, setOpen] = useState(false)
 
     const handleClick = () => {
+        if (!isConnected) return toast.error("Please Connect")
         setOpen(true)
     } 
 
@@ -24,13 +29,12 @@ const CohortCard = ({cohort, expanded}) => {
         setOpen(false)
     } 
 
-
     return (
         <div className="text-gray-700 bg-white rounded-md p-4 md:px-4 shadow-lg w-full max-h-[500px] overflow-x-hidden overflow-y-auto">
             {/* <h3 className="mb-3 text-sm">COHORT ADDRESS: {cohort.contractAddress}</h3> */}
             <h2 className="text-black text-xl md:text-2xl font-semibold mb-3">{name}</h2>
             <p className="mb-3">{content}
-               {` The standard chunk of Lorem Ipsum used since the 1500s is reproduced below for those interested. Sections 1.10.32 and 1.10.33 from "de Finibus Bonorum et Malorum" by Cicero are also reproduced in their exact original form, accompanied by English versions from the 1914 translation by H. Rackham.`}
+               {description}
             </p>
             
             <div className="flex mb-4">

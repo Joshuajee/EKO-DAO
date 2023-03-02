@@ -48,6 +48,9 @@ export default function Cohorts() {
         setIsLoading(cohorts?.isLoading)
     }, [cohorts?.data, cohorts?.isError, cohorts?.isSuccess, cohorts?.isLoading]);
 
+
+    const isSuccessful = isSuccess && cohorts?.data?.length > 0
+
     return (
         <Layout>
 
@@ -55,7 +58,7 @@ export default function Cohorts() {
 
             <TopBanner>Register For Cohorts</TopBanner>
 
-            { isSuccess &&
+            { isSuccessful &&
                 <Container> 
                     {
                         data &&
@@ -67,15 +70,17 @@ export default function Cohorts() {
             }
 
             {
-                (isLoading || isError) && (
-                    <LoadingScreen />
+                (
+                    isLoading || isError || !isSuccessful) && (
+                        <LoadingScreen isError={!isSuccessful} />
                 )
             } 
 
-            { isAdminLoggedIn &&
-                <CreateButton title={"Create Cohort"} open={open} show={show} close={close}>
-                    <CreateCohortForm close={close} />
-                </CreateButton> 
+            { 
+                isAdminLoggedIn &&
+                    <CreateButton title={"Create Cohort"} open={open} show={show} close={close}>
+                        <CreateCohortForm close={close} />
+                    </CreateButton> 
             }
 
         </Layout>
