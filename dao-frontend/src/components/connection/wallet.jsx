@@ -24,13 +24,10 @@ const Wallet = ({connector}) => {
 
     return (
         <button 
-            className='flex flex-col rounded-lg w-full h-auto aspect-video shadow-lg items-center justify-center'
+            className='flex flex-col rounded-lg w-full h-24 md:h-auto aspect-video shadow-lg items-center justify-center'
             onClick={() => connect({ connector })}>
-
             {icon(connector.id)}
-            
             <p> {connector.name} </p>
-
         </button>
     )
 }

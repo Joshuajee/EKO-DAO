@@ -17,12 +17,8 @@ const DonorsList = ({donors}) => {
 
                     <thead class="text-xs text-gray-900 uppercase">
                         <tr>
-                            <th scope="col" class="px-6 py-3">
-                                Address
-                            </th>
-                            <th scope="col" class="px-6 py-3">
-                                Amount
-                            </th>
+                            <th scope="col">Address</th>
+                            <th scope="col">Amount</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -31,10 +27,10 @@ const DonorsList = ({donors}) => {
                             donors.map((voter, index) => {
                                 return (
                                     <tr key={index} className="bg-white">
-                                        <td scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
-                                            {truncateEthAddress(voter.address)}
+                                        <td scope="row" className="font-medium text-gray-900 whitespace-nowrap">
+                                            {truncateEthAddress(voter)}
                                         </td>
-                                        <td className={`px-6 py-4`}>
+                                        <td className={`px-2`}>
                                             $ {getRandomInt(1, 100000)} USDC
                                         </td>
                                     </tr>

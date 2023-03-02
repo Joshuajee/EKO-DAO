@@ -1,8 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { motion } from "framer-motion"
 import Hamburger from 'hamburger-react';
 import PropTypes from 'prop-types';
-import { menuAnimate, container } from './animation';
+import { RiAdminFill } from 'react-icons/ri';
+import { menuAnimate } from './animation';
 import { useDimension } from '@/hooks/windows';
 import { navigation } from '@/libs/routes';
 import NavLink from './NavLink';
@@ -11,6 +12,7 @@ import WalletOptions from '../../connection/walletsOptions';
 import { useAccount, useDisconnect, useNetwork } from 'wagmi';
 import truncateEthAddress from 'truncate-eth-address';
 import { networkNameByChainId } from '@/libs/utils';
+import { AuthContext } from '@/context/AuthContext';
 
 
 const HambuggerMenu = ({open, setOpen}) => {
@@ -24,6 +26,8 @@ const HambuggerMenu = ({open, setOpen}) => {
 
     const { address, isConnected } = useAccount()
     const { disconnect } = useDisconnect()
+
+    const { isAdminLoggedIn } = useContext(AuthContext);
 
     const handleClick = () => {
         setOpen(!open)
@@ -53,6 +57,10 @@ const HambuggerMenu = ({open, setOpen}) => {
 
                         {
                             navigation.map((nav, index) => (<NavLink key={index} name={nav.name} link={nav.href} icon={nav.icon} />))
+                        }
+
+                        {
+                            isAdminLoggedIn && <NavLink name={"Admin"} link={"/admin"} icon={<RiAdminFill size={24} />} />
                         }
 
                         { isConnected && (

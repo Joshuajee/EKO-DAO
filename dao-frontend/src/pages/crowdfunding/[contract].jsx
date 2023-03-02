@@ -1,9 +1,7 @@
-import DonorsList from '@/components/pages/crowdfund/DonorsList';
 import ProjectCard from '@/components/pages/crowdfund/ProjectCard';
 import Container from '@/components/ui/Container';
 import Layout from '@/components/ui/Layout';
 import LoadingScreen from '@/components/ui/screens/LoadingScreen';
-import { votersDummy } from '@/libs/dummy';
 import Head from 'next/head'
 import { useRouter } from 'next/router';
 import { useContractRead } from 'wagmi';
@@ -29,15 +27,23 @@ export default function CrowdFund() {
       { isSuccess && 
         <Container> 
 
-          <div className='mt-20 grid grid-cols-1 md:grid-cols-3 md:gap-4'>
-
-            <div className='col-span-2 mb-4'>
-              <ProjectCard project={data}  expanded={true}/>  
-            </div>
-
-            <DonorsList donors={votersDummy} />
-
+          <div className='mt-20 flex justify-center w-full'>
+            <div className='max-w-5xl w-full'> 
+              <ProjectCard project={data} contract={contract}  expanded={true}/>   
+            </div> 
           </div>
+
+          {/* 
+            <div className='mt-20 grid grid-cols-1 md:grid-cols-3 md:gap-4'>
+
+              <div className='col-span-2 mb-4'>
+                <ProjectCard project={data}  expanded={true}/>  
+              </div>
+
+              <DonorsList donors={data?.donors} />
+
+            </div> 
+          */}
 
         </Container>
       }

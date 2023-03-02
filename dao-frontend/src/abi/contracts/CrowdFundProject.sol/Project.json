@@ -52,6 +52,16 @@
   },
   {
     "inputs": [],
+    "name": "CampaignSuccessfulAndCompleted",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "FundAlreadyWithdraw",
+    "type": "error"
+  },
+  {
+    "inputs": [],
     "name": "MustBeContractAddress",
     "type": "error"
   },
@@ -127,12 +137,6 @@
       {
         "indexed": false,
         "internalType": "uint256",
-        "name": "fundBalance",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
         "name": "transactionDate",
         "type": "uint256"
       }
@@ -171,11 +175,6 @@
         "internalType": "address",
         "name": "_user",
         "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_amount",
-        "type": "uint256"
       }
     ],
     "name": "adminWithdraw",
@@ -311,6 +310,11 @@
             "internalType": "enum Status",
             "name": "status",
             "type": "uint8"
+          },
+          {
+            "internalType": "address[]",
+            "name": "donors",
+            "type": "address[]"
           }
         ],
         "internalType": "struct Database.ProjectState",
@@ -319,6 +323,30 @@
       }
     ],
     "stateMutability": "pure",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_user",
+        "type": "address"
+      }
+    ],
+    "name": "isDonor",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "status",
+        "type": "bool"
+      },
+      {
+        "internalType": "uint256",
+        "name": "amount",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
     "type": "function"
   }
 ]
