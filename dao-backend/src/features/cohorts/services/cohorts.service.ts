@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import {
-  COHORT_ABI,
+  COHORT_FACET_ABI,
   COHORT_FACTORY_FACET_ABI,
 } from 'src/commons/constants/abis';
 import { Web3Helper } from 'src/commons/helpers/web3-helper';
@@ -34,8 +34,8 @@ export class CohortsService {
       const id = row.id;
       const startDate = Math.floor(cohortDto.startDate.getTime());
       const endDate = Math.floor(cohortDto.endDate.getTime());
-      const CohortFcatoryFacet = this.getCohortFcatoryFacet();
-      const encodedData: string = CohortFcatoryFacet.methods
+      const CohortFactoryFacet = this.getCohortFactoryFacet();
+      const encodedData: string = CohortFactoryFacet.methods
         .newCohort(
           id,
           cohortDto.name,
@@ -52,8 +52,9 @@ export class CohortsService {
         this.configService.superAdminAddress,
         this.configService.superAdminPrivateKey,
       );
-      const result = await CohortFcatoryFacet.methods.cohort(id).call();
-      return { id: id, cohort: result.contractAddress };
+      const CohortFacet = this.getCohortFacet();
+      const result = await CohortFacet.methods.cohort(id).call();
+      return { id: id, cohort: result[1] };
     } catch (error) {
       console.error(error);
       throw new BadRequestException();
@@ -61,8 +62,8 @@ export class CohortsService {
   }
 
   async init(address: string, initCohortDto: InitCohortDto): Promise<void> {
-    const CohortFcatoryFacet = this.getCohortFcatoryFacet();
-    const encodedData: string = CohortFcatoryFacet.methods
+    const CohortFacet = this.getCohortFacet();
+    const encodedData: string = CohortFacet.methods
       .initCohort(address, initCohortDto.stableCoin, initCohortDto.ekoNft)
       .encodeABI();
     try {
@@ -78,26 +79,11 @@ export class CohortsService {
     }
   }
 
-  async getById(id: number): Promise<{ [key: string]: any }> {
+  async getById(id: number): Promise<Cohort> {
     try {
-      const cohortDB: Cohort = await this.cohortsRepository.findOneOrFail({
+      const cohort: Cohort = await this.cohortsRepository.findOneOrFail({
         where: { id },
       });
-      const CohortFcatoryFacet = this.getCohortFcatoryFacet();
-      const result = await CohortFcatoryFacet.methods.cohort(id).call();
-      const Cohort = this.getCohort(result.contractAddress);
-      const cohortBC = await Cohort.methods.cohort().call();
-      const cohort = {
-        name: cohortBC.name,
-        startDate: cohortBC.startDate,
-        endDate: cohortBC.endDate,
-        size: cohortBC.size,
-        commitment: cohortBC.commitment,
-        briefDescription: cohortBC.description,
-        exhaustiveDescription: cohortDB.description,
-        createdAt: cohortDB.createdAt,
-        updatedAt: cohortDB.updatedAt,
-      };
       return cohort;
     } catch (error) {
       console.error(error);
@@ -105,14 +91,17 @@ export class CohortsService {
     }
   }
 
-  getCohortFcatoryFacet() {
+  getCohortFactoryFacet() {
     return this.web3Helper.getContractInstance(
       COHORT_FACTORY_FACET_ABI,
       this.configService.diamondAddress,
     );
   }
 
-  getCohort(address: string) {
-    return this.web3Helper.getContractInstance(COHORT_ABI, address);
+  getCohortFacet() {
+    return this.web3Helper.getContractInstance(
+      COHORT_FACET_ABI,
+      this.configService.diamondAddress,
+    );
   }
 }

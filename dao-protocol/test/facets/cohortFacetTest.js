@@ -7,6 +7,7 @@ const { assert } = require("chai");
 describe("CohortFacetTest", async function () {
   let diamondAddress;
   let cohortFactoryFacet;
+  let cohortFacet;
   let cohort;
   let cohortAddress;
   let usdc;
@@ -22,6 +23,7 @@ describe("CohortFacetTest", async function () {
       "CohortFactoryFacet",
       diamondAddress
     );
+    cohortFacet = await ethers.getContractAt("CohortFacet", diamondAddress);
     const USDC = await ethers.getContractFactory("USDC");
     usdc = await USDC.deploy();
     await usdc.deployed();
@@ -50,19 +52,12 @@ describe("CohortFacetTest", async function () {
       description
     );
 
-    const cohortsList = await cohortFactoryFacet.cohorts();
+    const cohortsList = await cohortFacet.cohorts();
     assert.equal(cohortsList[0].name, name);
-    const cohortData = await cohortFactoryFacet.cohort(1);
-    cohortAddress = cohortData.contractAddress;
-    await cohortFactoryFacet.initCohort(
-      cohortAddress,
-      usdc.address,
-      ekoNft.address
-    );
-    const Cohort = await ethers.getContractFactory("Cohort");
-    cohort = await Cohort.attach(cohortAddress);
-    const record = await cohort.cohort();
-
+    const cohortData = await cohortFacet.cohort(1);
+    cohortAddress = cohortData[1];
+    await cohortFacet.initCohort(cohortAddress, usdc.address, ekoNft.address);
+    const record = cohortData[0];
     assert.equal(record.name, name);
     assert.equal(record.startDate, startDate);
     assert.equal(record.endDate, endDate);
@@ -72,6 +67,8 @@ describe("CohortFacetTest", async function () {
   });
 
   it("should enroll student in a cohort", async () => {
+    const Cohort = await ethers.getContractFactory("Cohort");
+    cohort = await Cohort.attach(cohortAddress);
     await usdc.mint(studentAddress, 10);
     await usdc.approve(cohortAddress, 10);
 

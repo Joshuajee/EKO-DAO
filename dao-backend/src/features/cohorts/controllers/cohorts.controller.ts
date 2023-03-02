@@ -17,6 +17,7 @@ import {
 } from '@nestjs/swagger';
 import { CohortDto } from '../dtos/cohort.dto';
 import { InitCohortDto } from '../dtos/init-cohort.dto';
+import { Cohort } from '../entities/cohorts.entity';
 import { CohortsService } from '../services/cohorts.service';
 
 @ApiTags('Cohorts')
@@ -101,7 +102,7 @@ export class CohortsController {
   @ApiBearerAuth('access-token')
   @UseGuards(AuthGuard('jwt'))
   @Get(':id')
-  getById(@Param('id') id: number): { [key: string]: any } {
+  getById(@Param('id') id: number): Promise<Cohort> {
     return this.cohortsService.getById(id);
   }
 }

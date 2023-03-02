@@ -8,20 +8,11 @@ library LibCohort {
   bytes32 constant DIAMOND_STORAGE_POSITION =
     keccak256("diamond.standard.cohort.storage");
 
-  struct CohortDetails {
-    string name;
-    uint startDate;
-    uint endDate;
-    string description;
-    address contractAddress;
-  }
 
   struct Cohorts {
     bytes32[] keys;
-    mapping(bytes32 => CohortDetails) values;
+    mapping(bytes32 => address) values;
   }
-
-  event NewCohort(CohortDetails cohort);
 
   function diamondStorage() internal pure returns (Cohorts storage cohorts) {
     bytes32 position = DIAMOND_STORAGE_POSITION;
@@ -44,7 +35,7 @@ library LibCohort {
 
     Cohorts storage cohorts = diamondStorage();
     bytes32 id = keccak256(abi.encodePacked(_id));
-    Cohort cohort_ = new Cohort(
+    Cohort cohort = new Cohort(
       id,
       _name,
       _startDate,
@@ -53,16 +44,8 @@ library LibCohort {
       _commitment,
       _description
     );
-    CohortDetails memory cohort = CohortDetails(
-      _name,
-      _startDate,
-      _endDate,
-      _description,
-      address(cohort_)
-    );
-    cohorts.values[id] = cohort;
+   cohorts.values[id] = address(cohort);
     cohorts.keys.push(id);
-    emit NewCohort(cohort);
   }
 
   function initCohort(
@@ -76,21 +59,25 @@ library LibCohort {
     cohort.init(_stableCoin, _ekoNft);
   }
 
-  function getCohort(bytes32 _id) internal view returns (CohortDetails memory) {
+  function getCohort(bytes32 _id) internal view returns (Cohort.CohortDetails memory, address) {
     Cohorts storage cohorts = diamondStorage();
-    return cohorts.values[_id];
+    address address_ = cohorts.values[_id];
+    Cohort contract_ = Cohort(address_);
+    return (contract_.getCohort(), address_);
   }
 
   function getCohorts()
     internal
     view
-    returns (CohortDetails[] memory cohortsList)
+    returns (Cohort.CohortDetails[] memory cohortsList)
   {
     Cohorts storage cohorts = diamondStorage();
     bytes32[] memory keys = cohorts.keys;
-    cohortsList = new CohortDetails[](keys.length);
+    cohortsList = new Cohort.CohortDetails[](keys.length);
     for (uint i = 0; i < keys.length; i++) {
-      cohortsList[i] = cohorts.values[cohorts.keys[i]];
+      address address_ = cohorts.values[cohorts.keys[i]];
+      Cohort contract_ = Cohort(address_);
+      cohortsList[i] = contract_.getCohort();
     }
   }
 }

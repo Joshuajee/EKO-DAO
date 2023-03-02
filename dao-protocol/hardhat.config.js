@@ -1,6 +1,7 @@
 /* global ethers task */
 require("@nomicfoundation/hardhat-chai-matchers");
 require("@nomiclabs/hardhat-ethers");
+require("hardhat-contract-sizer");
 
 // This is a sample Hardhat task. To learn how to create your own go to
 // https://hardhat.org/guides/create-task.html
@@ -50,4 +51,12 @@ module.exports = {
       //	only: ["NFTMarketplace", "RoyaltyToken"]
     },
   ],
+
+  contractSizer: {
+    alphaSort: true,
+    disambiguatePaths: false,
+    runOnCompile: true,
+    strict: true,
+    only: [],
+  },
 };

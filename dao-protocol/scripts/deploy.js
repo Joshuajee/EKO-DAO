@@ -22,6 +22,7 @@ async function deployDiamond(test = false) {
     "OwnershipFacet",
     "AdminFacet",
     "CohortFactoryFacet",
+    "CohortFacet",
     "GovernanceFacet",
     "CrowdFundFacet",
   ];
