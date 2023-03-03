@@ -14,6 +14,7 @@ library LibCohort {
     mapping(bytes32 => address) values;
   }
 
+event NewCohort(Cohort.CohortDetails cohort);
   function diamondStorage() internal pure returns (Cohorts storage cohorts) {
     bytes32 position = DIAMOND_STORAGE_POSITION;
     assembly {
@@ -46,6 +47,7 @@ library LibCohort {
     );
    cohorts.values[id] = address(cohort);
     cohorts.keys.push(id);
+    emit NewCohort(cohort.getCohort());
   }
 
   function initCohort(

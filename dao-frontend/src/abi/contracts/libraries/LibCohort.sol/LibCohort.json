@@ -5,6 +5,11 @@
       {
         "components": [
           {
+            "internalType": "bytes32",
+            "name": "id",
+            "type": "bytes32"
+          },
+          {
             "internalType": "string",
             "name": "name",
             "type": "string"
@@ -20,18 +25,33 @@
             "type": "uint256"
           },
           {
+            "internalType": "uint8",
+            "name": "size",
+            "type": "uint8"
+          },
+          {
+            "internalType": "uint256",
+            "name": "commitment",
+            "type": "uint256"
+          },
+          {
             "internalType": "string",
             "name": "description",
             "type": "string"
           },
           {
-            "internalType": "address",
-            "name": "contractAddress",
-            "type": "address"
+            "internalType": "enum Cohort.Status",
+            "name": "status",
+            "type": "uint8"
+          },
+          {
+            "internalType": "uint256",
+            "name": "studentsCount",
+            "type": "uint256"
           }
         ],
         "indexed": false,
-        "internalType": "struct LibCohort.CohortDetails",
+        "internalType": "struct Cohort.CohortDetails",
         "name": "cohort",
         "type": "tuple"
       }
