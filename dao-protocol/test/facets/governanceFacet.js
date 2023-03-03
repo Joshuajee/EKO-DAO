@@ -9,21 +9,18 @@ describe('Governance Facet test', function() {
 	// function Inputs
 	const PROPOSAL_NAME_1 = 'Proposal One';
 	const DESCRIPTION_1 = 'Description One';
-	const PROPOSAL_DELAY_MINUITES_1 = 0;
-	const PROPOSAL_DELAY_HOURS_1 = 0;
-	const PROPOSAL_VOTING_DAYS_1 = 1;
+	const PROPOSAL_DELAY_1 = 0;
+	const PROPOSAL_VOTING_DAYS_1 = 1 * 60 * 60 * 24;
 
 	const PROPOSAL_NAME_2 = 'Proposal Two';
 	const DESCRIPTION_2 = 'Description Two';
-	const PROPOSAL_DELAY_MINUITES_2 = 0;
-	const PROPOSAL_DELAY_HOURS_2 = 2;
-	const PROPOSAL_VOTING_DAYS_2 = 1;
+	const PROPOSAL_DELAY_2 = 2 * 60 * 60; // 2 hours
+	const PROPOSAL_VOTING_DAYS_2 = 1 * 60 * 60 * 24;
 
 	const PROPOSAL_NAME_3 = 'Proposal Three';
 	const DESCRIPTION_3 = 'Description Three';
-	const PROPOSAL_DELAY_MINUITES_3 = 0;
-	const PROPOSAL_DELAY_HOURS_3 = 2;
-	const PROPOSAL_VOTING_DAYS_3 = 1;
+	const PROPOSAL_DELAY_3 = 2 * 60 * 60; //2 hours
+	const PROPOSAL_VOTING_DAYS_3 = 1 * 60 * 60 * 24;
 
 	GovernanceFixture = async () => {
 		const [ owner, signer1, signer2, signer3 ] = await ethers.getSigners();
@@ -54,20 +51,8 @@ describe('Governance Facet test', function() {
 	it('should be able to create a new proposal, store it and get the number of proposls', async () => {
 		const { GovernanceFacet } = await loadFixture(GovernanceFixture);
 
-		await GovernanceFacet.newProposal(
-			PROPOSAL_NAME_1,
-			DESCRIPTION_1,
-			PROPOSAL_DELAY_MINUITES_1,
-			PROPOSAL_DELAY_HOURS_1,
-			PROPOSAL_VOTING_DAYS_1
-		);
-		await GovernanceFacet.newProposal(
-			PROPOSAL_NAME_2,
-			DESCRIPTION_2,
-			PROPOSAL_DELAY_MINUITES_2,
-			PROPOSAL_DELAY_HOURS_2,
-			PROPOSAL_VOTING_DAYS_2
-		);
+		await GovernanceFacet.newProposal(PROPOSAL_NAME_1, DESCRIPTION_1, PROPOSAL_DELAY_1, PROPOSAL_VOTING_DAYS_1);
+		await GovernanceFacet.newProposal(PROPOSAL_NAME_2, DESCRIPTION_2, PROPOSAL_DELAY_2, PROPOSAL_VOTING_DAYS_2);
 
 		const firstProposal = await GovernanceFacet.viewProposal('1');
 
@@ -78,13 +63,7 @@ describe('Governance Facet test', function() {
 	it('should be able to allow voting delegation on a particular proposal  and view delegate', async () => {
 		const { GovernanceFacet, owner, signer1, signer2, signer3 } = await loadFixture(GovernanceFixture);
 
-		await GovernanceFacet.newProposal(
-			PROPOSAL_NAME_1,
-			DESCRIPTION_1,
-			PROPOSAL_DELAY_MINUITES_1,
-			PROPOSAL_DELAY_HOURS_1,
-			PROPOSAL_VOTING_DAYS_1
-		);
+		await GovernanceFacet.newProposal(PROPOSAL_NAME_1, DESCRIPTION_1, PROPOSAL_DELAY_1, PROPOSAL_VOTING_DAYS_1);
 
 		await GovernanceFacet.addVotingDelegate('1', signer1.address);
 		await GovernanceFacet.connect(signer2).addVotingDelegate('1', signer3.address);
@@ -99,13 +78,7 @@ describe('Governance Facet test', function() {
 	it('should be able to remove voting delegate on a proposal', async () => {
 		const { GovernanceFacet, owner, signer1 } = await loadFixture(GovernanceFixture);
 
-		await GovernanceFacet.newProposal(
-			PROPOSAL_NAME_1,
-			DESCRIPTION_1,
-			PROPOSAL_DELAY_MINUITES_1,
-			PROPOSAL_DELAY_HOURS_1,
-			PROPOSAL_VOTING_DAYS_1
-		);
+		await GovernanceFacet.newProposal(PROPOSAL_NAME_1, DESCRIPTION_1, PROPOSAL_DELAY_1, PROPOSAL_VOTING_DAYS_1);
 
 		await GovernanceFacet.addVotingDelegate('1', signer1.address);
 
@@ -125,20 +98,8 @@ describe('Governance Facet test', function() {
 	it('should be able to vote for or against a proposal', async () => {
 		const { GovernanceFacet, signer1 } = await loadFixture(GovernanceFixture);
 
-		await GovernanceFacet.newProposal(
-			PROPOSAL_NAME_1,
-			DESCRIPTION_1,
-			PROPOSAL_DELAY_MINUITES_1,
-			PROPOSAL_DELAY_HOURS_1,
-			PROPOSAL_VOTING_DAYS_1
-		);
-		await GovernanceFacet.newProposal(
-			PROPOSAL_NAME_2,
-			DESCRIPTION_2,
-			PROPOSAL_DELAY_MINUITES_2,
-			PROPOSAL_DELAY_HOURS_2,
-			PROPOSAL_VOTING_DAYS_2
-		);
+		await GovernanceFacet.newProposal(PROPOSAL_NAME_1, DESCRIPTION_1, PROPOSAL_DELAY_1, PROPOSAL_VOTING_DAYS_1);
+		await GovernanceFacet.newProposal(PROPOSAL_NAME_2, DESCRIPTION_2, PROPOSAL_DELAY_2, PROPOSAL_VOTING_DAYS_2);
 
 		const firstProposalBefore = await GovernanceFacet.viewProposal('1');
 		const secondProposalBefore = await GovernanceFacet.viewProposal('2');
@@ -177,20 +138,8 @@ describe('Governance Facet test', function() {
 	it('should be able to allow delegate vote for or against a proposal', async () => {
 		const { GovernanceFacet, owner, signer1, signer2, signer3 } = await loadFixture(GovernanceFixture);
 
-		await GovernanceFacet.newProposal(
-			PROPOSAL_NAME_1,
-			DESCRIPTION_1,
-			PROPOSAL_DELAY_MINUITES_1,
-			PROPOSAL_DELAY_HOURS_1,
-			PROPOSAL_VOTING_DAYS_1
-		);
-		await GovernanceFacet.newProposal(
-			PROPOSAL_NAME_2,
-			DESCRIPTION_2,
-			PROPOSAL_DELAY_MINUITES_2,
-			PROPOSAL_DELAY_HOURS_2,
-			PROPOSAL_VOTING_DAYS_2
-		);
+		await GovernanceFacet.newProposal(PROPOSAL_NAME_1, DESCRIPTION_1, PROPOSAL_DELAY_1, PROPOSAL_VOTING_DAYS_1);
+		await GovernanceFacet.newProposal(PROPOSAL_NAME_2, DESCRIPTION_2, PROPOSAL_DELAY_2, PROPOSAL_VOTING_DAYS_2);
 
 		const firstProposalBefore = await GovernanceFacet.viewProposal('1');
 		const secondProposalBefore = await GovernanceFacet.viewProposal('2');
@@ -235,13 +184,7 @@ describe('Governance Facet test', function() {
 	it('shoould be able to allow a user check if they voted on a paarticular proposal', async () => {
 		const { GovernanceFacet, owner, signer1 } = await loadFixture(GovernanceFixture);
 
-		await GovernanceFacet.newProposal(
-			PROPOSAL_NAME_1,
-			DESCRIPTION_1,
-			PROPOSAL_DELAY_MINUITES_1,
-			PROPOSAL_DELAY_HOURS_1,
-			PROPOSAL_VOTING_DAYS_1
-		);
+		await GovernanceFacet.newProposal(PROPOSAL_NAME_1, DESCRIPTION_1, PROPOSAL_DELAY_1, PROPOSAL_VOTING_DAYS_1);
 
 		await GovernanceFacet.voteFor('1');
 
@@ -255,21 +198,9 @@ describe('Governance Facet test', function() {
 	it('should be able to delete a proposal still in voting delay', async () => {
 		const { GovernanceFacet } = await loadFixture(GovernanceFixture);
 
-		await GovernanceFacet.newProposal(
-			PROPOSAL_NAME_1,
-			DESCRIPTION_1,
-			PROPOSAL_DELAY_MINUITES_1,
-			PROPOSAL_DELAY_HOURS_1,
-			PROPOSAL_VOTING_DAYS_1
-		);
+		await GovernanceFacet.newProposal(PROPOSAL_NAME_1, DESCRIPTION_1, PROPOSAL_DELAY_1, PROPOSAL_VOTING_DAYS_1);
 
-		await GovernanceFacet.newProposal(
-			PROPOSAL_NAME_2,
-			DESCRIPTION_2,
-			PROPOSAL_DELAY_MINUITES_2,
-			PROPOSAL_DELAY_HOURS_2,
-			PROPOSAL_VOTING_DAYS_2
-		);
+		await GovernanceFacet.newProposal(PROPOSAL_NAME_2, DESCRIPTION_2, PROPOSAL_DELAY_2, PROPOSAL_VOTING_DAYS_2);
 
 		await GovernanceFacet.deleteProposal(2);
 
@@ -281,29 +212,11 @@ describe('Governance Facet test', function() {
 	it('should be able to get proposals within a particular range', async () => {
 		const { GovernanceFacet } = await loadFixture(GovernanceFixture);
 
-		await GovernanceFacet.newProposal(
-			PROPOSAL_NAME_1,
-			DESCRIPTION_1,
-			PROPOSAL_DELAY_MINUITES_1,
-			PROPOSAL_DELAY_HOURS_1,
-			PROPOSAL_VOTING_DAYS_1
-		);
+		await GovernanceFacet.newProposal(PROPOSAL_NAME_1, DESCRIPTION_1, PROPOSAL_DELAY_1, PROPOSAL_VOTING_DAYS_1);
 
-		await GovernanceFacet.newProposal(
-			PROPOSAL_NAME_2,
-			DESCRIPTION_2,
-			PROPOSAL_DELAY_MINUITES_2,
-			PROPOSAL_DELAY_HOURS_2,
-			PROPOSAL_VOTING_DAYS_2
-		);
+		await GovernanceFacet.newProposal(PROPOSAL_NAME_2, DESCRIPTION_2, PROPOSAL_DELAY_2, PROPOSAL_VOTING_DAYS_2);
 
-		await GovernanceFacet.newProposal(
-			PROPOSAL_NAME_3,
-			DESCRIPTION_3,
-			PROPOSAL_DELAY_MINUITES_3,
-			PROPOSAL_DELAY_HOURS_3,
-			PROPOSAL_VOTING_DAYS_3
-		);
+		await GovernanceFacet.newProposal(PROPOSAL_NAME_3, DESCRIPTION_3, PROPOSAL_DELAY_3, PROPOSAL_VOTING_DAYS_3);
 
 		const proposals = await GovernanceFacet.getProposals(3, 3);
 
@@ -315,21 +228,9 @@ describe('Governance Facet test', function() {
 	it('should be able to get proposals that have not started within a particular range', async () => {
 		const { GovernanceFacet } = await loadFixture(GovernanceFixture);
 
-		await GovernanceFacet.newProposal(
-			PROPOSAL_NAME_2,
-			DESCRIPTION_2,
-			PROPOSAL_DELAY_MINUITES_2,
-			PROPOSAL_DELAY_HOURS_2,
-			PROPOSAL_VOTING_DAYS_2
-		);
+		await GovernanceFacet.newProposal(PROPOSAL_NAME_2, DESCRIPTION_2, PROPOSAL_DELAY_2, PROPOSAL_VOTING_DAYS_2);
 
-		await GovernanceFacet.newProposal(
-			PROPOSAL_NAME_3,
-			DESCRIPTION_3,
-			PROPOSAL_DELAY_MINUITES_3,
-			PROPOSAL_DELAY_HOURS_3,
-			PROPOSAL_VOTING_DAYS_3
-		);
+		await GovernanceFacet.newProposal(PROPOSAL_NAME_3, DESCRIPTION_3, PROPOSAL_DELAY_3, PROPOSAL_VOTING_DAYS_3);
 
 		const notStarted = await GovernanceFacet.getNotStarted(2, 1);
 
@@ -339,29 +240,11 @@ describe('Governance Facet test', function() {
 	it('should be able to get proposals that are ongoing within a particular range', async () => {
 		const { GovernanceFacet } = await loadFixture(GovernanceFixture);
 
-		await GovernanceFacet.newProposal(
-			PROPOSAL_NAME_1,
-			DESCRIPTION_1,
-			PROPOSAL_DELAY_MINUITES_1,
-			PROPOSAL_DELAY_HOURS_1,
-			PROPOSAL_VOTING_DAYS_1
-		);
+		await GovernanceFacet.newProposal(PROPOSAL_NAME_1, DESCRIPTION_1, PROPOSAL_DELAY_1, PROPOSAL_VOTING_DAYS_1);
 
-		await GovernanceFacet.newProposal(
-			PROPOSAL_NAME_2,
-			DESCRIPTION_2,
-			PROPOSAL_DELAY_MINUITES_2,
-			PROPOSAL_DELAY_HOURS_2,
-			PROPOSAL_VOTING_DAYS_2
-		);
+		await GovernanceFacet.newProposal(PROPOSAL_NAME_2, DESCRIPTION_2, PROPOSAL_DELAY_2, PROPOSAL_VOTING_DAYS_2);
 
-		await GovernanceFacet.newProposal(
-			PROPOSAL_NAME_3,
-			DESCRIPTION_3,
-			PROPOSAL_DELAY_MINUITES_3,
-			PROPOSAL_DELAY_HOURS_3,
-			PROPOSAL_VOTING_DAYS_3
-		);
+		await GovernanceFacet.newProposal(PROPOSAL_NAME_3, DESCRIPTION_3, PROPOSAL_DELAY_3, PROPOSAL_VOTING_DAYS_3);
 
 		const ongoing = await GovernanceFacet.getOngoing(3, 3);
 
@@ -371,29 +254,11 @@ describe('Governance Facet test', function() {
 	it('should be able to get proposals that have ended and were won within a particular range', async () => {
 		const { GovernanceFacet } = await loadFixture(GovernanceFixture);
 
-		await GovernanceFacet.newProposal(
-			PROPOSAL_NAME_1,
-			DESCRIPTION_1,
-			PROPOSAL_DELAY_MINUITES_1,
-			PROPOSAL_DELAY_HOURS_1,
-			PROPOSAL_VOTING_DAYS_1
-		);
+		await GovernanceFacet.newProposal(PROPOSAL_NAME_1, DESCRIPTION_1, PROPOSAL_DELAY_1, PROPOSAL_VOTING_DAYS_1);
 
-		await GovernanceFacet.newProposal(
-			PROPOSAL_NAME_2,
-			DESCRIPTION_2,
-			PROPOSAL_DELAY_MINUITES_2,
-			PROPOSAL_DELAY_HOURS_2,
-			PROPOSAL_VOTING_DAYS_2
-		);
+		await GovernanceFacet.newProposal(PROPOSAL_NAME_2, DESCRIPTION_2, PROPOSAL_DELAY_2, PROPOSAL_VOTING_DAYS_2);
 
-		await GovernanceFacet.newProposal(
-			PROPOSAL_NAME_3,
-			DESCRIPTION_3,
-			PROPOSAL_DELAY_MINUITES_3,
-			PROPOSAL_DELAY_HOURS_3,
-			PROPOSAL_VOTING_DAYS_3
-		);
+		await GovernanceFacet.newProposal(PROPOSAL_NAME_3, DESCRIPTION_3, PROPOSAL_DELAY_3, PROPOSAL_VOTING_DAYS_3);
 
 		await GovernanceFacet.voteFor('1');
 
@@ -409,29 +274,11 @@ describe('Governance Facet test', function() {
 	it('should be able to get proposals that have ended and were lost within a particular range', async () => {
 		const { GovernanceFacet } = await loadFixture(GovernanceFixture);
 
-		await GovernanceFacet.newProposal(
-			PROPOSAL_NAME_1,
-			DESCRIPTION_1,
-			PROPOSAL_DELAY_MINUITES_1,
-			PROPOSAL_DELAY_HOURS_1,
-			PROPOSAL_VOTING_DAYS_1
-		);
+		await GovernanceFacet.newProposal(PROPOSAL_NAME_1, DESCRIPTION_1, PROPOSAL_DELAY_1, PROPOSAL_VOTING_DAYS_1);
 
-		await GovernanceFacet.newProposal(
-			PROPOSAL_NAME_2,
-			DESCRIPTION_2,
-			PROPOSAL_DELAY_MINUITES_2,
-			PROPOSAL_DELAY_HOURS_2,
-			PROPOSAL_VOTING_DAYS_2
-		);
+		await GovernanceFacet.newProposal(PROPOSAL_NAME_2, DESCRIPTION_2, PROPOSAL_DELAY_2, PROPOSAL_VOTING_DAYS_2);
 
-		await GovernanceFacet.newProposal(
-			PROPOSAL_NAME_3,
-			DESCRIPTION_3,
-			PROPOSAL_DELAY_MINUITES_3,
-			PROPOSAL_DELAY_HOURS_3,
-			PROPOSAL_VOTING_DAYS_3
-		);
+		await GovernanceFacet.newProposal(PROPOSAL_NAME_3, DESCRIPTION_3, PROPOSAL_DELAY_3, PROPOSAL_VOTING_DAYS_3);
 
 		await GovernanceFacet.voteAgainst('1');
 
@@ -450,24 +297,21 @@ describe('Governance Facet test', function() {
 	// 	await GovernanceFacet.newProposal(
 	// 		PROPOSAL_NAME_1,
 	// 		DESCRIPTION_1,
-	// 		PROPOSAL_DELAY_MINUITES_1,
-	// 		PROPOSAL_DELAY_HOURS_1,
+	// 		PROPOSAL_DELAY_1,
 	// 		PROPOSAL_VOTING_DAYS_1
 	// 	);
 
 	// 	await GovernanceFacet.newProposal(
 	// 		PROPOSAL_NAME_2,
 	// 		DESCRIPTION_2,
-	// 		PROPOSAL_DELAY_MINUITES_2,
-	// 		PROPOSAL_DELAY_HOURS_2,
+	// 		PROPOSAL_DELAY_2,
 	// 		PROPOSAL_VOTING_DAYS_2
 	// 	);
 
 	// 	await GovernanceFacet.newProposal(
 	// 		PROPOSAL_NAME_3,
 	// 		DESCRIPTION_3,
-	// 		PROPOSAL_DELAY_MINUITES_3,
-	// 		PROPOSAL_DELAY_HOURS_3,
+	// 		PROPOSAL_DELAY_3,
 	// 		PROPOSAL_VOTING_DAYS_3
 	// 	);
 
@@ -487,29 +331,11 @@ describe('Governance Facet test', function() {
 	it('should be able to start voting on a proposal', async () => {
 		const { GovernanceFacet } = await loadFixture(GovernanceFixture);
 
-		await GovernanceFacet.newProposal(
-			PROPOSAL_NAME_1,
-			DESCRIPTION_1,
-			PROPOSAL_DELAY_MINUITES_1,
-			PROPOSAL_DELAY_HOURS_1,
-			PROPOSAL_VOTING_DAYS_1
-		);
+		await GovernanceFacet.newProposal(PROPOSAL_NAME_1, DESCRIPTION_1, PROPOSAL_DELAY_1, PROPOSAL_VOTING_DAYS_1);
 
-		await GovernanceFacet.newProposal(
-			PROPOSAL_NAME_2,
-			DESCRIPTION_2,
-			PROPOSAL_DELAY_MINUITES_2,
-			PROPOSAL_DELAY_HOURS_2,
-			PROPOSAL_VOTING_DAYS_2
-		);
+		await GovernanceFacet.newProposal(PROPOSAL_NAME_2, DESCRIPTION_2, PROPOSAL_DELAY_2, PROPOSAL_VOTING_DAYS_2);
 
-		await GovernanceFacet.newProposal(
-			PROPOSAL_NAME_3,
-			DESCRIPTION_3,
-			PROPOSAL_DELAY_MINUITES_3,
-			PROPOSAL_DELAY_HOURS_3,
-			PROPOSAL_VOTING_DAYS_3
-		);
+		await GovernanceFacet.newProposal(PROPOSAL_NAME_3, DESCRIPTION_3, PROPOSAL_DELAY_3, PROPOSAL_VOTING_DAYS_3);
 
 		await helpers.time.increase(2 * 60 * 60);
 
