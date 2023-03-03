@@ -11,6 +11,8 @@ export const contractAddress = process.env.NEXT_PUBLIC_CONTRACT
 
 export const USDC = process.env.NEXT_PUBLIC_USDC
 
+export const EKONFT = process.env.NEXT_PUBLIC_EKONFT
+
 export const networkNameByChainId = (chainId) => {
 
     switch (chainId) {
@@ -43,6 +45,10 @@ export const getDate = () => {
 
 }
 
+export const isEthAddress = (address) => {
+    return ethers.utils.isAddress(address)
+}
+
 export const convertToEther = (price) => {
     if (!price) return 0
     return (ethers.utils.formatUnits(price.toString(), 'ether')).toString()
@@ -50,6 +56,6 @@ export const convertToEther = (price) => {
 
 export const convertToWEI = (amount) => {
     if (!amount) return 0
-    return Number(amount) <= 0 ? 0 : ethers.utils.parseUnits(amount, 'ether')
+    return Number(amount) <= 0 ? 0 : ethers.utils.parseUnits(String(amount), 'ether')
 }
 

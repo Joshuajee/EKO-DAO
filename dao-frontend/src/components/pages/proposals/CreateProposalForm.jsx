@@ -1,9 +1,9 @@
 import Input from "@/components/ui/form/Input"
-import { useState, useEffect, useLayoutEffect } from "react"
+import { useState, useEffect } from "react"
 import wordsCount from 'words-count';
-import { contractAddress, convertToWEI, getDate, USDC } from "@/libs/utils"
+import { contractAddress } from "@/libs/utils"
 import { useContractWrite } from "wagmi";
-import crowdFundFacetABI from '../../../abi/contracts/facets/CrowdFundFacet.sol/CrowdFundFacet.json';
+import ProposalFacetABI from '@/abi/contracts/facets/GovernanceFacet.sol/GovernanceFacet.json';
 import { toast } from "react-toastify";
 import LoadingButton from "@/components/ui/form/LoadingButton";
 import Textarea from "@/components/ui/form/Textarea";
@@ -18,26 +18,23 @@ const CreateProposalForm = ({close}) => {
     const [delay, setDelay] = useState(delays[0]?.value);
     const [duration, setDuration] = useState(durationLists[0]?.value);
 
-    const [target, setTarget] = useState(null);
-    const [min, setMin] = useState(null);
-
     // Errors 
-    const [idError, setIdError] = useState(false);
     const [nameError, setNameError] = useState(false);
-
     const [descriptionError, setDescriptionError] = useState(false);
-    const [durationError, setDurationError] = useState(false);
-
-    const [targetError, setTargetError] = useState(false);
-    const [minError, setMinError] = useState(false);
 
     const create = useContractWrite({
         mode: 'recklesslyUnprepared',
         address: contractAddress,
-        abi: crowdFundFacetABI,
+        abi: ProposalFacetABI,
         functionName: 'newProposal',
-        args: [name, description, convertToWEI(target), convertToWEI(min), USDC, new Date(duration).getTime()],
+        args: [name, description, delay, duration],
     })
+
+
+    console.log(name)
+    console.log(description)
+    console.log(duration)
+    console.log(delay)
 
 
     const submit = (e) => {
@@ -61,31 +58,16 @@ const CreateProposalForm = ({close}) => {
         else setDescriptionError(false)
     }, [description])
 
-    // Target Funds
-    useEffect(() => {
-        if (target <= 0) setTargetError(true)
-        else setTargetError(false)
-    }, [target])
-
-    // Minimum Donation
-    useEffect(() => {
-        if (min <= 0) setMinError(true)
-        else setMinError(false)
-    }, [min])
-
 
     useEffect(() => {
 
         if (create.isSuccess) {
-            toast.success("Funding Created Successfully")
-
-            setTimeout(() => {
-                close()
-            }, 600)
+            toast.success("Proposal Created Successfully")
+            close()
         }
 
-        if (create.error) {
-            toast.error(create.error)
+        if (create.isError) {
+            toast.error(create?.error?.reason)
         }
 
     }, [create.isLoading, create.isSuccess, create.isError, create.error, close])
@@ -95,7 +77,7 @@ const CreateProposalForm = ({close}) => {
 
             <Input value={name} onChange={setName} id="name" label={"Proposal Title"} placeholder="e.g Save our Planet" error={nameError} helperText={"Proposal Title should have at least 3 words"}  />
 
-            <Textarea value={description} onChange={setDescription} id="description" label={"Funding Description"} placeholder="e.g Contribute and saving the planet in a decentralized manner" error={descriptionError} helperText={"Descripion should contain 10 - 50 words"}></Textarea>
+            <Textarea value={description} onChange={setDescription} id="description" label={"Proposal Description"} placeholder="e.g Contribute and saving the planet in a decentralized manner" error={descriptionError} helperText={"Descripion should contain 10 - 50 words"}></Textarea>
 
             <div className="grid grid-cols-2 gap-4">
 
@@ -105,7 +87,7 @@ const CreateProposalForm = ({close}) => {
 
             </div>
 
-            <LoadingButton loading={create?.isLoading} disabled={isDisabled()} > Create Funding</LoadingButton>
+            <LoadingButton loading={create?.isLoading} disabled={isDisabled()} > Create Proposal</LoadingButton>
 
         </form>
     )

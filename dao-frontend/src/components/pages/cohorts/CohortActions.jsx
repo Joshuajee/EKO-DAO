@@ -1,9 +1,10 @@
-import { convertToEther, dollarFormat } from "@/libs/utils"
+import { contractAddress, convertToEther, dollarFormat, EKONFT, USDC } from "@/libs/utils"
 import { memo, useEffect, useContext } from "react"
 import { useAccount, useContractRead, useContractWrite } from "wagmi"
-import ProjectABI from '@/abi/contracts/CrowdFundProject.sol/Project.json';
 import { toast } from "react-toastify";
 import { AuthContext } from "@/context/AuthContext";
+import CohortABI from '@/abi/contracts/Cohort.sol/Cohort.json';
+import CohortFacetABI from '@/abi/contracts/facets/CohortFactoryFacet.sol/CohortFactoryFacet.json'
 
 const CohortActions = ({status, contract, expired}) => {
 
@@ -13,7 +14,7 @@ const CohortActions = ({status, contract, expired}) => {
 
     const { data } = useContractRead({
         address: contract,
-        abi: ProjectABI,
+        abi: CohortABI,
         functionName: 'isDonor',
         args: [address],
         enabled: isConnected
@@ -21,16 +22,16 @@ const CohortActions = ({status, contract, expired}) => {
 
     const donorWithdraw = useContractWrite({
         address: contract,
-        abi: ProjectABI,
+        abi: CohortABI,
         functionName: 'donorWithdraw',
         args: [address],
     })
 
     const initCohort = useContractWrite({
-        address: contract,
-        abi: ProjectABI,
+        address: contractAddress,
+        abi: CohortFacetABI,
         functionName: 'initCohort',
-        args: [address],
+        args: [contract, USDC, EKONFT],
     })
 
     useEffect(() => {

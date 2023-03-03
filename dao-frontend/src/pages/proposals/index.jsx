@@ -10,7 +10,7 @@ import LoadingScreen from '@/components/ui/screens/LoadingScreen';
 import { AuthContext } from '@/context/AuthContext';
 import { useContractRead } from 'wagmi';
 import { contractAddress } from '@/libs/utils';
-import proposalFacetABI from '@/abi/contracts/facets/AdminFacet.sol/AdminFacet.json';
+import ProposalFacetABI from '@/abi/contracts/facets/AdminFacet.sol/AdminFacet.json';
 import CreateProposalForm from '@/components/pages/proposals/CreateProposalForm';
 
 export default function Proposals() {
@@ -34,7 +34,7 @@ export default function Proposals() {
 
   const proposalCount = useContractRead({
     address: contractAddress,
-    abi: proposalFacetABI,
+    abi: ProposalFacetABI,
     functionName: 'getNumberOfProposals',
    
   })
@@ -42,7 +42,7 @@ export default function Proposals() {
   //getNumberOfProposals
   const proposals = useContractRead({
     address: contractAddress,
-    abi: proposalFacetABI,
+    abi: ProposalFacetABI,
     functionName: 'proposals',
     //watch: true,
     //enabled: proposalCount.data
@@ -84,7 +84,7 @@ export default function Proposals() {
       }
 
       { isAdminLoggedIn &&
-        <CreateButton title={"Create a new Crowd fund Project"} open={open} show={show} close={close}>
+        <CreateButton title={"Create a new Community Proposal"} open={open} show={show} close={close}>
           <CreateProposalForm close={close} />
         </CreateButton> 
       }
