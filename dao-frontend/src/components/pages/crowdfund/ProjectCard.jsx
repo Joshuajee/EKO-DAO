@@ -1,4 +1,5 @@
 import { memo, useEffect, useState } from "react"
+import date from 'date-and-time';
 import ModalWrapper from "@/components/ui/ModalWrapper"
 import { links } from "@/libs/routes"
 import { useRouter } from "next/router"
@@ -60,8 +61,14 @@ const ProjectCard = ({project, contract, expanded}) => {
 
     useEffect(() => {
         setDeadline(Number(endDate.toString()) * 1000)
-        setCurrentTime(Number(new Date()))
     }, [endDate])
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setCurrentTime(Number(new Date()))
+        }, 1000)
+        return clearInterval(interval)
+    }, [])
 
     return (
         <div className="w-full text-gray-700 bg-white rounded-md p-4 md:px-4 shadow-lg">
@@ -74,8 +81,16 @@ const ProjectCard = ({project, contract, expanded}) => {
                 <p className="ml-2 text-sm">Project {projectStatus?.status}</p> 
             </Badge>
 
-            <div className="text-base flex mt-2 font-medium">
-                <p className="mr-2">Time Left: </p> <Countdown date={Number(endDate.toString()) * 1000} />
+            <div className="flex justify-between font-medium"> 
+
+                <div className="text-base flex mt-2 font-medium">
+                    <p className="mr-2">End Date: {date.format(new Date(Number(endDate.toString()) * 1000), 'ddd, MMM DD YYYY')} </p> 
+                </div>
+
+                <div className="text-base flex mt-2 font-medium">
+                    <p className="mr-2">Time Left: </p> <Countdown date={Number(endDate.toString()) * 1000} />
+                </div>
+            
             </div>
 
             <div className="flex justify-end">

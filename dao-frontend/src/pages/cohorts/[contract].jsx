@@ -4,9 +4,10 @@ import Container from '@/components/ui/Container';
 import Layout from '@/components/ui/Layout';
 import Head from 'next/head'
 import { useRouter } from 'next/router';
-import { useAccount, useContractRead } from 'wagmi';
-import cohortABI from './../../abi/contracts/Cohort.sol/Cohort.json'
+import { useContractRead } from 'wagmi';
 import LoadingScreen from '@/components/ui/screens/LoadingScreen';
+import cohortABI from '@/abi/contracts/Cohort.sol/Cohort.json'
+
 
 export default function Cohorts() {
 
@@ -31,7 +32,7 @@ export default function Cohorts() {
             
             <div className='mt-20 flex justify-center w-full'>
               <div className='max-w-5xl w-full'> 
-                <CohortCard cohort={data} expanded={true}/> 
+                <CohortCard cohort={data} expanded={true} contract={contract} /> 
               </div>
             </div>
 

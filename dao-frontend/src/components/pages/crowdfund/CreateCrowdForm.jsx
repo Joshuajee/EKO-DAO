@@ -38,8 +38,6 @@ const CreateCrowdForm = ({close}) => {
         args: [name, description, convertToWEI(target), convertToWEI(min), USDC, duration],
     })
 
-    console.log(duration)
-
     const submit = (e) => {
         e.preventDefault()
         create?.write()

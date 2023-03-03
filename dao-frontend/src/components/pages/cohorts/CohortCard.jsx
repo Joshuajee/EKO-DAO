@@ -11,7 +11,7 @@ import { toast } from "react-toastify"
 import CohortActions from "./CohortActions"
 
 
-const CohortCard = ({cohort, expanded}) => {
+const CohortCard = ({cohort, contract, expanded}) => {
 
     const { name, content, commitment, size, startDate, endDate, description } = cohort
 
@@ -58,7 +58,7 @@ const CohortCard = ({cohort, expanded}) => {
                 <EnrollmentForm cohort={cohort} close={handleClose} />
             </ModalWrapper>
 
-            <CohortActions />
+            { expanded && <CohortActions contract={contract} /> }
             
         </div>
     )

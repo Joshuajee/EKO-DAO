@@ -4,7 +4,7 @@ export const DAY = 24 * 3600
 
 
 export const delays = [
-    { name: "No Delay", value:  -5 * MINUTES },
+    { name: "No Delay", value:  0 },
     { name: "5 Minutes", value:  5 * MINUTES },
     { name: "10 Minutes", value:  10 * MINUTES },
     { name: "15 Minutes", value:  15 * MINUTES },
