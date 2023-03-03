@@ -719,3 +719,722 @@ export const CROWDFUNDING_FACET_ABI = [
     type: 'function',
   },
 ];
+
+export const GOVERNANCE_FACET_ABI = [
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: 'Proposal_ID',
+        type: 'uint256',
+      },
+      {
+        internalType: 'address',
+        name: '_delegate',
+        type: 'address',
+      },
+    ],
+    name: 'addVotingDelegate',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: 'Proposal_ID',
+        type: 'uint256',
+      },
+      {
+        internalType: 'address',
+        name: 'voter',
+        type: 'address',
+      },
+    ],
+    name: 'checkIfVoted',
+    outputs: [
+      {
+        internalType: 'bool',
+        name: '',
+        type: 'bool',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: 'Proposal_ID',
+        type: 'uint256',
+      },
+    ],
+    name: 'deleteProposal',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: 'Proposal_ID',
+        type: 'uint256',
+      },
+    ],
+    name: 'endVoting',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: 'start',
+        type: 'uint256',
+      },
+      {
+        internalType: 'uint256',
+        name: 'count',
+        type: 'uint256',
+      },
+    ],
+    name: 'getLost',
+    outputs: [
+      {
+        components: [
+          {
+            internalType: 'string',
+            name: 'name',
+            type: 'string',
+          },
+          {
+            internalType: 'string',
+            name: 'description',
+            type: 'string',
+          },
+          {
+            internalType: 'address',
+            name: 'author',
+            type: 'address',
+          },
+          {
+            internalType: 'uint256',
+            name: 'id',
+            type: 'uint256',
+          },
+          {
+            internalType: 'uint256',
+            name: 'creationTime',
+            type: 'uint256',
+          },
+          {
+            internalType: 'uint256',
+            name: 'votingDelay',
+            type: 'uint256',
+          },
+          {
+            internalType: 'uint256',
+            name: 'votingPeriod',
+            type: 'uint256',
+          },
+          {
+            internalType: 'uint256',
+            name: 'votesFor',
+            type: 'uint256',
+          },
+          {
+            internalType: 'uint256',
+            name: 'votesAgainst',
+            type: 'uint256',
+          },
+          {
+            internalType: 'enum LibGovernance.State',
+            name: 'state',
+            type: 'uint8',
+          },
+        ],
+        internalType: 'struct LibGovernance.Proposal[]',
+        name: '',
+        type: 'tuple[]',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'getMinimumTokenRequirement',
+    outputs: [
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: 'start',
+        type: 'uint256',
+      },
+      {
+        internalType: 'uint256',
+        name: 'count',
+        type: 'uint256',
+      },
+    ],
+    name: 'getNotStarted',
+    outputs: [
+      {
+        components: [
+          {
+            internalType: 'string',
+            name: 'name',
+            type: 'string',
+          },
+          {
+            internalType: 'string',
+            name: 'description',
+            type: 'string',
+          },
+          {
+            internalType: 'address',
+            name: 'author',
+            type: 'address',
+          },
+          {
+            internalType: 'uint256',
+            name: 'id',
+            type: 'uint256',
+          },
+          {
+            internalType: 'uint256',
+            name: 'creationTime',
+            type: 'uint256',
+          },
+          {
+            internalType: 'uint256',
+            name: 'votingDelay',
+            type: 'uint256',
+          },
+          {
+            internalType: 'uint256',
+            name: 'votingPeriod',
+            type: 'uint256',
+          },
+          {
+            internalType: 'uint256',
+            name: 'votesFor',
+            type: 'uint256',
+          },
+          {
+            internalType: 'uint256',
+            name: 'votesAgainst',
+            type: 'uint256',
+          },
+          {
+            internalType: 'enum LibGovernance.State',
+            name: 'state',
+            type: 'uint8',
+          },
+        ],
+        internalType: 'struct LibGovernance.Proposal[]',
+        name: '',
+        type: 'tuple[]',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'getNumberOfProposals',
+    outputs: [
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: 'start',
+        type: 'uint256',
+      },
+      {
+        internalType: 'uint256',
+        name: 'count',
+        type: 'uint256',
+      },
+    ],
+    name: 'getOngoing',
+    outputs: [
+      {
+        components: [
+          {
+            internalType: 'string',
+            name: 'name',
+            type: 'string',
+          },
+          {
+            internalType: 'string',
+            name: 'description',
+            type: 'string',
+          },
+          {
+            internalType: 'address',
+            name: 'author',
+            type: 'address',
+          },
+          {
+            internalType: 'uint256',
+            name: 'id',
+            type: 'uint256',
+          },
+          {
+            internalType: 'uint256',
+            name: 'creationTime',
+            type: 'uint256',
+          },
+          {
+            internalType: 'uint256',
+            name: 'votingDelay',
+            type: 'uint256',
+          },
+          {
+            internalType: 'uint256',
+            name: 'votingPeriod',
+            type: 'uint256',
+          },
+          {
+            internalType: 'uint256',
+            name: 'votesFor',
+            type: 'uint256',
+          },
+          {
+            internalType: 'uint256',
+            name: 'votesAgainst',
+            type: 'uint256',
+          },
+          {
+            internalType: 'enum LibGovernance.State',
+            name: 'state',
+            type: 'uint8',
+          },
+        ],
+        internalType: 'struct LibGovernance.Proposal[]',
+        name: '',
+        type: 'tuple[]',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: 'start',
+        type: 'uint256',
+      },
+      {
+        internalType: 'uint256',
+        name: 'count',
+        type: 'uint256',
+      },
+    ],
+    name: 'getProposals',
+    outputs: [
+      {
+        components: [
+          {
+            internalType: 'string',
+            name: 'name',
+            type: 'string',
+          },
+          {
+            internalType: 'string',
+            name: 'description',
+            type: 'string',
+          },
+          {
+            internalType: 'address',
+            name: 'author',
+            type: 'address',
+          },
+          {
+            internalType: 'uint256',
+            name: 'id',
+            type: 'uint256',
+          },
+          {
+            internalType: 'uint256',
+            name: 'creationTime',
+            type: 'uint256',
+          },
+          {
+            internalType: 'uint256',
+            name: 'votingDelay',
+            type: 'uint256',
+          },
+          {
+            internalType: 'uint256',
+            name: 'votingPeriod',
+            type: 'uint256',
+          },
+          {
+            internalType: 'uint256',
+            name: 'votesFor',
+            type: 'uint256',
+          },
+          {
+            internalType: 'uint256',
+            name: 'votesAgainst',
+            type: 'uint256',
+          },
+          {
+            internalType: 'enum LibGovernance.State',
+            name: 'state',
+            type: 'uint8',
+          },
+        ],
+        internalType: 'struct LibGovernance.Proposal[]',
+        name: '',
+        type: 'tuple[]',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: 'start',
+        type: 'uint256',
+      },
+      {
+        internalType: 'uint256',
+        name: 'count',
+        type: 'uint256',
+      },
+    ],
+    name: 'getWon',
+    outputs: [
+      {
+        components: [
+          {
+            internalType: 'string',
+            name: 'name',
+            type: 'string',
+          },
+          {
+            internalType: 'string',
+            name: 'description',
+            type: 'string',
+          },
+          {
+            internalType: 'address',
+            name: 'author',
+            type: 'address',
+          },
+          {
+            internalType: 'uint256',
+            name: 'id',
+            type: 'uint256',
+          },
+          {
+            internalType: 'uint256',
+            name: 'creationTime',
+            type: 'uint256',
+          },
+          {
+            internalType: 'uint256',
+            name: 'votingDelay',
+            type: 'uint256',
+          },
+          {
+            internalType: 'uint256',
+            name: 'votingPeriod',
+            type: 'uint256',
+          },
+          {
+            internalType: 'uint256',
+            name: 'votesFor',
+            type: 'uint256',
+          },
+          {
+            internalType: 'uint256',
+            name: 'votesAgainst',
+            type: 'uint256',
+          },
+          {
+            internalType: 'enum LibGovernance.State',
+            name: 'state',
+            type: 'uint8',
+          },
+        ],
+        internalType: 'struct LibGovernance.Proposal[]',
+        name: '',
+        type: 'tuple[]',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'address',
+        name: '_token',
+        type: 'address',
+      },
+      {
+        internalType: 'uint256',
+        name: 'min',
+        type: 'uint256',
+      },
+    ],
+    name: 'intializeGovernance',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'string',
+        name: '_name',
+        type: 'string',
+      },
+      {
+        internalType: 'string',
+        name: '_description',
+        type: 'string',
+      },
+      {
+        internalType: 'uint256',
+        name: '_delay',
+        type: 'uint256',
+      },
+      {
+        internalType: 'uint256',
+        name: '_votingDuration',
+        type: 'uint256',
+      },
+    ],
+    name: 'newProposal',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: 'Proposal_ID',
+        type: 'uint256',
+      },
+    ],
+    name: 'removeDelegate',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: 'min',
+        type: 'uint256',
+      },
+    ],
+    name: 'setMinimumTokenRequiremnent',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: 'Proposal_ID',
+        type: 'uint256',
+      },
+    ],
+    name: 'startVoting',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: 'Proposal_ID',
+        type: 'uint256',
+      },
+      {
+        internalType: 'address',
+        name: '_delegate',
+        type: 'address',
+      },
+    ],
+    name: 'viewDelegate',
+    outputs: [
+      {
+        internalType: 'address',
+        name: '',
+        type: 'address',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: 'Proposal_ID',
+        type: 'uint256',
+      },
+    ],
+    name: 'viewProposal',
+    outputs: [
+      {
+        components: [
+          {
+            internalType: 'string',
+            name: 'name',
+            type: 'string',
+          },
+          {
+            internalType: 'string',
+            name: 'description',
+            type: 'string',
+          },
+          {
+            internalType: 'address',
+            name: 'author',
+            type: 'address',
+          },
+          {
+            internalType: 'uint256',
+            name: 'id',
+            type: 'uint256',
+          },
+          {
+            internalType: 'uint256',
+            name: 'creationTime',
+            type: 'uint256',
+          },
+          {
+            internalType: 'uint256',
+            name: 'votingDelay',
+            type: 'uint256',
+          },
+          {
+            internalType: 'uint256',
+            name: 'votingPeriod',
+            type: 'uint256',
+          },
+          {
+            internalType: 'uint256',
+            name: 'votesFor',
+            type: 'uint256',
+          },
+          {
+            internalType: 'uint256',
+            name: 'votesAgainst',
+            type: 'uint256',
+          },
+          {
+            internalType: 'enum LibGovernance.State',
+            name: 'state',
+            type: 'uint8',
+          },
+        ],
+        internalType: 'struct LibGovernance.Proposal',
+        name: '',
+        type: 'tuple',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: 'Proposal_ID',
+        type: 'uint256',
+      },
+    ],
+    name: 'voteAgainst',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: 'Proposal_ID',
+        type: 'uint256',
+      },
+      {
+        internalType: 'address',
+        name: 'delegator',
+        type: 'address',
+      },
+    ],
+    name: 'voteAgainstAsDelegate',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: 'Proposal_ID',
+        type: 'uint256',
+      },
+    ],
+    name: 'voteFor',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: 'Proposal_ID',
+        type: 'uint256',
+      },
+      {
+        internalType: 'address',
+        name: 'delegator',
+        type: 'address',
+      },
+    ],
+    name: 'voteForAsDelegate',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+];

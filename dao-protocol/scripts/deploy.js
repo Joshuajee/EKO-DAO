@@ -59,7 +59,7 @@ async function deployDiamond(test = false) {
   await diamond.deployed();
   if (!test) console.log("Diamond deployed:", diamond.address);
 
-  const USDC = await ethers.getContractFactory("USDC");
+  /* const USDC = await ethers.getContractFactory("USDC");
   const usdc = await USDC.deploy();
   await usdc.deployed();
   console.log(`USDC deployed: ${usdc.address}`);
@@ -67,7 +67,7 @@ async function deployDiamond(test = false) {
   const EkoNFT = await ethers.getContractFactory("EkoNFT");
   const ekoNft = await EkoNFT.deploy();
   await ekoNft.deployed();
-  console.log(`EkoNFT deployed: ${ekoNft.address}`);
+  console.log(`EkoNFT deployed: ${ekoNft.address}`);*/
 
   // returning the address of the diamond
   return diamond.address;

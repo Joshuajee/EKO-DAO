@@ -57,7 +57,7 @@ export class CohortsController {
     type: 'string',
   })
   @ApiResponse({
-    status: HttpStatus.CREATED,
+    status: HttpStatus.OK,
     description: 'Cohort successfully initialized',
   })
   @ApiResponse({
