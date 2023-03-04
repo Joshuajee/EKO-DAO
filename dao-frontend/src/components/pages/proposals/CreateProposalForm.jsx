@@ -30,13 +30,6 @@ const CreateProposalForm = ({close}) => {
         args: [name, description, delay, duration],
     })
 
-
-    console.log(name)
-    console.log(description)
-    console.log(duration)
-    console.log(delay)
-
-
     const submit = (e) => {
         e.preventDefault()
         create?.write()

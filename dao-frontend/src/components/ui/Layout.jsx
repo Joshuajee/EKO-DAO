@@ -7,8 +7,6 @@ import Navbar from './navigation/Navbar';
 
 const Layout = ({children}) => {
 
-    const { isAdminLoggedIn } = useContext(AuthContext);
-
     return (
         <div className='flex flex-col min-h-screen'>
             <Navbar />

@@ -19,7 +19,6 @@ const ProjectStatus = ({target, current, donorCount, minDonation }) => {
 
             </div>
 
-
             <progress max={100} value={currentPercent} style={{width: "100%", height: "4px"}} />
 
         </div>
