@@ -10,7 +10,6 @@ import Textarea from "@/components/ui/form/Textarea";
 import Select from "@/components/ui/form/Select";
 import { durationLists } from "@/libs/constants";
 
-const currentDate = getDate()
 
 const CreateCrowdForm = ({close}) => {
 
@@ -76,10 +75,7 @@ const CreateCrowdForm = ({close}) => {
 
         if (create.isSuccess) {
             toast.success("Funding Created Successfully")
-
-            setTimeout(() => {
-                close()
-            }, 600)
+            close()
         }
 
         if (create.error) {

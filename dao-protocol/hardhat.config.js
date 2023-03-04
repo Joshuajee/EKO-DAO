@@ -65,12 +65,9 @@ module.exports = {
 		{
 			path: '../dao-frontend/src/abi',
 			pretty: false,
-			//	flat: true,
 			runOnCompile: true
-			//	only: ["NFTMarketplace", "RoyaltyToken"]
 		}
 	],
-
 	contractSizer: {
 		alphaSort: true,
 		disambiguatePaths: false,

@@ -5,13 +5,14 @@ import Layout from '@/components/ui/Layout';
 import TopBanner from '@/components/ui/TopBanner';
 import Head from 'next/head'
 import CreateButton from '@/components/ui/CreateButton';
-import CreateCrowdForm from '@/components/pages/crowdfund/CreateCrowdForm';
 import LoadingScreen from '@/components/ui/screens/LoadingScreen';
 import { AuthContext } from '@/context/AuthContext';
 import { useContractRead } from 'wagmi';
 import { contractAddress } from '@/libs/utils';
-import ProposalFacetABI from '@/abi/contracts/facets/AdminFacet.sol/AdminFacet.json';
+import ProposalFacetABI from '@/abi/contracts/facets/GovernanceFacet.sol/GovernanceFacet.json';
 import CreateProposalForm from '@/components/pages/proposals/CreateProposalForm';
+
+const limit = 50
 
 export default function Proposals() {
 
@@ -21,6 +22,7 @@ export default function Proposals() {
   const [isSuccess, setIsSuccess] = useState(false)
   const [isError, setIsError] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
+  const [counts, setCounts] = useState(0)
 
   const { isAdminLoggedIn } = useContext(AuthContext);
 
@@ -36,30 +38,30 @@ export default function Proposals() {
     address: contractAddress,
     abi: ProposalFacetABI,
     functionName: 'getNumberOfProposals',
-   
+    watch: true
   })
 
-  //getNumberOfProposals
   const proposals = useContractRead({
     address: contractAddress,
     abi: ProposalFacetABI,
-    functionName: 'proposals',
-    //watch: true,
-    //enabled: proposalCount.data
+    functionName: 'getProposals',
+    args: [counts, counts],
+    watch: true,
+    enabled: counts > 0,
   })
 
-  console.log(proposalCount)
+  useEffect(() => {
+    setCounts(Number(proposalCount?.data?.toString()))
+  }, [proposalCount?.data])
 
   useEffect(() => {
-    if (proposals?.data) setData([...proposals?.data].reverse())
+    if (proposals?.data) setData([...proposals?.data])
     setIsError(proposals?.isError)
     setIsSuccess(proposals?.isSuccess)
     setIsLoading(proposals?.isLoading)
   }, [proposals?.data, proposals?.isError, proposals?.isSuccess, proposals?.isLoading]);
 
-
   const isSuccessful = isSuccess && proposals?.data?.length > 0
-
 
   return (
     <Layout>

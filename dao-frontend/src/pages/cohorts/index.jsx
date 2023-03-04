@@ -5,7 +5,7 @@ import Layout from '@/components/ui/Layout';
 import TopBanner from '@/components/ui/TopBanner';
 import Head from 'next/head'
 import { useContractRead } from 'wagmi';
-import cohortFacetABI from '@/abi/contracts/facets/CohortFactoryFacet.sol/CohortFactoryFacet.json'
+import cohortFacetABI from '@/abi/contracts/facets/CohortFacet.sol/CohortFacet.json'
 import { contractAddress } from '@/libs/utils';
 import CreateButton from '@/components/ui/CreateButton';
 import CreateCohortForm from '@/components/pages/cohorts/CreateCohortForm';
@@ -45,7 +45,6 @@ export default function Cohorts() {
         setIsSuccess(cohorts?.isSuccess)
         setIsLoading(cohorts?.isLoading)
     }, [cohorts?.data, cohorts?.isError, cohorts?.isSuccess, cohorts?.isLoading]);
-
 
     const isSuccessful = isSuccess && cohorts?.data?.length > 0
 
