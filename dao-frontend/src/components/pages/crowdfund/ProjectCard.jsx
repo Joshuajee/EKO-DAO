@@ -61,14 +61,18 @@ const ProjectCard = ({project, contract, expanded}) => {
 
     useEffect(() => {
         setDeadline(Number(endDate.toString()) * 1000)
+
     }, [endDate])
 
+
     useEffect(() => {
+        setCurrentTime(Number(new Date()))
         const interval = setInterval(() => {
             setCurrentTime(Number(new Date()))
         }, 1000)
         return clearInterval(interval)
     }, [])
+
 
     return (
         <div className="w-full text-gray-700 bg-white rounded-md p-4 md:px-4 shadow-lg">

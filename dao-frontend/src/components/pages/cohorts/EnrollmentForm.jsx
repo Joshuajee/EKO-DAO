@@ -8,13 +8,9 @@ import { toast } from "react-toastify";
 import { useAccount, useContractWrite } from "wagmi"
 import cohortABI from '../../../abi/contracts/Cohort.sol/Cohort.json';
 
-const EnrollmentForm = ({cohort, close}) => {
+const EnrollmentForm = ({cohort, contract, close}) => {
 
     const { address } = useAccount()
-
-    const router = useRouter()
-
-    const contractAddress = router.query.contract
 
     const { topic, commitment } = cohort
     const [amount, setAmount] = useState(null);
@@ -24,7 +20,7 @@ const EnrollmentForm = ({cohort, close}) => {
 
     const donation = useContractWrite({
         mode: 'recklesslyUnprepared',
-        address: contractAddress,
+        address: contract,
         abi: cohortABI,
         functionName: 'enroll',
         args: [commitment],
@@ -41,19 +37,16 @@ const EnrollmentForm = ({cohort, close}) => {
     useEffect(() => {
         if (donation?.isSuccess) {
             toast.success("Congrats! you've successfully enrolled")
-            
-            setTimeout(() => {
-                close()
-            }, 600)
-
+            close()
         }
-    }, [donation?.isSuccess, close])
+
+    }, [donation?.isSuccess, close, contract])
 
     return (
         <div className="text-gray-700 w-full">
 
             <Balance 
-                address={address} contract={contractAddress} 
+                address={address} contract={contract} 
                 allowance={allowance} balance={balance}
                 setAllowance={setAllowance} setBalance={setBalance} />
 
@@ -73,7 +66,7 @@ const EnrollmentForm = ({cohort, close}) => {
                 <LoadingButton disabled={allowance < amount} loading={donation?.isLoading} onClick={donation?.write}> Pay Commitment Fee </LoadingButton>
             </div>
 
-            <ApprovalBtn contract={contractAddress} amount={amount} allowance={allowance} setAllowance={setAllowance} />
+            <ApprovalBtn contract={contract} amount={amount} allowance={allowance} setAllowance={setAllowance} />
             
         </div>
     )

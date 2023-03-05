@@ -7,6 +7,8 @@ import { useRouter } from 'next/router';
 import { useContractRead } from 'wagmi';
 import LoadingScreen from '@/components/ui/screens/LoadingScreen';
 import cohortABI from '@/abi/contracts/Cohort.sol/Cohort.json'
+import cohortFacetABI from '@/abi/contracts/facets/CohortFacet.sol/CohortFacet.json'
+import { contractAddress } from '@/libs/utils';
 
 
 export default function Cohorts() {
@@ -15,10 +17,18 @@ export default function Cohorts() {
 
   const { contract } = router.query
 
+  // const { data, isLoading, isSuccess, isError } = useContractRead({
+  //   address: contract,
+  //   abi: cohortABI,
+  //   functionName: 'cohort',
+  //   //watch: true
+  // })
+
   const { data, isLoading, isSuccess, isError } = useContractRead({
-    address: contract,
-    abi: cohortABI,
+    address: contractAddress,
+    abi: cohortFacetABI,
     functionName: 'cohort',
+    args: [4]
     //watch: true
   })
 
@@ -32,7 +42,7 @@ export default function Cohorts() {
             
             <div className='mt-20 flex justify-center w-full'>
               <div className='max-w-5xl w-full'> 
-                <CohortCard cohort={data} expanded={true} contract={contract} /> 
+                <CohortCard cohort={data?.[0]} expanded={true} contract={data?.[1]} /> 
               </div>
             </div>
 
