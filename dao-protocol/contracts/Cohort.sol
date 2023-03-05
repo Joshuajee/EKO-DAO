@@ -18,6 +18,7 @@ contract Cohort is Ownable {
     string description;
     Status status;
     uint studentsCount;
+    address contractAddress;
   }
 
   mapping(address => bool) students;
@@ -73,6 +74,7 @@ contract Cohort is Ownable {
     cohort.commitment = _commitment;
     cohort.description = _description;
     cohort.status= Status.NOT_INITILIZED;
+    cohort.contractAddress= address(this);
   }
 
   function init(address _stableCoin, address _ekoNft) public onlyOwner {
@@ -113,6 +115,13 @@ contract Cohort is Ownable {
     if(_status ==  Status.CLOSED && cohort.status != Status.INITIALIZED){
       revert ('Can only close initilized cohorts');
     }
+    if(_status ==  Status.STARTED && block.timestamp <= cohort.startDate){
+      revert ('Start date not reached yet');
+    }
+    if(_status ==  Status.ENDED && block.timestamp <= cohort.endDate){
+      revert ('End date not reached yet');
+    }
+
     cohort.status= _status;
   }
 

@@ -59,7 +59,7 @@ export class CohortsService {
     );
     const CohortFacet = this.getCohortFacet();
     const result = await CohortFacet.methods.cohort(id).call();
-    return { id: id, cohort: result[1] };
+    return { id: id, cohort: result.contractAddress };
   }
 
   async init(address: string, initCohortDto: InitCohortDto): Promise<void> {

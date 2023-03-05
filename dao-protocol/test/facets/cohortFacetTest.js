@@ -55,15 +55,14 @@ describe("CohortFacetTest", async function () {
     const cohortsList = await cohortFacet.cohorts();
     assert.equal(cohortsList[0].name, name);
     const cohortData = await cohortFacet.cohort(1);
-    cohortAddress = cohortData[1];
+    cohortAddress = cohortData.contractAddress;
     await cohortFacet.initCohort(cohortAddress, usdc.address, ekoNft.address);
-    const record = cohortData[0];
-    assert.equal(record.name, name);
-    assert.equal(record.startDate, startDate);
-    assert.equal(record.endDate, endDate);
-    assert.equal(record.size, 100);
-    assert.equal(record.commitment, 10);
-    assert.equal(record.description, description);
+    assert.equal(cohortData.name, name);
+    assert.equal(cohortData.startDate, startDate);
+    assert.equal(cohortData.endDate, endDate);
+    assert.equal(cohortData.size, 100);
+    assert.equal(cohortData.commitment, 10);
+    assert.equal(cohortData.description, description);
   });
 
   it("should enroll student in a cohort", async () => {

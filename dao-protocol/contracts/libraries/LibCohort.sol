@@ -61,11 +61,11 @@ event NewCohort(Cohort.CohortDetails cohort);
     cohort.init(_stableCoin, _ekoNft);
   }
 
-  function getCohort(bytes32 _id) internal view returns (Cohort.CohortDetails memory, address) {
+  function getCohort(bytes32 _id) internal view returns (Cohort.CohortDetails memory) {
     Cohorts storage cohorts = diamondStorage();
     address address_ = cohorts.values[_id];
     Cohort contract_ = Cohort(address_);
-    return (contract_.getCohort(), address_);
+    return contract_.getCohort();
   }
 
   function getCohorts()

@@ -55,16 +55,16 @@
             "internalType": "uint256",
             "name": "studentsCount",
             "type": "uint256"
+          },
+          {
+            "internalType": "address",
+            "name": "contractAddress",
+            "type": "address"
           }
         ],
         "internalType": "struct Cohort.CohortDetails",
         "name": "",
         "type": "tuple"
-      },
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
       }
     ],
     "stateMutability": "view",
@@ -120,6 +120,11 @@
             "internalType": "uint256",
             "name": "studentsCount",
             "type": "uint256"
+          },
+          {
+            "internalType": "address",
+            "name": "contractAddress",
+            "type": "address"
           }
         ],
         "internalType": "struct Cohort.CohortDetails[]",
