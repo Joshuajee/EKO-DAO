@@ -5,7 +5,8 @@ const LoadingButton = (props) => {
     if (loading) return (
         <button 
             disabled={true}
-            className="mt-4 rounded-lg w-full bg-gray-400 disabled:hover:bg-gray-400 disabled:text-gray-200 py-2"> 
+            className="mt-4 rounded-lg w-full bg-gray-400 disabled:hover:bg-gray-400 disabled:text-gray-200 py-2"
+            {...props}> 
             Please Wait...
         </button>
     )

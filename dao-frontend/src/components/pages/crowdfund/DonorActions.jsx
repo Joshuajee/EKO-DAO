@@ -2,8 +2,6 @@ import { convertToEther, dollarFormat } from "@/libs/utils"
 import { memo, useEffect, useContext } from "react"
 import { useAccount, useContractRead, useContractWrite } from "wagmi"
 import ProjectABI from '@/abi/contracts/CrowdFundProject.sol/Project.json';
-import { Contract } from "ethers";
-import LoadingButton from "@/components/ui/form/LoadingButton";
 import { toast } from "react-toastify";
 import { AuthContext } from "@/context/AuthContext";
 
@@ -67,15 +65,15 @@ const DonorActions = ({status, contract, expired}) => {
                     </div>)
             }
 
-        { (status === 2 && isAdminLoggedIn) &&
-            <div className="flex justify-center">
-                <button 
-                    onClick={adminWithdraw?.write}
-                    className="mt-4 bg-blue-600 hover:bg-blue-700 rounded-lg px-8 py-2 text-white"> 
-                    Withdraw funds Admin
-                </button>
-            </div>
-        }
+            { (status === 2 && isAdminLoggedIn) &&
+                <div className="flex justify-center">
+                    <button 
+                        onClick={adminWithdraw?.write}
+                        className="mt-4 bg-blue-600 hover:bg-blue-700 rounded-lg px-8 py-2 text-white"> 
+                        Withdraw funds Admin
+                    </button>
+                </div>
+            }
 
         </div>
     )

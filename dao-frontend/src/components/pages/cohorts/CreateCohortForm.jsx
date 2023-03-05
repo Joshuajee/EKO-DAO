@@ -101,9 +101,7 @@ const CreateCohortForm = ({close}) => {
 
     return (
         <form className="text-gray-700" onSubmit={submit}>
-            
-            {/* <Input type="number" value={id} onChange={setId} id="id" label={"Cohort id"} placeholder="e.g 3" error={idError} helperText={"Invalid ID"}  />
-             */}
+
             <Input value={name} onChange={setName} id="name" label={"Cohort Title"} placeholder="e.g Solidity Bootcamp fall 2023" error={nameError} helperText={"Cohort Title should have at least 3 words"}  />
 
             <Textarea value={description} onChange={setDescription} id="description" label={"Funding Description"} placeholder="e.g Contribute and saving the planet in a decentralized manner" error={descriptionError} helperText={"Descripion should contain 10 - 50 words"}></Textarea>

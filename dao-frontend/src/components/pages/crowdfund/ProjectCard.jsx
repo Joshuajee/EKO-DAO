@@ -81,13 +81,13 @@ const ProjectCard = ({project, contract, expanded}) => {
                 <p className="ml-2 text-sm">Project {projectStatus?.status}</p> 
             </Badge>
 
-            <div className="flex justify-between font-medium"> 
+            <div className="flex flex-col md:flex-row justify-between font-medium"> 
 
-                <div className="text-base flex mt-2 font-medium">
+                <div className="text-sm md:text-base flex mt-2 font-medium">
                     <p className="mr-2">End Date: {date.format(new Date(Number(endDate.toString()) * 1000), 'ddd, MMM DD YYYY')} </p> 
                 </div>
 
-                <div className="text-base flex mt-2 font-medium">
+                <div className="text-sm md:text-base flex mt-2 font-medium">
                     <p className="mr-2">Time Left: </p> <Countdown date={Number(endDate.toString()) * 1000} />
                 </div>
             
