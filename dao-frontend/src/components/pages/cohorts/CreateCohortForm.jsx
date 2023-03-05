@@ -12,7 +12,7 @@ const currentDate = getDate()
 
 const CreateCohortForm = ({close}) => {
 
-    const [id, setId] = useState(1);
+    const [id, setId] = useState(4);
     const [name, setName] = useState("");
 
     const [startDate, setStartDate] = useState(currentDate);

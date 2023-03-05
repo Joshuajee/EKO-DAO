@@ -59,3 +59,6 @@ export const convertToWEI = (amount) => {
     return Number(amount) <= 0 ? 0 : ethers.utils.parseUnits(String(amount), 'ether')
 }
 
+export const decodeByte32 = (byte32) => {
+    return ethers.utils.parseBytes32String(byte32)
+}
