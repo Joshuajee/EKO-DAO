@@ -28,20 +28,20 @@ export class AdminsService {
     try {
       const admin: Admin = await this.adminsRepository.create(adminDto);
       await this.adminsRepository.save(admin);
-      const AdminFacet = this.getAdminFacet();
-      const encodedData: string = AdminFacet.methods
-        .setAdmin(adminDto.walletAddress, adminDto.role)
-        .encodeABI();
-      await this.web3Helper.callContract(
-        encodedData,
-        this.configService.diamondAddress,
-        this.configService.superAdminAddress,
-        this.configService.superAdminPrivateKey,
-      );
     } catch (error) {
       console.error(error);
       throw new BadRequestException();
     }
+    const AdminFacet = this.getAdminFacet();
+    const encodedData: string = AdminFacet.methods
+      .setAdmin(adminDto.walletAddress, adminDto.role)
+      .encodeABI();
+    await this.web3Helper.callContract(
+      encodedData,
+      this.configService.diamondAddress,
+      this.configService.superAdminAddress,
+      this.configService.superAdminPrivateKey,
+    );
   }
 
   async getAll(): Promise<Admin[]> {

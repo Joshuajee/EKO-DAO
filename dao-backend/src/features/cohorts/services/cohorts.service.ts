@@ -26,39 +26,40 @@ export class CohortsService {
   ) {}
 
   async create(cohortDto: CohortDto): Promise<{ [key: string]: any }> {
+    let row;
     try {
       const cohort: Cohort = await this.cohortsRepository.create({
         description: cohortDto.exhaustiveDescription,
       });
-      const row = await this.cohortsRepository.save(cohort);
-      const id = row.id;
-      const startDate = Math.floor(cohortDto.startDate.getTime());
-      const endDate = Math.floor(cohortDto.endDate.getTime());
-      const CohortFactoryFacet = this.getCohortFactoryFacet();
-      const encodedData: string = CohortFactoryFacet.methods
-        .newCohort(
-          id,
-          cohortDto.name,
-          startDate,
-          endDate,
-          cohortDto.size,
-          cohortDto.commitment,
-          cohortDto.briefDescription,
-        )
-        .encodeABI();
-      await this.web3Helper.callContract(
-        encodedData,
-        this.configService.diamondAddress,
-        this.configService.superAdminAddress,
-        this.configService.superAdminPrivateKey,
-      );
-      const CohortFacet = this.getCohortFacet();
-      const result = await CohortFacet.methods.cohort(id).call();
-      return { id: id, cohort: result[1] };
+      row = await this.cohortsRepository.save(cohort);
     } catch (error) {
       console.error(error);
       throw new BadRequestException();
     }
+    const id = row.id;
+    const startDate = Math.floor(cohortDto.startDate.getTime());
+    const endDate = Math.floor(cohortDto.endDate.getTime());
+    const CohortFactoryFacet = this.getCohortFactoryFacet();
+    const encodedData: string = CohortFactoryFacet.methods
+      .newCohort(
+        id,
+        cohortDto.name,
+        startDate,
+        endDate,
+        cohortDto.size,
+        cohortDto.commitment,
+        cohortDto.briefDescription,
+      )
+      .encodeABI();
+    await this.web3Helper.callContract(
+      encodedData,
+      this.configService.diamondAddress,
+      this.configService.superAdminAddress,
+      this.configService.superAdminPrivateKey,
+    );
+    const CohortFacet = this.getCohortFacet();
+    const result = await CohortFacet.methods.cohort(id).call();
+    return { id: id, cohort: result[1] };
   }
 
   async init(address: string, initCohortDto: InitCohortDto): Promise<void> {

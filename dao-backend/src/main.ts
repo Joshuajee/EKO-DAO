@@ -10,6 +10,12 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
   app.useGlobalFilters(app.get(HttpExceptionFilter));
+  app.enableCors({
+    origin: ['https://eco-dao-dev.netlify.app'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: true,
+  });
   const swagger = app.get(SwaggerService);
   swagger.init(app);
   const appConfig: ConfigurationService = app.get(ConfigurationService);

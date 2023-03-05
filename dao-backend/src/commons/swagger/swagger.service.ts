@@ -15,10 +15,6 @@ export class SwaggerService {
         { type: 'http', scheme: 'bearer', bearerFormat: 'JWT' },
         'access-token',
       )
-      .addSecurity('basic', {
-        type: 'http',
-        scheme: 'basic',
-      })
       .build();
     const document = SwaggerModule.createDocument(app, options);
     SwaggerModule.setup('apis', app, document);
