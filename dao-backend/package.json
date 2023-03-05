@@ -6,9 +6,9 @@
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
-    "build": "nest build",
+    "build": "npm install && npm run build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
-    "start": "nest start",
+    "start": "node dist/main",
     "start:debug": "nest start --debug --watch",
     "start:dev": "cross-env NODE_ENV=dev nest start",
     "start:dev:watch": "cross-env NODE_ENV=dev nest start --watch",
