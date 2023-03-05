@@ -4,26 +4,18 @@ import { useAccount, useContractRead, useContractWrite } from "wagmi"
 import { toast } from "react-toastify";
 import { AuthContext } from "@/context/AuthContext";
 import CohortABI from '@/abi/contracts/Cohort.sol/Cohort.json';
-import CohortFacetABI from '@/abi/contracts/facets/CohortFactoryFacet.sol/CohortFactoryFacet.json'
+import CohortFacetABI from '@/abi/contracts/facets/CohortFacet.sol/CohortFacet.json'
 
-const CohortActions = ({status, contract, expired}) => {
+const CohortActions = ({status, contract, expired, isStudent}) => {
 
-    const { address, isConnected } = useAccount()
+    const { address } = useAccount()
 
     const { isAdminLoggedIn } = useContext(AuthContext);
-
-    const { data } = useContractRead({
-        address: contract,
-        abi: CohortABI,
-        functionName: 'isDonor',
-        args: [address],
-        enabled: isConnected
-    })
 
     const donorWithdraw = useContractWrite({
         address: contract,
         abi: CohortABI,
-        functionName: 'donorWithdraw',
+        functionName: 'isStudent',
         args: [address],
     })
 
@@ -48,12 +40,10 @@ const CohortActions = ({status, contract, expired}) => {
         <div className="block py-4 w-full">
 
             { 
-                data?.[0] && (
+                isStudent && (
                     <div className="flex flex-col md:flex-row items-center justify-between">
                         <p>
-                            You donated 
-                            <strong> {dollarFormat(convertToEther(data?.[1]?.toString())) } USD </strong> 
-                            to this Campaign
+                            You enrolled for this programme
                         </p> 
                         { (status < 1 && expired) &&
                             <button 

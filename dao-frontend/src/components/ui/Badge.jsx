@@ -23,6 +23,13 @@ const Badge = ({children, color}) => {
                         px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300`}>
                         {children}
                 </span>)
+        case "yellow":
+            return  (
+                <span 
+                    className={`inline-flex bg-yellow-100 text-yellow-800 text-xs font-medium mr-2 
+                        px-2.5 py-0.5 rounded-full dark:bg-yellow-900 dark:text-yellow-300`}>
+                        {children}
+                </span>)
         default:
             return  (
                 <span 
