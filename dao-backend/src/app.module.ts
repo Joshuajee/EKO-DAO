@@ -28,7 +28,7 @@ const env = process.env.NODE_ENV || 'dev';
           database: config.dbname,
           username: config.dbuser,
           password: config.dbpassword,
-          entities: [`dist/**/*.entity.{ts,js}`],
+          entities: [`dist/features/**/entities/*.entity.{ts,js}`],
           synchronize: false,
           migrationsRun: true,
           logging: false,
