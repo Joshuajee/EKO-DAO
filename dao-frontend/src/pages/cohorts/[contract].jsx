@@ -17,19 +17,11 @@ export default function Cohorts() {
 
   const { contract } = router.query
 
-  // const { data, isLoading, isSuccess, isError } = useContractRead({
-  //   address: contract,
-  //   abi: cohortABI,
-  //   functionName: 'cohort',
-  //   //watch: true
-  // })
-
   const { data, isLoading, isSuccess, isError } = useContractRead({
-    address: contractAddress,
-    abi: cohortFacetABI,
+    address: contract,
+    abi: cohortABI,
     functionName: 'cohort',
-    args: [4]
-    //watch: true
+    watch: true
   })
 
   return (
@@ -42,7 +34,7 @@ export default function Cohorts() {
             
             <div className='mt-20 flex justify-center w-full'>
               <div className='max-w-5xl w-full'> 
-                <CohortCard cohort={data?.[0]} expanded={true} contract={data?.[1]} /> 
+                <CohortCard cohort={data} expanded={true} contract={contract} /> 
               </div>
             </div>
 
