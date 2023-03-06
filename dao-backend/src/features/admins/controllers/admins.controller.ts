@@ -12,6 +12,7 @@ import {
 import { AuthGuard } from '@nestjs/passport';
 import {
   ApiBearerAuth,
+  ApiExcludeEndpoint,
   ApiOperation,
   ApiParam,
   ApiResponse,
@@ -32,6 +33,27 @@ export class AdminsController {
   ) {}
 
   @ApiOperation({
+    summary: 'Create Ekolance super admin wallet',
+  })
+  @ApiResponse({
+    status: HttpStatus.CREATED,
+    description: 'Super admin wallet successfully created',
+  })
+  @ApiResponse({
+    status: HttpStatus.BAD_REQUEST,
+    description: 'Bad request, when request parameters are missing or invalid',
+  })
+  @ApiResponse({
+    status: HttpStatus.UNAUTHORIZED,
+    description: 'Not authorized, when access token is mising or invalid',
+  })
+  @ApiExcludeEndpoint()
+  @Post('/wallet')
+  createWallet(): { [key: string]: any } {
+    return this.adminsService.createWallet();
+  }
+
+  @ApiOperation({
     summary: 'Create Ekolance admin',
   })
   @ApiResponse({
@@ -46,6 +68,8 @@ export class AdminsController {
     status: HttpStatus.UNAUTHORIZED,
     description: 'Not authorized, when access token is mising or invalid',
   })
+  @ApiBearerAuth('access-token')
+  @UseGuards(AuthGuard('jwt'))
   @Post()
   create(@Body() adminDto: AdminDto): Promise<void> {
     return this.adminsService.create(adminDto);
@@ -121,7 +145,7 @@ export class AdminsController {
   @ApiBearerAuth('access-token')
   @UseGuards(AuthGuard('jwt'))
   @Put(':id')
-  async update(@Param('id') id: number, @Body() adminDto: AdminDto) {
+  update(@Param('id') id: number, @Body() adminDto: AdminDto): Promise<void> {
     return this.adminsService.update(id, adminDto);
   }
 
@@ -149,7 +173,7 @@ export class AdminsController {
   @ApiBearerAuth('access-token')
   @UseGuards(AuthGuard('jwt'))
   @Delete(':id')
-  async delete(@Param('id') id: number) {
+  delete(@Param('id') id: number): Promise<void> {
     return this.adminsService.deleteOne(id);
   }
 
@@ -169,7 +193,7 @@ export class AdminsController {
     description: 'Invalid credentials',
   })
   @Post('/login')
-  async login(@Body() loginDto: LoginDto) {
+  login(@Body() loginDto: LoginDto): { [key: string]: any } {
     return this.authService.login(loginDto.walletAddress);
   }
 }

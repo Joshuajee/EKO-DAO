@@ -14,4 +14,13 @@ export default () => ({
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
   },
+
+  bc: {
+    providerUrl: process.env.PROVIDER_URL,
+    chainId: parseInt(process.env.CHAIN_ID, 10),
+    superAdminAddress: process.env.SUPER_ADMIN_ADDRESS,
+    superAdminPrivateKey: process.env.SUPER_ADMIN_PRIVATE_KEY,
+    superAdminPublicKey: process.env.SUPER_ADMIN_PUBLIC_KEY,
+    diamondAddress: process.env.DIAMOND_ADDRESS,
+  },
 });

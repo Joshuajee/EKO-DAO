@@ -63,7 +63,7 @@ contract CrowdFundFacet{
 
 
   // Admin withdraw if project is successful
-   function adminWithdraw(uint256 _projectIndex, uint256 _tokenAmount) public {
+   function adminWithdraw(uint256 _projectIndex) public {
         address _user = msg.sender;
 
         Project projectAddress = Database.getCrowdFundMappingRecords().Projects[_projectIndex];
@@ -71,8 +71,7 @@ contract CrowdFundFacet{
             revert ProjectDoesNotExist(_projectIndex);
         }
 
-        Project(projectAddress).adminWithdraw(_user, _tokenAmount); // Call function
-        emit FundWithdrawn(address(projectAddress),_tokenAmount,_user);// Trigger event 
+        Project(projectAddress).adminWithdraw(_user); // Call function       
   }
 
 
@@ -137,6 +136,12 @@ function getProjectBalance(uint256 _projectIndex) public view returns(uint256) {
 function getProjectDetails(uint256 _projectIndex) public view returns(Database.ProjectState memory) {
     address projectAddress = address(Database.getCrowdFundMappingRecords().Projects[_projectIndex]);   
     return Project(projectAddress).getProjectDetails();  // Call function
+  }
+
+//Get project token balance
+function IsUserADonor(uint256 _projectIndex, address _user) public view returns(bool status, uint256 amount) {
+    Project projectAddress = Database.getCrowdFundMappingRecords().Projects[_projectIndex]; 
+    (status, amount) = Project(projectAddress).isDonor(_user);  // Call isDonor function
   }
 
 }

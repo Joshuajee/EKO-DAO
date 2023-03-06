@@ -7,25 +7,24 @@ import crowdFundFacetABI from '../../../abi/contracts/facets/CrowdFundFacet.sol/
 import { toast } from "react-toastify";
 import LoadingButton from "@/components/ui/form/LoadingButton";
 import Textarea from "@/components/ui/form/Textarea";
+import Select from "@/components/ui/form/Select";
+import { durationLists } from "@/libs/constants";
 
-const currentDate = getDate()
 
 const CreateCrowdForm = ({close}) => {
 
     const [name, setName] = useState("");
 
     const [description, setDescription] = useState("");
-    const [duration, setDuration] = useState(null);
+    const [duration, setDuration] = useState(durationLists[0]?.value);
 
     const [target, setTarget] = useState(null);
     const [min, setMin] = useState(null);
 
     // Errors 
-    const [idError, setIdError] = useState(false);
     const [nameError, setNameError] = useState(false);
 
     const [descriptionError, setDescriptionError] = useState(false);
-    const [durationError, setDurationError] = useState(false);
 
     const [targetError, setTargetError] = useState(false);
     const [minError, setMinError] = useState(false);
@@ -35,7 +34,7 @@ const CreateCrowdForm = ({close}) => {
         address: contractAddress,
         abi: crowdFundFacetABI,
         functionName: 'createCampaign',
-        args: [name, description, convertToWEI(target), convertToWEI(min), USDC, new Date(duration).getTime()],
+        args: [name, description, convertToWEI(target), convertToWEI(min), USDC, duration],
     })
 
     const submit = (e) => {
@@ -44,7 +43,7 @@ const CreateCrowdForm = ({close}) => {
     }
 
     const isDisabled = () => {
-        return idError || nameError || descriptionError || durationError || targetError || minError
+        return nameError || descriptionError || targetError || minError
     }
 
     // Verify Name
@@ -76,14 +75,11 @@ const CreateCrowdForm = ({close}) => {
 
         if (create.isSuccess) {
             toast.success("Funding Created Successfully")
-
-            setTimeout(() => {
-                close()
-            }, 600)
+            close()
         }
 
         if (create.error) {
-            toast.error(create.error)
+            toast.error(create?.error?.reason)
         }
 
     }, [create.isLoading, create.isSuccess, create.isError, create.error, close])
@@ -101,8 +97,8 @@ const CreateCrowdForm = ({close}) => {
 
                 <Input type="number" label={"Target Donation (USDC)"} value={target} onChange={setTarget} error={targetError} helperText={"Target should be greater than zero"} />
 
-                <Input type="date" label={"Duration"} min={currentDate} value={duration} onChange={setDuration} />
-                
+                <Select id={"duration"} label={"Duration"}  lists={durationLists} onChange={setDuration} />
+
             </div>
 
             <LoadingButton loading={create?.isLoading} disabled={isDisabled()} > Create Funding</LoadingButton>

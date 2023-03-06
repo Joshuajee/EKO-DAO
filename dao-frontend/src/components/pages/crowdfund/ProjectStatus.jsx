@@ -1,7 +1,7 @@
 import { convertToEther, dollarFormat } from "@/libs/utils"
 import { memo } from "react"
 
-const ProjectStatus = ({target, current, donorCount, minDonation}) => {
+const ProjectStatus = ({target, current, donorCount, minDonation }) => {
 
     const currentPercent = current * 100 / target
 
@@ -18,7 +18,6 @@ const ProjectStatus = ({target, current, donorCount, minDonation}) => {
                 <p className="font-semibold">Minimum Donation: {dollarFormat(convertToEther(minDonation))}</p>
 
             </div>
-
 
             <progress max={100} value={currentPercent} style={{width: "100%", height: "4px"}} />
 

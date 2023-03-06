@@ -47,6 +47,9 @@ export default function Crowdfunding() {
     setIsLoading(crowdFunds?.isLoading)
   }, [crowdFunds?.data, crowdFunds?.isError, crowdFunds?.isSuccess, crowdFunds?.isLoading]);
 
+
+  const isSuccessful = isSuccess && crowdFunds?.data?.length > 0
+
   return (
     <Layout>
       <Head>
@@ -55,7 +58,7 @@ export default function Crowdfunding() {
 
       <TopBanner>Donate to Crowdfunding Campaigns</TopBanner>
 
-      { isSuccess &&
+      { isSuccessful &&
           <Container> 
             {
               data &&
@@ -67,8 +70,8 @@ export default function Crowdfunding() {
       }
 
       {
-        (isLoading || isError) && (
-          <LoadingScreen isError={isError} />
+        (isLoading || isError || !isSuccessful) && (
+          <LoadingScreen isError={!isLoading} />
         )
       }
 

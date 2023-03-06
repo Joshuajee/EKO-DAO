@@ -58,13 +58,18 @@ const App = ({ Component, pageProps }) => {
 
   React.useEffect(() => {
     import("@lottiefiles/lottie-player");
+    window.addEventListener("load",function() {
+      setTimeout(function(){
+        window.scrollTo(0, 1);
+      }, 0);
+    });
   }, [])
 
   return (
     <WagmiConfig client={client}>
       <AuthProvider>
         <Component {...pageProps} />
-        <ToastContainer autoClose={3000} hideProgressBar={true} />
+        <ToastContainer autoClose={3000} hideProgressBar={true} position="bottom-right" />
       </AuthProvider>
     </WagmiConfig> 
 

@@ -28,8 +28,15 @@ export class Admin extends BaseEntity {
   role: RolesEnum;
 
   @CreateDateColumn({ update: false })
-  created_at: Date;
+  createdAt: Date;
 
   @UpdateDateColumn()
-  updated_at: Date;
+  updatedAt: Date;
+
+  constructor(email: string, walletAddress: string, role: RolesEnum) {
+    super();
+    this.email = email;
+    this.walletAddress = walletAddress;
+    this.role = role;
+  }
 }

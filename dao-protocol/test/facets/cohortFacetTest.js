@@ -7,6 +7,7 @@ const { assert } = require("chai");
 describe("CohortFacetTest", async function () {
   let diamondAddress;
   let cohortFactoryFacet;
+  let cohortFacet;
   let cohort;
   let cohortAddress;
   let usdc;
@@ -22,6 +23,7 @@ describe("CohortFacetTest", async function () {
       "CohortFactoryFacet",
       diamondAddress
     );
+    cohortFacet = await ethers.getContractAt("CohortFacet", diamondAddress);
     const USDC = await ethers.getContractFactory("USDC");
     usdc = await USDC.deploy();
     await usdc.deployed();
@@ -39,26 +41,35 @@ describe("CohortFacetTest", async function () {
     const currentTimestamp = currentDate.getTime();
     const startDate = currentTimestamp + 30;
     const endDate = currentTimestamp + 60;
-    await cohortFactoryFacet.newCohort(1, name, startDate, endDate, 100, 10);
-    const cohortsList = await cohortFactoryFacet.cohorts();
+    const description = `This 13-week course is designed for people seeking a career in the blockchain ecosystem as a Solidity developer. The program starts on the 3rd October and is free of charge. The application deadline is 30th of September 2022.`;
+    await cohortFactoryFacet.newCohort(
+      1,
+      name,
+      startDate,
+      endDate,
+      100,
+      10,
+      description
+    );
+
+    const cohortsList = await cohortFacet.cohorts();
     assert.equal(cohortsList[0].name, name);
-    const cohortData = await cohortFactoryFacet.cohort(1);
+    const cohortData = await cohortFacet.cohort(1);
     cohortAddress = cohortData.contractAddress;
-    const Cohort = await ethers.getContractFactory("Cohort");
-    cohort = await Cohort.attach(cohortAddress);
-    const record = await cohort.cohort();
-    assert.equal(record.name, name);
-    assert.equal(record.startDate, startDate);
-    assert.equal(record.endDate, endDate);
-    assert.equal(record.size, 100);
-    assert.equal(record.commitment, 10);
+    await cohortFacet.initCohort(cohortAddress, usdc.address, ekoNft.address);
+    assert.equal(cohortData.name, name);
+    assert.equal(cohortData.startDate, startDate);
+    assert.equal(cohortData.endDate, endDate);
+    assert.equal(cohortData.size, 100);
+    assert.equal(cohortData.commitment, 10);
+    assert.equal(cohortData.description, description);
   });
 
   it("should enroll student in a cohort", async () => {
+    const Cohort = await ethers.getContractFactory("Cohort");
+    cohort = await Cohort.attach(cohortAddress);
     await usdc.mint(studentAddress, 10);
     await usdc.approve(cohortAddress, 10);
-
-    await cohort.init(usdc.address, ekoNft.address);
 
     const ekoStableAddress = await cohort.ekoStableAddress();
     const EkoStable = await ethers.getContractFactory("EkoStable");
@@ -74,7 +85,6 @@ describe("CohortFacetTest", async function () {
     assert.equal(cohortUsdcBalanceBeforeEnroll, 0);
 
     await cohort.enroll(10);
-
     const studentUsdcBalanceAfterEnroll = await usdc.balanceOf(studentAddress);
     assert.equal(studentUsdcBalanceAfterEnroll, 0);
     const studentEkoUsdcBalanceAfterEnroll = await ekoUsdc.balanceOf(

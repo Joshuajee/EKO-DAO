@@ -19,8 +19,7 @@ contract Project {
 
     //events
     event adminWithdrawal (
-        uint256 amountWithdrawn,
-        uint256 fundBalance,
+        uint256 amountWithdrawn,       
         uint256 transactionDate
     );
 
@@ -47,7 +46,8 @@ contract Project {
     error StableCoinTranferFailed();
     error zeroDonation();
     error AmountBelowTheMinimun();
-    
+    error FundAlreadyWithdraw();
+    error CampaignSuccessfulAndCompleted();
     
     
     
@@ -118,7 +118,7 @@ contract Project {
     }
 
     //View project descriptions
-    function getProjectDetails() public view returns(Database.ProjectState memory details){        
+    function getProjectDetails() public pure returns(Database.ProjectState memory details){        
         details = Database.getProjectRecords();          
     }
 
@@ -135,8 +135,12 @@ contract Project {
     function donate(address _user, uint256 _amount) public isExpired {
         Database.ProjectState storage state = Database.getProjectRecords(); //instance state variables
 
+        if (Database.getProjectRecords().status == Status.Completed){
+            revert CampaignSuccessfulAndCompleted(); //validate campaign completed and fund withdrawn 
+        }
+
         if(_amount < state.minimumDonation) {
-            revert AmountBelowTheMinimun();
+            revert AmountBelowTheMinimun();  //validate the donation is above the minimum
         }
 
         bool success = stableCoin.transferFrom(_user ,address(this), _amount);
@@ -150,6 +154,7 @@ contract Project {
         Database.getProjectMappingRecords().donor[_user] += _amount; //map donation to contributor
         state.totalDonationRecieved += _amount; // update the total recived fund
         state.fundBalance += _amount; //update balance
+        Database.getProjectRecords().donors.push(_user); //track the donor address
 
         if (state.totalDonationRecieved >= state.targetFund){state.status = Status.Successful;}
         if (block.timestamp > Database.getProjectRecords().endDate){
@@ -160,19 +165,25 @@ contract Project {
     }
 
     //@dev:Allow admin to withdraw if the project is successful
-    function adminWithdraw(address _user, uint _amount) public {
+    function adminWithdraw(address _user) public {
         if (_user != Database.getProjectRecords().admin) revert Unauthorized(); //validate admin
         
+
         Database.ProjectState storage state = Database.getProjectRecords(); //get state variables location
-        if (state.totalDonationRecieved < state.targetFund) revert ProjectNotSucessful();  
+        uint256 fundBalance = state.fundBalance;
 
-        state.fundBalance -= _amount; //update balance
-        state.amountWithdrawn += _amount; //update amount withdrawn
+        if (state.totalDonationRecieved < state.targetFund) revert ProjectNotSucessful(); 
+        
+        if (fundBalance == 0) revert FundAlreadyWithdraw(); //validate fund yet to be withdrwan
+        
+        state.amountWithdrawn += fundBalance; //update amount withdrawn
 
-        bool success = stableCoin.transfer(_user,_amount); //withdraw to admin account
+        bool success = stableCoin.transfer(_user,state.fundBalance); //withdraw to admin account
         if(!success) revert StableCoinTranferFailed(); 
 
-        emit adminWithdrawal(_amount,state.fundBalance, block.timestamp);
+        Database.getProjectRecords().status = Status.Completed;
+
+        emit adminWithdrawal(state.fundBalance, block.timestamp);
         
     }
 
@@ -193,6 +204,11 @@ contract Project {
         if(!success) revert StableCoinTranferFailed();    
         
         emit donorWithdrawal(_user, amount, block.timestamp);
-    }   
+    } 
 
-}
+    //@dev: check if the user is a donor and return the amount donated
+    function isDonor(address _user) public view returns(bool status, uint256 amount){      
+        status = Database.getProjectMappingRecords().donor[_user] > 0 ? true : false;
+        amount = Database.getProjectMappingRecords().donor[_user];
+    }
+}  

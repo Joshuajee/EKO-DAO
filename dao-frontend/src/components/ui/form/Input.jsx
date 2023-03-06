@@ -1,4 +1,3 @@
-
 const Input = ({id, label, placeholder, helperText, value, onChange, min, error, type="text"}) => {
 
     return (

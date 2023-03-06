@@ -6,15 +6,13 @@ const {getSelectors, FacetCutAction } = require('./libraries/diamond.js')
 async function upgradeDiamond() {
 
     // const accounts = await ethers.getSigners();
-    const diamondAddress = "0xA1Aa5d5E21597fc988ab60Ef7212b42f543AE233"
+    const diamondAddress = "0xC8854E5CeD88a073A1400CB2c7f6A4F488d44175"
 
     const diamondCutFacet = await ethers.getContractAt('DiamondCutFacet', diamondAddress)
     const diamondLoupeFacet = await ethers.getContractAt('DiamondLoupeFacet', diamondAddress)
 
-    const Facet = await ethers.getContractFactory('CrowdFundFacet')
+    const Facet = await ethers.getContractFactory('GovernanceFacet')
     const facet = await Facet.deploy()
-
-    console.log("address", facet.address)
 
     const selectors = getSelectors(facet)
 
@@ -24,7 +22,7 @@ async function upgradeDiamond() {
             action: FacetCutAction.Replace,
             functionSelectors: selectors
         }],
-        ethers.constants.AddressZero, '0x', { gasLimit: 100_000_000_000_000 }
+        ethers.constants.AddressZero, '0x', { gasLimit: 100_000_000 }
     )
 
     const receipt = await tx.wait()
@@ -35,7 +33,7 @@ async function upgradeDiamond() {
 
     await diamondLoupeFacet.facetFunctionSelectors(facet.address)
 
-   console.log(result)
+    console.log(result)
 
     console.log("UPGRADE SUCCESSFUL")
 
@@ -53,4 +51,3 @@ if (require.main === module) {
 }
 
 exports.upgradeDiamond = upgradeDiamond;
-

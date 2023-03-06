@@ -1,4 +1,4 @@
-import { useDisconnect, useNetwork } from 'wagmi'
+import { useAccount, useDisconnect, useNetwork } from 'wagmi'
 import truncAddress from 'truncate-eth-address'
 import { toast } from 'react-toastify'
 import PropTypes from 'prop-types';
@@ -7,7 +7,9 @@ import { networkNameByChainId } from '@/libs/utils';
 
 
 
-const ConnectionInfo = ({show, address, close}) => {
+const ConnectionInfo = ({show, close}) => {
+
+    const { address } = useAccount()
 
     const { chain } = useNetwork()
 
@@ -61,7 +63,6 @@ const ConnectionInfo = ({show, address, close}) => {
 
 ConnectionInfo.propTypes = {
     show: PropTypes.bool.isRequired,
-    address: PropTypes.string.isRequired,
     close: PropTypes.func.isRequired
 };
 

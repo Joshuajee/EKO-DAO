@@ -14,18 +14,15 @@ async function deployDiamond(test = false) {
   const diamondInit = await DiamondInit.deploy();
   await diamondInit.deployed();
 
-  if(!test) { 
-    console.log("DiamondInit deployed:", diamondInit.address);
-    // Deploy facets and set the `facetCuts` variable
-    console.log("");
-    console.log("Deploying facets");
-  }
-
+  // Deploy facets and set the `facetCuts` variable
+  console.log("Deploying facets");
   const FacetNames = [
     "DiamondCutFacet",
     "DiamondLoupeFacet",
     "OwnershipFacet",
+    "AdminFacet",
     "CohortFactoryFacet",
+    "CohortFacet",
     "GovernanceFacet",
     "CrowdFundFacet",
   ];
@@ -35,7 +32,7 @@ async function deployDiamond(test = false) {
     const Facet = await ethers.getContractFactory(FacetName);
     const facet = await Facet.deploy();
     await facet.deployed();
-    if(!test) console.log(`${FacetName} deployed: ${facet.address}`);
+    if (!test) console.log(`${FacetName} deployed: ${facet.address}`);
     facetCuts.push({
       facetAddress: facet.address,
       action: FacetCutAction.Add,
@@ -49,6 +46,7 @@ async function deployDiamond(test = false) {
   let functionCall = diamondInit.interface.encodeFunctionData("init");
 
   // Setting arguments that will be used in the diamond constructor
+
   const diamondArgs = {
     owner: contractOwner.address,
     init: diamondInit.address,
@@ -60,6 +58,16 @@ async function deployDiamond(test = false) {
   const diamond = await Diamond.deploy(facetCuts, diamondArgs);
   await diamond.deployed();
   if (!test) console.log("Diamond deployed:", diamond.address);
+
+  /* const USDC = await ethers.getContractFactory("USDC");
+  const usdc = await USDC.deploy();
+  await usdc.deployed();
+  console.log(`USDC deployed: ${usdc.address}`);
+
+  const EkoNFT = await ethers.getContractFactory("EkoNFT");
+  const ekoNft = await EkoNFT.deploy();
+  await ekoNft.deployed();
+  console.log(`EkoNFT deployed: ${ekoNft.address}`);*/
 
   // returning the address of the diamond
   return diamond.address;

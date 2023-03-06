@@ -40,4 +40,28 @@ export class ConfigurationService {
   get dbpassword(): string {
     return this.configService.get<string>('db.password');
   }
+
+  get providerUrl(): string {
+    return this.configService.get<string>('bc.providerUrl');
+  }
+
+  get chainId(): number {
+    return this.configService.get<number>('bc.chainId');
+  }
+
+  get superAdminAddress(): string {
+    return this.configService.get<string>('bc.superAdminAddress');
+  }
+
+  get superAdminPrivateKey(): string {
+    return this.configService.get<string>('bc.superAdminPrivateKey');
+  }
+
+  get superAdminPublicKey(): string {
+    return this.configService.get<string>('bc.superAdminPublicKey');
+  }
+
+  get diamondAddress(): string {
+    return this.configService.get<string>('bc.diamondAddress');
+  }
 }

@@ -1,17 +1,18 @@
 import Input from "@/components/ui/form/Input"
 import { useState, useEffect, useLayoutEffect } from "react"
 import wordsCount from 'words-count';
-import { contractAddress, getDate } from "@/libs/utils"
+import { contractAddress, convertToEther, convertToWEI, getDate } from "@/libs/utils"
 import { useContractWrite } from "wagmi";
 import cohortFacetABI from '../../../abi/contracts/facets/CohortFactoryFacet.sol/CohortFactoryFacet.json';
 import { toast } from "react-toastify";
 import LoadingButton from "@/components/ui/form/LoadingButton";
+import Textarea from "@/components/ui/form/Textarea";
 
 const currentDate = getDate()
 
 const CreateCohortForm = ({close}) => {
 
-    const [id, setId] = useState("");
+    const [id, setId] = useState(4);
     const [name, setName] = useState("");
 
     const [startDate, setStartDate] = useState(currentDate);
@@ -20,9 +21,12 @@ const CreateCohortForm = ({close}) => {
     const [student, setStudent] = useState("");
     const [commitment, setCommitment] = useState("");
 
+    const [description, setDescription] = useState("");
+
     // Errors 
     const [idError, setIdError] = useState(false);
     const [nameError, setNameError] = useState(false);
+    const [descriptionError, setDescriptionError] = useState("");
 
     const [startDateError, setStartDateError] = useState(false);
     const [endDateError, setEndDateError] = useState(false);
@@ -35,7 +39,7 @@ const CreateCohortForm = ({close}) => {
         address: contractAddress,
         abi: cohortFacetABI,
         functionName: 'newCohort',
-        args: [id, name, new Date(startDate).getTime(), new Date(endDate).getTime(), student, commitment],
+        args: [id, name, new Date(startDate).getTime(), new Date(endDate).getTime(), student, convertToWEI(commitment), description],
     })
 
     const submit = (e) => {
@@ -58,6 +62,12 @@ const CreateCohortForm = ({close}) => {
         if (wordsCount(name) <= 2) setNameError(true)
         else setNameError(false)
     }, [name])
+
+    // Description
+    useEffect(() => {
+        if (wordsCount(description) <= 10 || wordsCount(description) >= 50 ) setDescriptionError(true)
+        else setDescriptionError(false)
+    }, [description])
 
     // Student Size
     useEffect(() => {
@@ -82,8 +92,8 @@ const CreateCohortForm = ({close}) => {
             }, 600)
         }
 
-        if (create.error) {
-            toast.error(create.error)
+        if (create?.isError) {
+            toast.error(create?.error?.reason)
         }
 
     }, [create.isLoading, create.isSuccess, create.isError, create.error, close])
@@ -91,10 +101,10 @@ const CreateCohortForm = ({close}) => {
 
     return (
         <form className="text-gray-700" onSubmit={submit}>
-            
-            <Input type="number" value={id} onChange={setId} id="id" label={"Cohort id"} placeholder="e.g 3" error={idError} helperText={"Invalid ID"}  />
-            
+
             <Input value={name} onChange={setName} id="name" label={"Cohort Title"} placeholder="e.g Solidity Bootcamp fall 2023" error={nameError} helperText={"Cohort Title should have at least 3 words"}  />
+
+            <Textarea value={description} onChange={setDescription} id="description" label={"Funding Description"} placeholder="e.g Contribute and saving the planet in a decentralized manner" error={descriptionError} helperText={"Descripion should contain 10 - 50 words"}></Textarea>
 
             <div className="grid grid-cols-2 gap-4">
 
