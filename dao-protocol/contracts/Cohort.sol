@@ -27,7 +27,6 @@ contract Cohort is Ownable {
   NOT_INITILIZED,
   INITIALIZED,
   STARTED,
-  ONGOING,
   ENDED,
   CLOSED
   }

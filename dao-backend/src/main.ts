@@ -11,7 +11,7 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
   app.useGlobalFilters(app.get(HttpExceptionFilter));
   app.enableCors({
-    origin: ['https://eco-dao-dev.netlify.app', 'https://ekolance-dao.fly.dev'],
+    origin: ['https://eco-dao-dev.netlify.app'],
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true,
