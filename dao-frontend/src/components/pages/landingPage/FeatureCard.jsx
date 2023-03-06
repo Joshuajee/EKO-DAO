@@ -15,7 +15,7 @@ const FeatureCard = ({title, icon, route, children}) => {
                 </div>
                 <div  className="flex-grow">
                     <p className="leading-relaxed text-base">{children}</p>
-                    <Link href={String(route)} className="mt-3 text-blue-700 inline-flex items-center">Learn More
+                    <Link href={String(route)} className="mt-3 text-blue-700 inline-flex items-center">Get Started
                         <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" className="w-4 h-4 ml-2" viewBox="0 0 24 24">
                             <path d="M5 12h14M12 5l7 7-7 7"></path>
                         </svg>

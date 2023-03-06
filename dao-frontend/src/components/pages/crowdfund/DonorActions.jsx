@@ -4,6 +4,7 @@ import { useAccount, useContractRead, useContractWrite } from "wagmi"
 import ProjectABI from '@/abi/contracts/CrowdFundProject.sol/Project.json';
 import { toast } from "react-toastify";
 import { AuthContext } from "@/context/AuthContext";
+import LoadingButton from "@/components/ui/form/LoadingButton";
 
 const DonorActions = ({status, contract, expired}) => {
 
@@ -49,29 +50,35 @@ const DonorActions = ({status, contract, expired}) => {
             { 
                 data?.[0] && (
                     <div className="flex flex-col md:flex-row items-center justify-between">
+                       
                         <p>
                             You donated 
                             <strong> {dollarFormat(convertToEther(data?.[1]?.toString())) } USD </strong> 
                             to this Campaign
                         </p> 
-                        { (status < 1 && expired) &&
-                            <button 
-                                onClick={donorWithdraw?.write}
-                                className="mt-2 md:mt-0 bg-yellow-600 hover:bg-yellow-700 rounded-lg px-8 py-2 text-white"> 
-                                Withdraw your funds
-                            </button>
+
+                        { 
+                            (status < 1 && expired) &&
+                                <div className="w-60">
+                                    <LoadingButton
+                                        loading={donorWithdraw?.isLoading}
+                                        onClick={donorWithdraw?.write}
+                                        color={"green"}>
+                                        Withdraw your funds
+                                    </LoadingButton>
+                                </div>
                         }
 
                     </div>)
             }
 
             { (status === 2 && isAdminLoggedIn) &&
-                <div className="flex justify-center">
-                    <button 
-                        onClick={adminWithdraw?.write}
-                        className="mt-4 bg-blue-600 hover:bg-blue-700 rounded-lg px-8 py-2 text-white"> 
-                        Withdraw funds Admin
-                    </button>
+                <div className="w-60">
+                    <LoadingButton
+                        loading={adminWithdraw?.isLoading}
+                        onClick={adminWithdraw?.write}>
+                        Withdraw your funds
+                    </LoadingButton>
                 </div>
             }
 

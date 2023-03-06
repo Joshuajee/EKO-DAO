@@ -16,12 +16,13 @@ import Badge from "@/components/ui/Badge"
 const CohortCard = ({cohort, contract, expanded}) => {
 
     const { 
-        id, name, commitment, size, status,
-        startDate, endDate, description 
+        name, commitment, size, status,
+        startDate, endDate, description, contractAddress
     } = cohort
 
     const { isConnected, address } = useAccount()
     const [cohortStatus, setCohortStatus] = useState()
+    const [startTime, setStartTime] = useState(0)
     const [deadline, setDeadline] = useState(0)
     const [currentTime, setCurrentTime] = useState(0)
 
@@ -47,10 +48,12 @@ const CohortCard = ({cohort, contract, expanded}) => {
     })
 
     useEffect(() => {
-        console.log("==== ", status)
         switch (status) {
             case 1:
-                setCohortStatus({color: "blue", status: "Enrollment Open"})
+                if (startTime < currentTime)
+                    setCohortStatus({color: "blue", status: "Enrollment is open"})
+                else 
+                    setCohortStatus({color: "green", status: "Cohort in session"})
                 break
             case 2:
                 setCohortStatus({color: "green", status: "Successful"})
@@ -59,13 +62,22 @@ const CohortCard = ({cohort, contract, expanded}) => {
                 setCohortStatus({color: "gray", status: "Executed"})
                 break
             default:
-                if (deadline < currentTime)
-                    setCohortStatus({color: "red", status: "Expired"})
-                else 
-                    setCohortStatus({color: "green", status: "Cohort in session"})
-                break
+                setCohortStatus({color: "gray", status: "Enrollment not started"})
+
         }
-    }, [status, deadline, currentTime]);
+    }, [status, startTime, deadline, currentTime]);
+
+    useEffect(() => {
+        setDeadline(Number(endDate.toString()))
+    }, [endDate])
+
+    useEffect(() => {
+        setCurrentTime(Number(new Date()))
+        const interval = setInterval(() => {
+            setCurrentTime(Number(new Date()))
+        }, 1000)
+        return clearInterval(interval)
+    }, [])
 
     return (
         <div className="text-gray-700 bg-white rounded-md p-4 md:px-4 shadow-lg w-full max-h-[500px] overflow-x-hidden overflow-y-auto">
@@ -85,7 +97,7 @@ const CohortCard = ({cohort, contract, expanded}) => {
 
             <div className="flex justify-between">
 
-                { !expanded ? <button onClick={() => router.push(`${links.cohorts}/${id}`)} className="text-gray-600">View Details </button> : <div> </div> }
+                { !expanded ? <button onClick={() => router.push(`${links.cohorts}/${contractAddress}`)} className="text-gray-600">View Details </button> : <div> </div> }
 
                 { (expanded && !data) && <button onClick={handleClick} className="bg-blue-600 hover:bg-blue-800 rounded-lg px-8 py-2 text-white"> Enroll </button> }
 
@@ -95,7 +107,7 @@ const CohortCard = ({cohort, contract, expanded}) => {
                 <EnrollmentForm cohort={cohort} contract={contract} close={handleClose} />
             </ModalWrapper>
 
-            { expanded && <CohortActions contract={contract} isStudent={data} /> }
+            { expanded && <CohortActions status={status} contract={contract} isStudent={data} /> }
             
         </div>
     )

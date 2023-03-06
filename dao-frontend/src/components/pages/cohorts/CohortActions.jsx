@@ -5,6 +5,7 @@ import { toast } from "react-toastify";
 import { AuthContext } from "@/context/AuthContext";
 import CohortABI from '@/abi/contracts/Cohort.sol/Cohort.json';
 import CohortFacetABI from '@/abi/contracts/facets/CohortFacet.sol/CohortFacet.json'
+import LoadingButton from "@/components/ui/form/LoadingButton";
 
 const CohortActions = ({status, contract, expired, isStudent}) => {
 
@@ -27,6 +28,7 @@ const CohortActions = ({status, contract, expired, isStudent}) => {
     })
 
     useEffect(() => {
+
         if (donorWithdraw.isError) 
             return toast.error(donorWithdraw?.error?.reason)
     
@@ -42,9 +44,7 @@ const CohortActions = ({status, contract, expired, isStudent}) => {
             { 
                 isStudent && (
                     <div className="flex flex-col md:flex-row items-center justify-between">
-                        <p>
-                            You enrolled for this programme
-                        </p> 
+                        <p>You enrolled for this programme</p> 
                         { (status < 1 && expired) &&
                             <button 
                                 onClick={donorWithdraw?.write}
@@ -56,15 +56,17 @@ const CohortActions = ({status, contract, expired, isStudent}) => {
                     </div>)
             }
 
-        { (isAdminLoggedIn) &&
-            <div className="flex justify-center">
-                <button 
-                    onClick={initCohort?.write}
-                    className="mt-4 bg-yellow-600 hover:bg-yellow-700 rounded-lg px-8 py-2 text-white"> 
-                    Initialize Cohort
-                </button>
-            </div>
-        }
+            { (isAdminLoggedIn && status === 0) &&
+                <div className="flex justify-center">
+                    <div className="w-60">
+                        <LoadingButton
+                            onClick={initCohort?.write}
+                            color="yellow" loading={initCohort?.isLoading}> 
+                            Initialize Cohort
+                        </LoadingButton>
+                    </div>
+                </div>
+            }
 
         </div>
     )
