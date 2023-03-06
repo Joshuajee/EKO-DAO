@@ -61,9 +61,7 @@ const ProjectCard = ({project, contract, expanded}) => {
 
     useEffect(() => {
         setDeadline(Number(endDate.toString()) * 1000)
-
     }, [endDate])
-
 
     useEffect(() => {
         setCurrentTime(Number(new Date()))

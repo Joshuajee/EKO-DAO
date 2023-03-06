@@ -13,7 +13,6 @@ const VoterAction = ({id}) => {
         enabled: isConnected
     })
 
-
     return (
         <div>
             

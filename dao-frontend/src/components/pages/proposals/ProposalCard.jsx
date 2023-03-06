@@ -117,11 +117,14 @@ const ProposalCard = ({proposal, expanded}) => {
             <h2 className="text-black text-xl md:text-2xl font-semibold mb-3">{name}</h2>
             <p className="mb-3">{description}</p>
 
-            <div className="flex justify-between font-medium">
-                <Badge color={proposalStatus?.color}> 
-                    <AiOutlineClockCircle size={18} /> 
-                    <p className="ml-2 text-sm">Proposal {proposalStatus?.status}</p> 
-                </Badge>
+            <div className="flex flex-col md:flex-row justify-between font-medium">
+                
+                <div>
+                    <Badge color={proposalStatus?.color}> 
+                        <AiOutlineClockCircle size={18} /> 
+                        <p className="ml-2 text-sm">Proposal {proposalStatus?.status}</p> 
+                    </Badge>
+                </div>
 
                 <div>
 

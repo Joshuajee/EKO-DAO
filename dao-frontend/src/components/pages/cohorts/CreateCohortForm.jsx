@@ -7,12 +7,13 @@ import cohortFacetABI from '../../../abi/contracts/facets/CohortFactoryFacet.sol
 import { toast } from "react-toastify";
 import LoadingButton from "@/components/ui/form/LoadingButton";
 import Textarea from "@/components/ui/form/Textarea";
+import { getRandomInt } from "@/libs/dummy";
 
 const currentDate = getDate()
 
 const CreateCohortForm = ({close}) => {
 
-    const [id, setId] = useState(4);
+    const [id] = useState(Number(new Date()));
     const [name, setName] = useState("");
 
     const [startDate, setStartDate] = useState(currentDate);
