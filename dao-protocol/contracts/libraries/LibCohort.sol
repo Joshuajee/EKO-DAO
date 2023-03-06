@@ -10,8 +10,8 @@ library LibCohort {
 
 
   struct Cohorts {
-    bytes32[] keys;
-    mapping(bytes32 => address) values;
+    uint[] keys;
+    mapping(uint => address) values;
   }
 
 event NewCohort(Cohort.CohortDetails cohort);
@@ -35,9 +35,8 @@ event NewCohort(Cohort.CohortDetails cohort);
       revert("Unauthorized access. Caller is not an admin");
 
     Cohorts storage cohorts = diamondStorage();
-    bytes32 id = keccak256(abi.encodePacked(_id));
     Cohort cohort = new Cohort(
-      id,
+      _id,
       _name,
       _startDate,
       _endDate,
@@ -45,8 +44,8 @@ event NewCohort(Cohort.CohortDetails cohort);
       _commitment,
       _description
     );
-   cohorts.values[id] = address(cohort);
-    cohorts.keys.push(id);
+   cohorts.values[_id] = address(cohort);
+    cohorts.keys.push(_id);
     emit NewCohort(cohort.getCohort());
   }
 
@@ -61,7 +60,7 @@ event NewCohort(Cohort.CohortDetails cohort);
     cohort.init(_stableCoin, _ekoNft);
   }
 
-  function getCohort(bytes32 _id) internal view returns (Cohort.CohortDetails memory) {
+  function getCohort(uint _id) internal view returns (Cohort.CohortDetails memory) {
     Cohorts storage cohorts = diamondStorage();
     address address_ = cohorts.values[_id];
     Cohort contract_ = Cohort(address_);
@@ -74,7 +73,7 @@ event NewCohort(Cohort.CohortDetails cohort);
     returns (Cohort.CohortDetails[] memory cohortsList)
   {
     Cohorts storage cohorts = diamondStorage();
-    bytes32[] memory keys = cohorts.keys;
+    uint[] memory keys = cohorts.keys;
     cohortsList = new Cohort.CohortDetails[](keys.length);
     for (uint i = 0; i < keys.length; i++) {
       address address_ = cohorts.values[cohorts.keys[i]];

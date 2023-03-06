@@ -18,8 +18,7 @@ contract CohortFacet {
   function cohort(
     uint _id
   ) external view returns (Cohort.CohortDetails memory) {
-    bytes32 id = keccak256(abi.encodePacked(_id));
-    return LibCohort.getCohort(id);
+    return LibCohort.getCohort(_id);
   }
 
   function cohorts() external view returns (Cohort.CohortDetails[] memory) {

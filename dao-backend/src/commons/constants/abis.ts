@@ -149,9 +149,9 @@ export const COHORT_FACET_ABI = [
       {
         components: [
           {
-            internalType: 'bytes32',
+            internalType: 'uint256',
             name: 'id',
-            type: 'bytes32',
+            type: 'uint256',
           },
           {
             internalType: 'string',
@@ -214,9 +214,9 @@ export const COHORT_FACET_ABI = [
       {
         components: [
           {
-            internalType: 'bytes32',
+            internalType: 'uint256',
             name: 'id',
-            type: 'bytes32',
+            type: 'uint256',
           },
           {
             internalType: 'string',
@@ -301,9 +301,9 @@ export const COHORT_ABI = [
   {
     inputs: [
       {
-        internalType: 'bytes32',
+        internalType: 'uint256',
         name: '_id',
-        type: 'bytes32',
+        type: 'uint256',
       },
       {
         internalType: 'string',
@@ -363,9 +363,9 @@ export const COHORT_ABI = [
     name: 'cohort',
     outputs: [
       {
-        internalType: 'bytes32',
+        internalType: 'uint256',
         name: 'id',
-        type: 'bytes32',
+        type: 'uint256',
       },
       {
         internalType: 'string',
@@ -449,9 +449,9 @@ export const COHORT_ABI = [
       {
         components: [
           {
-            internalType: 'bytes32',
+            internalType: 'uint256',
             name: 'id',
-            type: 'bytes32',
+            type: 'uint256',
           },
           {
             internalType: 'string',
