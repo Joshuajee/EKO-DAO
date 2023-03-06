@@ -9,7 +9,7 @@ import { EkoStable } from "./EkoStable.sol";
 
 contract Cohort is Ownable {
   struct CohortDetails {
-    bytes32 id;
+    uint id;
     string name;
     uint startDate;
     uint endDate;
@@ -57,7 +57,7 @@ contract Cohort is Ownable {
   }
 
   constructor(
-    bytes32 _id,
+    uint _id,
     string memory _name,
     uint _startDate,
     uint _endDate,

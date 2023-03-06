@@ -12,9 +12,9 @@
       {
         "components": [
           {
-            "internalType": "bytes32",
+            "internalType": "uint256",
             "name": "id",
-            "type": "bytes32"
+            "type": "uint256"
           },
           {
             "internalType": "string",
@@ -77,9 +77,9 @@
       {
         "components": [
           {
-            "internalType": "bytes32",
+            "internalType": "uint256",
             "name": "id",
-            "type": "bytes32"
+            "type": "uint256"
           },
           {
             "internalType": "string",
