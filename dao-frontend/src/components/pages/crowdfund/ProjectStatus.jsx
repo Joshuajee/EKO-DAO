@@ -6,20 +6,24 @@ const ProjectStatus = ({target, current, donorCount, minDonation }) => {
     const currentPercent = current * 100 / target
 
     return (
-        <div className="block py-4 w-full max-w-xs">
+        <div className="block py-4 w-full">
 
-            <div className="text-sm flex flex-col items-end">
+            <div className="text-sm flex flex-col">
 
-                <h4 className="text-right text-sm mb-2">Project Status</h4>
+                <div className="flex justify-between font-medium">
+                    <p>No of Donors: {donorCount.toString()}</p>
+                    <p>Min Donation: {dollarFormat(convertToEther(minDonation))}</p>
+                </div>
 
-                <p className="font-semibold">Funds Raised: {dollarFormat(convertToEther(current))}</p>
-                <p className="font-semibold">Target: {dollarFormat(convertToEther(target))}</p>
-                <p className="font-semibold">Donors: {donorCount.toString()}</p>
-                <p className="font-semibold">Minimum Donation: {dollarFormat(convertToEther(minDonation))}</p>
+                <div className="flex justify-between font-medium">
+                    <p>Funds Raised: {dollarFormat(convertToEther(current))}</p>
+                    <p>Target: {dollarFormat(convertToEther(target))}</p>
+                </div>
+
 
             </div>
 
-            <progress max={100} value={currentPercent} style={{width: "100%", height: "4px"}} />
+            {/* <progress max={100} value={currentPercent} style={{width: "100%", height: "4px"}} /> */}
 
         </div>
     )

@@ -1,5 +1,4 @@
 import ProposalCard from '@/components/pages/proposals/ProposalCard';
-import VotersList from '@/components/pages/proposals/VotersList';
 import Container from '@/components/ui/Container';
 import Layout from '@/components/ui/Layout';
 import ProposalFacetABI from '@/abi/contracts/facets/GovernanceFacet.sol/GovernanceFacet.json';

@@ -52,8 +52,10 @@ const CohortCard = ({cohort, contract, expanded}) => {
             case 1:
                 if (startTime < currentTime)
                     setCohortStatus({color: "blue", status: "Enrollment is open"})
-                else 
+                else if (deadline < currentTime)
                     setCohortStatus({color: "green", status: "Cohort in session"})
+                else 
+                    setCohortStatus({color: "yellow", status: "Cohort has ended"})
                 break
             case 2:
                 setCohortStatus({color: "green", status: "Successful"})
@@ -63,7 +65,6 @@ const CohortCard = ({cohort, contract, expanded}) => {
                 break
             default:
                 setCohortStatus({color: "gray", status: "Enrollment not started"})
-
         }
     }, [status, startTime, deadline, currentTime]);
 
