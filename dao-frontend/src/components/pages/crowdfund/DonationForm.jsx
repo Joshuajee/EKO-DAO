@@ -22,7 +22,6 @@ const DonationForm = ({project, close}) => {
 
     const [min, setMin] = useState(convertToEther(minimumDonation))
 
-
     const { address } = useAccount()
 
     const donation = useContractWrite({

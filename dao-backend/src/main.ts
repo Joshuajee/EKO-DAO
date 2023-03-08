@@ -13,7 +13,7 @@ async function bootstrap() {
   app.enableCors({
     origin: [
       'https://eco-dao-dev.netlify.app',
-      'https://ekolance-dao-integration.up.railway.app',
+    'https://eko-dao.netlify.app' ,
     ],
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization'],

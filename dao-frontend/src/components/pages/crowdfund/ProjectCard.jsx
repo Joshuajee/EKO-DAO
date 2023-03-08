@@ -95,7 +95,7 @@ const ProjectCard = ({project, contract, expanded}) => {
             
             </div>
 
-            <div className="flex justify-end">
+            <div>
                 <ProjectStatus target={targetFund.toString()} current={fundBalance.toString()} donorCount={noOfDonors.toString()} minDonation={minimumDonation.toString()} />
             </div>
 
