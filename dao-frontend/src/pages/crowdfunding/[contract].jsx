@@ -26,25 +26,11 @@ export default function CrowdFund() {
 
       { isSuccess && 
         <Container> 
-
           <div className='mt-20 flex justify-center w-full'>
             <div className='max-w-5xl w-full'> 
               <ProjectCard project={data} contract={contract}  expanded={true}/>   
             </div> 
           </div>
-
-          {/* 
-            <div className='mt-20 grid grid-cols-1 md:grid-cols-3 md:gap-4'>
-
-              <div className='col-span-2 mb-4'>
-                <ProjectCard project={data}  expanded={true}/>  
-              </div>
-
-              <DonorsList donors={data?.donors} />
-
-            </div> 
-          */}
-
         </Container>
       }
 

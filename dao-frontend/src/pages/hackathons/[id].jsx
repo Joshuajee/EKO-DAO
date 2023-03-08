@@ -1,5 +1,4 @@
 import HackathonCard from '@/components/pages/hackathons/HackathonCard';
-import ParticipantList from '@/components/pages/hackathons/ParticipantList';
 import Container from '@/components/ui/Container';
 import Layout from '@/components/ui/Layout';
 import { proposalsDummy, votersDummy } from '@/libs/dummy';
@@ -23,15 +22,11 @@ export default function Hackathons() {
       <Head><title> Hackathon | Details </title></Head>
 
       <Container> 
-
-        <div className='mt-20 grid grid-cols-1 md:grid-cols-3 md:gap-4'>
-
-          <div className='col-span-2 mb-4'><HackathonCard proposal={proposal}  expanded={true}/>  </div>
-
-          <ParticipantList participant={votersDummy} />
-
+        <div className='mt-20 flex justify-center w-full'>
+          <div className='max-w-5xl w-full'> 
+            <HackathonCard proposal={proposal}  expanded={true}/>
+          </div> 
         </div>
-
       </Container>
     
     </Layout>
