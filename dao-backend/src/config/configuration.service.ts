@@ -5,6 +5,10 @@ import { ConfigService } from '@nestjs/config';
 export class ConfigurationService {
   constructor(private configService: ConfigService) {}
 
+  get env(): string {
+    return this.configService.get<string>('env');
+  }
+
   get name(): string {
     return this.configService.get<string>('app.name');
   }
@@ -16,6 +20,9 @@ export class ConfigurationService {
   }
   get version(): string {
     return this.configService.get<string>('app.version');
+  }
+  get allowedOrigins(): any {
+    return this.configService.get<any>('app.allowedOrigins');
   }
   get dbtype(): string {
     return this.configService.get<string>('db.type');
