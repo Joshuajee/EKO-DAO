@@ -1,9 +1,11 @@
 export default () => ({
+  env: process.env.NODE_ENV,
   app: {
     name: process.env.APP_NAME,
     host: process.env.APP_HOST,
     port: parseInt(process.env.PORT, 10) || 3000,
     version: process.env.APP_VERSION,
+    allowedOrigins: process.env.ALLOWED_ORIGIN,
   },
 
   db: {
