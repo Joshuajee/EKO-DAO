@@ -11,12 +11,12 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
   app.useGlobalFilters(app.get(HttpExceptionFilter));
   const appConfig: ConfigurationService = app.get(ConfigurationService);
-  /* app.enableCors({
+  app.enableCors({
     origin: appConfig.allowedOrigins,
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true,
-  });*/
+  });
 
   //if(appConfig.env === 'dev'){
   const swagger = app.get(SwaggerService);
