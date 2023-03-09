@@ -20,11 +20,10 @@
       uint creationTime; // the time at which a proposal is made
       uint votingDelay; // time before voting starts on a proposal that was created
       uint votingPeriod; // the time eligible voters would be able to vote on a proposal
-      uint votesFor; // the votes in favour of a proposal
-      uint votesAgainst; // the votes against a particular proposal
+      uint32 votesFor; // the votes in favour of a proposal
+      uint32 votesAgainst; // the votes against a particular proposal
+      uint16 minVotingTokenReq; // min amount of voting tokens required to vote 
       State state;
-      // Would need a chainlink integration
-      // bool proposalState; // False for failed proposals and true for passed proposals
     }
 
     // An integer used to keep track of propsals
@@ -43,12 +42,6 @@
       mapping(uint => Proposal) proposal;
       mapping(uint => mapping(address => Voter)) proposalVoter;
       mapping(uint => mapping(address => address)) votingDelegate;
-      mapping (uint => bool) notStarted;
-      mapping (uint => bool) ongoing;
-      mapping (uint => bool) won;
-      mapping (uint => bool) lost;
-      mapping (uint => bool) stalemate;
-      mapping (uint => bool) deleted;
     }
 
     
