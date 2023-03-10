@@ -24,7 +24,7 @@ export default function Proposals() {
   const [isLoading, setIsLoading] = useState(true)
   const [counts, setCounts] = useState(0)
 
-  const { isAdminLoggedIn } = useContext(AuthContext);
+  const { isAdmin } = useContext(AuthContext);
 
   const open = () => {
     setShow(true)
@@ -85,7 +85,7 @@ export default function Proposals() {
         )
       }
 
-      { isAdminLoggedIn &&
+      { isAdmin &&
         <CreateButton title={"Create a new Community Proposal"} open={open} show={show} close={close}>
           <CreateProposalForm close={close} />
         </CreateButton> 

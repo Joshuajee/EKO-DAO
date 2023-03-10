@@ -73,31 +73,24 @@ const ProjectCard = ({project, contract, expanded}) => {
 
 
     return (
-        <div className="w-full text-gray-700 bg-white rounded-md p-4 md:px-4 shadow-lg">
+        <div className="flex flex-col w-full text-gray-700 bg-white rounded-md p-4 md:px-4 shadow-lg">
             {/* <h3 className="mb-3 text-sm">POSTED {date} | PROJECT ID </h3> */}
             <h2 className="text-black text-xl md:text-2xl font-semibold mb-3">{projectTopic}</h2>
             <p className="mb-3">{description}</p>
-            
-            <Badge color={projectStatus?.color}> 
-                <AiOutlineClockCircle size={18} /> 
-                <p className="ml-2 text-sm">Project {projectStatus?.status}</p> 
-            </Badge>
-
-            <div className="flex flex-col md:flex-row justify-between font-medium"> 
-
-                <div className="text-sm md:text-base flex mt-2 font-medium">
-                    <p className="mr-2">End Date: {date.format(new Date(Number(endDate.toString()) * 1000), 'ddd, MMM DD YYYY')} </p> 
-                </div>
-
-                <div className="text-sm md:text-base flex mt-2 font-medium">
-                    <p className="mr-2">Time Left: </p> <Countdown date={Number(endDate.toString()) * 1000} />
-                </div>
-            
-            </div>
-
             <div>
-                <ProjectStatus target={targetFund.toString()} current={fundBalance.toString()} donorCount={noOfDonors.toString()} minDonation={minimumDonation.toString()} />
+                <Badge color={projectStatus?.color}> 
+                    <AiOutlineClockCircle size={18} /> 
+                    <p className="ml-2 text-sm">Project {projectStatus?.status}</p> 
+                </Badge>
             </div>
+
+            <div className="justify-end">
+                <ProjectStatus target={targetFund.toString()} current={fundBalance.toString()} donorCount={noOfDonors.toString()} minDonation={minimumDonation.toString()} endDate={endDate.toString()} />
+            </div>
+
+
+            <div className="flex flex-grow"></div>
+
 
             <div className="flex justify-between">
 
