@@ -22,7 +22,7 @@ export default function Crowdfunding() {
   const [isError, setIsError] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
 
-  const { isAdminLoggedIn } = useContext(AuthContext);
+  const { isAdmin } = useContext(AuthContext);
 
   const open = () => {
     setShow(true)
@@ -75,7 +75,7 @@ export default function Crowdfunding() {
         )
       }
 
-      { isAdminLoggedIn &&
+      { isAdmin &&
         <CreateButton title={"Create a new Crowd fund Project"} open={open} show={show} close={close}>
           <CreateCrowdForm close={close} />
         </CreateButton> 

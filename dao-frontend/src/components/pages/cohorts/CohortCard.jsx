@@ -6,7 +6,7 @@ import { AiOutlineClockCircle } from "react-icons/ai"
 import EnrollmentForm from "./EnrollmentForm"
 import CohortStatus from "./CohortStatus"
 import { memo, useEffect } from "react"
-import { useAccount, useContract, useContractRead } from "wagmi"
+import { useAccount, useContractRead } from "wagmi"
 import { toast } from "react-toastify"
 import CohortActions from "./CohortActions"
 import CohortABI from '@/abi/contracts/Cohort.sol/Cohort.json';
@@ -47,14 +47,16 @@ const CohortCard = ({cohort, contract, expanded}) => {
         enabled: isConnected
     })
 
+    console.log( deadline < currentTime )
+
     useEffect(() => {
         switch (status) {
             case 1:
                 if (startTime < currentTime)
                     setCohortStatus({color: "blue", status: "Enrollment is open"})
-                else if (deadline < currentTime)
+                if (deadline > currentTime)
                     setCohortStatus({color: "green", status: "Cohort in session"})
-                else 
+                if (deadline < currentTime)
                     setCohortStatus({color: "yellow", status: "Cohort has ended"})
                 break
             case 2:
@@ -108,7 +110,7 @@ const CohortCard = ({cohort, contract, expanded}) => {
                 <EnrollmentForm cohort={cohort} contract={contract} close={handleClose} />
             </ModalWrapper>
 
-            { expanded && <CohortActions status={status} contract={contract} isStudent={data} /> }
+            { expanded && <CohortActions status={status} contract={contract} isStudent={data} commitment={commitment.toString()} /> }
             
         </div>
     )
