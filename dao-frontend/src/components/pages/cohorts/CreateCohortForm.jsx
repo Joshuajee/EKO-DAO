@@ -7,7 +7,6 @@ import cohortFacetABI from '../../../abi/contracts/facets/CohortFactoryFacet.sol
 import { toast } from "react-toastify";
 import LoadingButton from "@/components/ui/form/LoadingButton";
 import Textarea from "@/components/ui/form/Textarea";
-import { getRandomInt } from "@/libs/dummy";
 import AuthRequest from "@/libs/requests";
 import { AuthContext } from "@/context/AuthContext";
 
@@ -141,7 +140,7 @@ const CreateCohortForm = ({close}) => {
 
             <Input value={name} onChange={setName} id="name" label={"Cohort Title"} placeholder="e.g Solidity Bootcamp fall 2023" error={nameError} helperText={"Cohort Title should have at least 3 words"}  />
 
-            <Textarea value={description} onChange={setDescription} id="description" label={"Funding Description"} placeholder="e.g Contribute and saving the planet in a decentralized manner" error={descriptionError} helperText={"Descripion should contain 10 - 50 words"}></Textarea>
+            <Textarea value={description} onChange={setDescription} id="description" label={"Cohort Description"} placeholder="e.g Contribute and saving the planet in a decentralized manner" error={descriptionError} helperText={"Descripion should contain 10 - 50 words"}></Textarea>
 
             <div className="grid grid-cols-2 gap-4">
 

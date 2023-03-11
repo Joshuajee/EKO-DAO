@@ -4,7 +4,7 @@ pragma solidity 0.8.17;
 
 
 
-import "./Hackathon.sol";
+import "../Hackathon.sol";
 
 // track state of hackathon
 enum State{

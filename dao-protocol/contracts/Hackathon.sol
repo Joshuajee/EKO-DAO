@@ -3,7 +3,7 @@
 pragma solidity 0.8.17;
 
 
-import "./LibHackFund.sol";
+import "./libraries/LibHackFund.sol";
 
 interface IERC20{
    function transfer(address to, uint amount) external  returns (bool);   

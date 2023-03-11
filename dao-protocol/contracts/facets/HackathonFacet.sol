@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.17;
 
-import "./LibHackFund.sol";
-import "./Hackathon.sol";
+import "../libraries/LibHackFund.sol";
+import "../Hackathon.sol";
 
 contract HackathonFacet {
 

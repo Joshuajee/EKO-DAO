@@ -13,7 +13,6 @@ export default function Hackathons() {
 
   const proposal = proposalsDummy.find(proposal => proposal.id == id)
 
-
   if (!proposal) return null
 
   return (
