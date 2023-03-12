@@ -3,11 +3,11 @@ import { useContractRead, useContractWrite } from "wagmi"
 import USDCABI from '@/abi/contracts/USDC.sol/USDC.json';
 import { convertToEther, dollarFormat, USDC } from "@/libs/utils";
 
-const Balance = ({contract,  address, setAllowance, setBalance, allowance, balance}) => {
+const Balance = ({contract,  address, setAllowance, setBalance, allowance, balance, token}) => {
 
     const getAllowance = useContractRead({
         mode: 'recklesslyUnprepared',
-        address: USDC,
+        address: token || USDC,
         abi: USDCABI,
         functionName: 'allowance',
         args: [address, contract],
@@ -17,7 +17,7 @@ const Balance = ({contract,  address, setAllowance, setBalance, allowance, balan
 
     const getBalance = useContractRead({
         mode: 'recklesslyUnprepared',
-        address: USDC,
+        address:  token || USDC,
         abi: USDCABI,
         functionName: 'balanceOf',
         args: [address],
