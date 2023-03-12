@@ -1,9 +1,8 @@
 import { useState, useEffect } from "react"
-import LoadingButtonSM from "@/components/ui/form/LoadingButtonSM"
 import { links } from "@/libs/routes"
 import { useRouter } from "next/router"
 import { AiOutlineClockCircle } from "react-icons/ai"
-import { useContractWrite } from "wagmi"
+import { useAccount, useContractRead, useContractWrite } from "wagmi"
 import HackActions from "./HackActions"
 import HackathonStatus from "./HackathonStatus"
 import hackathonABI from "@/abi/contracts/Hackathon.sol/Hackathon.json";
@@ -11,9 +10,12 @@ import ModalWrapper from "@/components/ui/ModalWrapper"
 import DonationHackForm from "./DonationHackForm"
 import Badge from "@/components/ui/Badge"
 import JoinHackathon from "./JoinHackForm"
+import { convertToEther } from "@/libs/utils"
+import PrizeHack from "./PrizeHack"
 
 const HackathonCard = ({hackathon, expanded}) => {
 
+    const { address } = useAccount()
 
     const [hackStatus, setHackStatus] = useState()
     const [openFund, setOpenFund] = useState(false);
@@ -22,17 +24,19 @@ const HackathonCard = ({hackathon, expanded}) => {
 
     const { 
         hackathonAddress, name, description, 
-        numOfStudent, state, startDate, endDate, 
+        state, startDate, endDate, 
         funding, minScoreTokenRequired } = hackathon
 
-    const prizePool = Number(funding.toString())
+    const prizePool = Number(convertToEther(funding.toString()))
 
     const router = useRouter()
 
-    const registerHack = useContractWrite({
+    const isRigistered = useContractRead({
         address: hackathonAddress,
         abi: hackathonABI,
-        functionName: 'register'
+        functionName: 'isParticipant',
+        enabled: expanded,
+        args: [address]
     })
 
     const handleFundClose = () => {
@@ -51,14 +55,10 @@ const HackathonCard = ({hackathon, expanded}) => {
         return clearInterval(interval)
     }, [])
 
-    console.log(hackathon)
-
 
     useEffect(() => {
         switch (state) {
             case 1:
-                if (startDate < currentTime)
-                    setHackStatus({color: "blue", status: "Enrollment is open"})
                 if (endDate > currentTime)
                     setHackStatus({color: "green", status: "Hackathon in session"})
                 if (endDate < currentTime)
@@ -75,6 +75,7 @@ const HackathonCard = ({hackathon, expanded}) => {
         }
     }, [state, startDate, endDate, currentTime]);
 
+
     return (
         <div className="text-gray-700 bg-white rounded-md p-4 md:px-4 shadow-lg w-full">
             {/* <h3 className="mb-3 text-sm">POSTED {date} | PROJECT ID {id}</h3> */}
@@ -88,7 +89,7 @@ const HackathonCard = ({hackathon, expanded}) => {
             </Badge>
 
             <div>
-                <HackathonStatus startDate={startDate} endDate={endDate} numOfStudent={numOfStudent} prizePool={prizePool} />
+                <HackathonStatus expanded={expanded} hackathon={hackathon} prizePool={prizePool} />
             </div>
 
             <div className="flex justify-between">
@@ -103,18 +104,22 @@ const HackathonCard = ({hackathon, expanded}) => {
                         Donate
                     </button>
 
-                    <button
-                        onClick={() => setOpenJoin(true)}
-                        className="bg-yellow-600 hover:bg-yellow-700 rounded-lg px-8 py-2 text-white"
-                        >
-                        Join
-                    </button>
+                    {   
+                        !isRigistered?.data &&
+                            <button
+                                onClick={() => setOpenJoin(true)}
+                                className="bg-yellow-600 hover:bg-yellow-700 rounded-lg px-8 py-2 text-white">
+                                Join
+                            </button>
+                    }
 
                 </div>
 
             </div>
 
-            <HackActions status={state} contract={hackathonAddress}  />
+            <HackActions status={state} contract={hackathonAddress} isRigistered={isRigistered?.data} expanded={expanded} />
+
+            <PrizeHack expanded={expanded} hackathon={hackathon} prizePool={prizePool}  />
 
             <ModalWrapper open={openFund} handleClose={handleFundClose} title="Donation Form">
                 <DonationHackForm hackathon={hackathon} close={handleFundClose} />

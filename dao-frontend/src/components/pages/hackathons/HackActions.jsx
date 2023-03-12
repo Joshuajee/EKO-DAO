@@ -7,7 +7,7 @@ import { AuthContext } from "@/context/AuthContext";
 import LoadingButton from "@/components/ui/form/LoadingButton";
 import hackathonABI from "@/abi/contracts/Hackathon.sol/Hackathon.json";
 
-const HackActions = ({status, contract, expired}) => {
+const HackActions = ({status, contract, isRigistered}) => {
 
     const { address, isConnected } = useAccount()
 
@@ -55,26 +55,12 @@ const HackActions = ({status, contract, expired}) => {
         <div className="block py-4 w-full">
 
             { 
-                data?.[0] && (
-                    <div className="flex flex-col md:flex-row items-center justify-between">
+                isRigistered && (
+                    <div className="font-medium flex flex-col md:flex-row items-center justify-between">
                        
                         <p>
-                            You donated 
-                            <strong> {dollarFormat(convertToEther(data?.[1]?.toString())) } USD </strong> 
-                            to this Campaign
+                            You registered for this Hackathon
                         </p> 
-
-                        { 
-                            (status < 1 && expired) &&
-                                <div className="w-60">
-                                    <LoadingButton
-                                        loading={donorWithdraw?.isLoading}
-                                        onClick={donorWithdraw?.write}
-                                        color={"green"}>
-                                        Withdraw your funds
-                                    </LoadingButton>
-                                </div>
-                        }
 
                     </div>)
             }
