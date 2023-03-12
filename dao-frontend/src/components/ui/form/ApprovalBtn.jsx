@@ -6,11 +6,11 @@ import USDCABI from '@/abi/contracts/USDC.sol/USDC.json';
 import { USDC } from "@/libs/utils";
 import { toast } from "react-toastify";
 
-const ApprovalBtn = ({contract, setAllowance, allowance, amount}) => {
+const ApprovalBtn = ({contract, setAllowance, allowance, amount, token, symbol}) => {
 
     const approval = useContractWrite({
         mode: 'recklesslyUnprepared',
-        address: USDC,
+        address: token || USDC,
         abi: USDCABI,
         functionName: 'approve',
         args: [contract, Number(amount) <= 0 ? 0 : ethers.utils.parseUnits(amount, 'ether')],
@@ -26,7 +26,7 @@ const ApprovalBtn = ({contract, setAllowance, allowance, amount}) => {
     if (Number(amount) == 0 || Number(amount) <= allowance) return
 
     return (
-        <LoadingButton loading={approval?.isLoading} onClick={approval?.write}> Approve Token {amount} USDC</LoadingButton>
+        <LoadingButton loading={approval?.isLoading} onClick={approval?.write}> Approve Token {amount} { symbol ||  "USDC" }</LoadingButton>
     )
 }
 

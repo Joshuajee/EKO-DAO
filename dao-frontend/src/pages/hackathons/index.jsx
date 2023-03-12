@@ -21,6 +21,7 @@ export default function Hackathons() {
   const [isSuccess, setIsSuccess] = useState(false)
   const [isError, setIsError] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
+  const [counts, setCounts] = useState(0)
 
   const { isAdmin } = useContext(AuthContext);
 
@@ -42,10 +43,16 @@ export default function Hackathons() {
   const hackathons = useContractRead({
     address: contractAddress,
     abi: HackathonFacetABI,
-    functionName: 'hackathons',
-    watch: true,
-    enabled: false
+    functionName: 'getHackathons',
+    args: [counts, counts],
+    enabled: hackathonCount?.data > 0,
   })
+  
+  console.log(hackathons)
+
+  useEffect(() => {
+    setCounts(Number(hackathonCount?.data?.toString()))
+  }, [hackathonCount?.data])
 
   useEffect(() => {
     if (hackathons?.data) setData([...hackathons?.data].reverse())

@@ -1,14 +1,12 @@
 import Input from "@/components/ui/form/Input"
-import { useState, useEffect, useLayoutEffect } from "react"
+import { useState, useEffect } from "react"
 import wordsCount from 'words-count';
 import { contractAddress, convertToWEI, getDate, USDC } from "@/libs/utils"
 import { useContractWrite } from "wagmi";
-import crowdFundFacetABI from '../../../abi/contracts/facets/CrowdFundFacet.sol/CrowdFundFacet.json';
 import { toast } from "react-toastify";
 import LoadingButton from "@/components/ui/form/LoadingButton";
 import Textarea from "@/components/ui/form/Textarea";
 import HackathonFacetABI from '@/abi/contracts/facets/HackathonFacet.sol/HackathonFacet.json';
-import { durationLists } from "@/libs/constants";
 
 
 const currentDate = getDate()
@@ -57,20 +55,6 @@ const CreateHackForm = ({close}) => {
         ],
     })
 
-    console.log( [
-        name, description, Number(new Date(startDate)), 
-        Number(new Date(endDate)), maxNumAdmittable, first,
-        second, third, convertToWEI(minToken)
-    ])
-
-      // uint _startDate,
-  // uint _endDate, 
-  // uint16 _maxNumAdmittable, 
-  // uint _winnerPercentage, 
-  // uint _firstRunnerUpPercentage, 
-  // uint _secondRunnerUpPercentage,
-  // uint _minScoreTokenRequiurement
-
     const submit = (e) => {
         e.preventDefault()
         create?.write()
@@ -92,8 +76,6 @@ const CreateHackForm = ({close}) => {
         else setDescriptionError(false)
     }, [description])
 
-
-
     useEffect(() => {
 
         if (create.isSuccess) {
@@ -107,13 +89,7 @@ const CreateHackForm = ({close}) => {
 
     }, [create.isLoading, create.isSuccess, create.isError, create.error, close])
 
-
-    // uint16 _maxNumAdmittable, 
-    // uint _winnerPercentage, 
-    // uint _firstRunnerUpPercentage, 
-    // uint _secondRunnerUpPercentage,
-    // uint _minScoreTokenRequiurement
-
+    
     return (
         <form className="text-gray-700 overflow-auto max-h-[80vh]" onSubmit={submit}>
 

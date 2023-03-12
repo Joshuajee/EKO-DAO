@@ -39,7 +39,7 @@ export const AuthProvider = ({children}) => {
     useEffect(() => {
         if (data) {
             setIsAdmin(true)
-            setIsAdminLoginIn(true)
+            //setIsAdminLoginIn(true)
             if (Number(localStorage.getItem("auth-time") + HOUR < Number(new Date()))) auth()
         } else {
             setIsAdmin(false)

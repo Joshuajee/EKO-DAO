@@ -47,8 +47,6 @@ const CohortCard = ({cohort, contract, expanded}) => {
         enabled: isConnected
     })
 
-    console.log( deadline < currentTime )
-
     useEffect(() => {
         switch (status) {
             case 1:

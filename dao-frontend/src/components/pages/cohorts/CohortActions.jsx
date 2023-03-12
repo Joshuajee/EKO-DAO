@@ -11,9 +11,9 @@ import Input from "@/components/ui/form/Input";
 
 const CohortActions = ({status, contract, commitment, isStudent}) => {
 
-    const { isAdminLoggedIn } = useContext(AuthContext);
+    const { isAdmin, isAdminLoggedIn } = useContext(AuthContext);
 
-    const [open, setOpen] = useState(true);
+    const [open, setOpen] = useState(false);
     const [id, setId] = useState()
 
     const [idError, setIdError] = useState(null)
@@ -81,7 +81,7 @@ const CohortActions = ({status, contract, commitment, isStudent}) => {
                     </div>)
             }
 
-            { (isAdminLoggedIn && status === 0) &&
+            { (isAdmin && status === 0) &&
                 <div className="flex justify-center">
                     <div className="w-60">
                         <LoadingButton
@@ -93,7 +93,7 @@ const CohortActions = ({status, contract, commitment, isStudent}) => {
                 </div>
             }
 
-            { (isAdminLoggedIn && status != 0) &&
+            { (isAdmin && status != 0) &&
                 <div className="flex justify-center">
                     <div className="w-60">
                         <LoadingButton
