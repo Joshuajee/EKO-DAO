@@ -22,7 +22,7 @@ export default function Cohorts() {
     const [isError, setIsError] = useState(false)
     const [isLoading, setIsLoading] = useState(true)
 
-    const { isAdminLoggedIn } = useContext(AuthContext);
+    const { isAdmin } = useContext(AuthContext);
 
     const open = () => {
         setShow(true)
@@ -74,7 +74,7 @@ export default function Cohorts() {
             } 
 
             { 
-                isAdminLoggedIn &&
+                isAdmin &&
                     <CreateButton title={"Create Cohort"} open={open} show={show} close={close}>
                         <CreateCohortForm close={close} />
                     </CreateButton> 

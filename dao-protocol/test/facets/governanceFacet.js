@@ -11,16 +11,19 @@ describe('Governance Facet test', function() {
 	const DESCRIPTION_1 = 'Description One';
 	const PROPOSAL_DELAY_1 = 0;
 	const PROPOSAL_VOTING_DAYS_1 = 1 * 60 * 60 * 24;
+	const MIN_TOKEN_REQ_1 = 100;
 
 	const PROPOSAL_NAME_2 = 'Proposal Two';
 	const DESCRIPTION_2 = 'Description Two';
 	const PROPOSAL_DELAY_2 = 2 * 60 * 60; // 2 hours
 	const PROPOSAL_VOTING_DAYS_2 = 1 * 60 * 60 * 24;
+	const MIN_TOKEN_REQ_2 = 100;
 
 	const PROPOSAL_NAME_3 = 'Proposal Three';
 	const DESCRIPTION_3 = 'Description Three';
 	const PROPOSAL_DELAY_3 = 2 * 60 * 60; //2 hours
 	const PROPOSAL_VOTING_DAYS_3 = 1 * 60 * 60 * 24;
+	const MIN_TOKEN_REQ_3 = 100;
 
 	GovernanceFixture = async () => {
 		const [ owner, signer1, signer2, signer3 ] = await ethers.getSigners();
@@ -33,26 +36,28 @@ describe('Governance Facet test', function() {
 		diamondAddress = await deployDiamond(true);
 		const GovernanceFacet = await ethers.getContractAt('GovernanceFacet', diamondAddress);
 
-		await GovernanceFacet.intializeGovernance(EkoStableInstance.address, '100');
+		await GovernanceFacet.intializeGovernance(EkoStableInstance.address);
 
 		return { GovernanceFacet, owner, signer1, signer2, signer3 };
 	};
 
-	it('should be able to set and get the minimum token requirement', async () => {
-		const { GovernanceFacet } = await loadFixture(GovernanceFixture);
-
-		await GovernanceFacet.setMinimumTokenRequiremnent('200');
-
-		const newMinTokenRequirement = await GovernanceFacet.getMinimumTokenRequirement();
-
-		expect(await newMinTokenRequirement).to.equal('200000000000000000000');
-	});
-
 	it('should be able to create a new proposal, store it and get the number of proposls', async () => {
 		const { GovernanceFacet } = await loadFixture(GovernanceFixture);
 
-		await GovernanceFacet.newProposal(PROPOSAL_NAME_1, DESCRIPTION_1, PROPOSAL_DELAY_1, PROPOSAL_VOTING_DAYS_1);
-		await GovernanceFacet.newProposal(PROPOSAL_NAME_2, DESCRIPTION_2, PROPOSAL_DELAY_2, PROPOSAL_VOTING_DAYS_2);
+		await GovernanceFacet.newProposal(
+			PROPOSAL_NAME_1,
+			DESCRIPTION_1,
+			PROPOSAL_DELAY_1,
+			PROPOSAL_VOTING_DAYS_1,
+			MIN_TOKEN_REQ_1
+		);
+		await GovernanceFacet.newProposal(
+			PROPOSAL_NAME_2,
+			DESCRIPTION_2,
+			PROPOSAL_DELAY_2,
+			PROPOSAL_VOTING_DAYS_2,
+			MIN_TOKEN_REQ_2
+		);
 
 		const firstProposal = await GovernanceFacet.viewProposal('1');
 
@@ -63,7 +68,13 @@ describe('Governance Facet test', function() {
 	it('should be able to allow voting delegation on a particular proposal  and view delegate', async () => {
 		const { GovernanceFacet, owner, signer1, signer2, signer3 } = await loadFixture(GovernanceFixture);
 
-		await GovernanceFacet.newProposal(PROPOSAL_NAME_1, DESCRIPTION_1, PROPOSAL_DELAY_1, PROPOSAL_VOTING_DAYS_1);
+		await GovernanceFacet.newProposal(
+			PROPOSAL_NAME_1,
+			DESCRIPTION_1,
+			PROPOSAL_DELAY_1,
+			PROPOSAL_VOTING_DAYS_1,
+			MIN_TOKEN_REQ_1
+		);
 
 		await GovernanceFacet.addVotingDelegate('1', signer1.address);
 		await GovernanceFacet.connect(signer2).addVotingDelegate('1', signer3.address);
@@ -78,7 +89,13 @@ describe('Governance Facet test', function() {
 	it('should be able to remove voting delegate on a proposal', async () => {
 		const { GovernanceFacet, owner, signer1 } = await loadFixture(GovernanceFixture);
 
-		await GovernanceFacet.newProposal(PROPOSAL_NAME_1, DESCRIPTION_1, PROPOSAL_DELAY_1, PROPOSAL_VOTING_DAYS_1);
+		await GovernanceFacet.newProposal(
+			PROPOSAL_NAME_1,
+			DESCRIPTION_1,
+			PROPOSAL_DELAY_1,
+			PROPOSAL_VOTING_DAYS_1,
+			MIN_TOKEN_REQ_1
+		);
 
 		await GovernanceFacet.addVotingDelegate('1', signer1.address);
 
@@ -98,8 +115,20 @@ describe('Governance Facet test', function() {
 	it('should be able to vote for or against a proposal', async () => {
 		const { GovernanceFacet, signer1 } = await loadFixture(GovernanceFixture);
 
-		await GovernanceFacet.newProposal(PROPOSAL_NAME_1, DESCRIPTION_1, PROPOSAL_DELAY_1, PROPOSAL_VOTING_DAYS_1);
-		await GovernanceFacet.newProposal(PROPOSAL_NAME_2, DESCRIPTION_2, PROPOSAL_DELAY_2, PROPOSAL_VOTING_DAYS_2);
+		await GovernanceFacet.newProposal(
+			PROPOSAL_NAME_1,
+			DESCRIPTION_1,
+			PROPOSAL_DELAY_1,
+			PROPOSAL_VOTING_DAYS_1,
+			MIN_TOKEN_REQ_1
+		);
+		await GovernanceFacet.newProposal(
+			PROPOSAL_NAME_2,
+			DESCRIPTION_2,
+			PROPOSAL_DELAY_2,
+			PROPOSAL_VOTING_DAYS_2,
+			MIN_TOKEN_REQ_2
+		);
 
 		const firstProposalBefore = await GovernanceFacet.viewProposal('1');
 		const secondProposalBefore = await GovernanceFacet.viewProposal('2');
@@ -129,17 +158,29 @@ describe('Governance Facet test', function() {
 			`The votes on the Second Proposal after voting: votesFor:${secondProposalAfter.votesFor} || votesAgainst:${secondProposalAfter.votesAgainst}`
 		);
 
-		expect(firstProposalAfter.votesFor).to.equal('1');
-		expect(firstProposalAfter.votesAgainst).to.equal('1');
-		expect(secondProposalAfter.votesFor).to.equal('1');
-		expect(secondProposalAfter.votesFor).to.equal('1');
+		expect(firstProposalAfter.votesFor).to.equal(1);
+		expect(firstProposalAfter.votesAgainst).to.equal(1);
+		expect(secondProposalAfter.votesFor).to.equal(1);
+		expect(secondProposalAfter.votesFor).to.equal(1);
 	});
 
 	it('should be able to allow delegate vote for or against a proposal', async () => {
 		const { GovernanceFacet, owner, signer1, signer2, signer3 } = await loadFixture(GovernanceFixture);
 
-		await GovernanceFacet.newProposal(PROPOSAL_NAME_1, DESCRIPTION_1, PROPOSAL_DELAY_1, PROPOSAL_VOTING_DAYS_1);
-		await GovernanceFacet.newProposal(PROPOSAL_NAME_2, DESCRIPTION_2, PROPOSAL_DELAY_2, PROPOSAL_VOTING_DAYS_2);
+		await GovernanceFacet.newProposal(
+			PROPOSAL_NAME_1,
+			DESCRIPTION_1,
+			PROPOSAL_DELAY_1,
+			PROPOSAL_VOTING_DAYS_1,
+			MIN_TOKEN_REQ_1
+		);
+		await GovernanceFacet.newProposal(
+			PROPOSAL_NAME_2,
+			DESCRIPTION_2,
+			PROPOSAL_DELAY_2,
+			PROPOSAL_VOTING_DAYS_2,
+			MIN_TOKEN_REQ_2
+		);
 
 		const firstProposalBefore = await GovernanceFacet.viewProposal('1');
 		const secondProposalBefore = await GovernanceFacet.viewProposal('2');
@@ -175,16 +216,22 @@ describe('Governance Facet test', function() {
 			`The votes on the Second Proposal after voting: votesFor:${secondProposalAfter.votesFor} || votesAgainst:${secondProposalAfter.votesAgainst}`
 		);
 
-		expect(firstProposalAfter.votesFor).to.equal('1');
-		expect(firstProposalAfter.votesAgainst).to.equal('1');
-		expect(secondProposalAfter.votesFor).to.equal('1');
-		expect(secondProposalAfter.votesFor).to.equal('1');
+		expect(firstProposalAfter.votesFor).to.equal(1);
+		expect(firstProposalAfter.votesAgainst).to.equal(1);
+		expect(secondProposalAfter.votesFor).to.equal(1);
+		expect(secondProposalAfter.votesFor).to.equal(1);
 	});
 
 	it('shoould be able to allow a user check if they voted on a paarticular proposal', async () => {
 		const { GovernanceFacet, owner, signer1 } = await loadFixture(GovernanceFixture);
 
-		await GovernanceFacet.newProposal(PROPOSAL_NAME_1, DESCRIPTION_1, PROPOSAL_DELAY_1, PROPOSAL_VOTING_DAYS_1);
+		await GovernanceFacet.newProposal(
+			PROPOSAL_NAME_1,
+			DESCRIPTION_1,
+			PROPOSAL_DELAY_1,
+			PROPOSAL_VOTING_DAYS_1,
+			MIN_TOKEN_REQ_1
+		);
 
 		await GovernanceFacet.voteFor('1');
 
@@ -198,9 +245,21 @@ describe('Governance Facet test', function() {
 	it('should be able to delete a proposal still in voting delay', async () => {
 		const { GovernanceFacet } = await loadFixture(GovernanceFixture);
 
-		await GovernanceFacet.newProposal(PROPOSAL_NAME_1, DESCRIPTION_1, PROPOSAL_DELAY_1, PROPOSAL_VOTING_DAYS_1);
+		await GovernanceFacet.newProposal(
+			PROPOSAL_NAME_1,
+			DESCRIPTION_1,
+			PROPOSAL_DELAY_1,
+			PROPOSAL_VOTING_DAYS_1,
+			MIN_TOKEN_REQ_1
+		);
 
-		await GovernanceFacet.newProposal(PROPOSAL_NAME_2, DESCRIPTION_2, PROPOSAL_DELAY_2, PROPOSAL_VOTING_DAYS_2);
+		await GovernanceFacet.newProposal(
+			PROPOSAL_NAME_2,
+			DESCRIPTION_2,
+			PROPOSAL_DELAY_2,
+			PROPOSAL_VOTING_DAYS_2,
+			MIN_TOKEN_REQ_2
+		);
 
 		await GovernanceFacet.deleteProposal(2);
 
@@ -212,11 +271,29 @@ describe('Governance Facet test', function() {
 	it('should be able to get proposals within a particular range', async () => {
 		const { GovernanceFacet } = await loadFixture(GovernanceFixture);
 
-		await GovernanceFacet.newProposal(PROPOSAL_NAME_1, DESCRIPTION_1, PROPOSAL_DELAY_1, PROPOSAL_VOTING_DAYS_1);
+		await GovernanceFacet.newProposal(
+			PROPOSAL_NAME_1,
+			DESCRIPTION_1,
+			PROPOSAL_DELAY_1,
+			PROPOSAL_VOTING_DAYS_1,
+			MIN_TOKEN_REQ_1
+		);
 
-		await GovernanceFacet.newProposal(PROPOSAL_NAME_2, DESCRIPTION_2, PROPOSAL_DELAY_2, PROPOSAL_VOTING_DAYS_2);
+		await GovernanceFacet.newProposal(
+			PROPOSAL_NAME_2,
+			DESCRIPTION_2,
+			PROPOSAL_DELAY_2,
+			PROPOSAL_VOTING_DAYS_2,
+			MIN_TOKEN_REQ_2
+		);
 
-		await GovernanceFacet.newProposal(PROPOSAL_NAME_3, DESCRIPTION_3, PROPOSAL_DELAY_3, PROPOSAL_VOTING_DAYS_3);
+		await GovernanceFacet.newProposal(
+			PROPOSAL_NAME_3,
+			DESCRIPTION_3,
+			PROPOSAL_DELAY_3,
+			PROPOSAL_VOTING_DAYS_3,
+			MIN_TOKEN_REQ_3
+		);
 
 		const proposals = await GovernanceFacet.getProposals(3, 3);
 
@@ -228,9 +305,21 @@ describe('Governance Facet test', function() {
 	it('should be able to get proposals that have not started within a particular range', async () => {
 		const { GovernanceFacet } = await loadFixture(GovernanceFixture);
 
-		await GovernanceFacet.newProposal(PROPOSAL_NAME_2, DESCRIPTION_2, PROPOSAL_DELAY_2, PROPOSAL_VOTING_DAYS_2);
+		await GovernanceFacet.newProposal(
+			PROPOSAL_NAME_2,
+			DESCRIPTION_2,
+			PROPOSAL_DELAY_2,
+			PROPOSAL_VOTING_DAYS_2,
+			MIN_TOKEN_REQ_2
+		);
 
-		await GovernanceFacet.newProposal(PROPOSAL_NAME_3, DESCRIPTION_3, PROPOSAL_DELAY_3, PROPOSAL_VOTING_DAYS_3);
+		await GovernanceFacet.newProposal(
+			PROPOSAL_NAME_3,
+			DESCRIPTION_3,
+			PROPOSAL_DELAY_3,
+			PROPOSAL_VOTING_DAYS_3,
+			MIN_TOKEN_REQ_3
+		);
 
 		const notStarted = await GovernanceFacet.getNotStarted(2, 1);
 
@@ -240,11 +329,29 @@ describe('Governance Facet test', function() {
 	it('should be able to get proposals that are ongoing within a particular range', async () => {
 		const { GovernanceFacet } = await loadFixture(GovernanceFixture);
 
-		await GovernanceFacet.newProposal(PROPOSAL_NAME_1, DESCRIPTION_1, PROPOSAL_DELAY_1, PROPOSAL_VOTING_DAYS_1);
+		await GovernanceFacet.newProposal(
+			PROPOSAL_NAME_1,
+			DESCRIPTION_1,
+			PROPOSAL_DELAY_1,
+			PROPOSAL_VOTING_DAYS_1,
+			MIN_TOKEN_REQ_1
+		);
 
-		await GovernanceFacet.newProposal(PROPOSAL_NAME_2, DESCRIPTION_2, PROPOSAL_DELAY_2, PROPOSAL_VOTING_DAYS_2);
+		await GovernanceFacet.newProposal(
+			PROPOSAL_NAME_2,
+			DESCRIPTION_2,
+			PROPOSAL_DELAY_2,
+			PROPOSAL_VOTING_DAYS_2,
+			MIN_TOKEN_REQ_2
+		);
 
-		await GovernanceFacet.newProposal(PROPOSAL_NAME_3, DESCRIPTION_3, PROPOSAL_DELAY_3, PROPOSAL_VOTING_DAYS_3);
+		await GovernanceFacet.newProposal(
+			PROPOSAL_NAME_3,
+			DESCRIPTION_3,
+			PROPOSAL_DELAY_3,
+			PROPOSAL_VOTING_DAYS_3,
+			MIN_TOKEN_REQ_3
+		);
 
 		const ongoing = await GovernanceFacet.getOngoing(3, 3);
 
@@ -254,11 +361,29 @@ describe('Governance Facet test', function() {
 	it('should be able to get proposals that have ended and were won within a particular range', async () => {
 		const { GovernanceFacet } = await loadFixture(GovernanceFixture);
 
-		await GovernanceFacet.newProposal(PROPOSAL_NAME_1, DESCRIPTION_1, PROPOSAL_DELAY_1, PROPOSAL_VOTING_DAYS_1);
+		await GovernanceFacet.newProposal(
+			PROPOSAL_NAME_1,
+			DESCRIPTION_1,
+			PROPOSAL_DELAY_1,
+			PROPOSAL_VOTING_DAYS_1,
+			MIN_TOKEN_REQ_1
+		);
 
-		await GovernanceFacet.newProposal(PROPOSAL_NAME_2, DESCRIPTION_2, PROPOSAL_DELAY_2, PROPOSAL_VOTING_DAYS_2);
+		await GovernanceFacet.newProposal(
+			PROPOSAL_NAME_2,
+			DESCRIPTION_2,
+			PROPOSAL_DELAY_2,
+			PROPOSAL_VOTING_DAYS_2,
+			MIN_TOKEN_REQ_2
+		);
 
-		await GovernanceFacet.newProposal(PROPOSAL_NAME_3, DESCRIPTION_3, PROPOSAL_DELAY_3, PROPOSAL_VOTING_DAYS_3);
+		await GovernanceFacet.newProposal(
+			PROPOSAL_NAME_3,
+			DESCRIPTION_3,
+			PROPOSAL_DELAY_3,
+			PROPOSAL_VOTING_DAYS_3,
+			MIN_TOKEN_REQ_3
+		);
 
 		await GovernanceFacet.voteFor('1');
 
@@ -274,11 +399,29 @@ describe('Governance Facet test', function() {
 	it('should be able to get proposals that have ended and were lost within a particular range', async () => {
 		const { GovernanceFacet } = await loadFixture(GovernanceFixture);
 
-		await GovernanceFacet.newProposal(PROPOSAL_NAME_1, DESCRIPTION_1, PROPOSAL_DELAY_1, PROPOSAL_VOTING_DAYS_1);
+		await GovernanceFacet.newProposal(
+			PROPOSAL_NAME_1,
+			DESCRIPTION_1,
+			PROPOSAL_DELAY_1,
+			PROPOSAL_VOTING_DAYS_1,
+			MIN_TOKEN_REQ_1
+		);
 
-		await GovernanceFacet.newProposal(PROPOSAL_NAME_2, DESCRIPTION_2, PROPOSAL_DELAY_2, PROPOSAL_VOTING_DAYS_2);
+		await GovernanceFacet.newProposal(
+			PROPOSAL_NAME_2,
+			DESCRIPTION_2,
+			PROPOSAL_DELAY_2,
+			PROPOSAL_VOTING_DAYS_2,
+			MIN_TOKEN_REQ_2
+		);
 
-		await GovernanceFacet.newProposal(PROPOSAL_NAME_3, DESCRIPTION_3, PROPOSAL_DELAY_3, PROPOSAL_VOTING_DAYS_3);
+		await GovernanceFacet.newProposal(
+			PROPOSAL_NAME_3,
+			DESCRIPTION_3,
+			PROPOSAL_DELAY_3,
+			PROPOSAL_VOTING_DAYS_3,
+			MIN_TOKEN_REQ_3
+		);
 
 		await GovernanceFacet.voteAgainst('1');
 
@@ -291,51 +434,72 @@ describe('Governance Facet test', function() {
 		expect(await lost[0].name).to.equal(PROPOSAL_NAME_1);
 	});
 
-	// it('should be able to get proposals that have ended in a stalemate within a particular range', async () => {
-	// 	const { GovernanceFacet, signer1 } = await loadFixture(GovernanceFixture);
+	it('should be able to get proposals that have ended in a stalemate within a particular range', async () => {
+		const { GovernanceFacet, signer1 } = await loadFixture(GovernanceFixture);
 
-	// 	await GovernanceFacet.newProposal(
-	// 		PROPOSAL_NAME_1,
-	// 		DESCRIPTION_1,
-	// 		PROPOSAL_DELAY_1,
-	// 		PROPOSAL_VOTING_DAYS_1
-	// 	);
+		await GovernanceFacet.newProposal(
+			PROPOSAL_NAME_1,
+			DESCRIPTION_1,
+			PROPOSAL_DELAY_1,
+			PROPOSAL_VOTING_DAYS_1,
+			MIN_TOKEN_REQ_1
+		);
 
-	// 	await GovernanceFacet.newProposal(
-	// 		PROPOSAL_NAME_2,
-	// 		DESCRIPTION_2,
-	// 		PROPOSAL_DELAY_2,
-	// 		PROPOSAL_VOTING_DAYS_2
-	// 	);
+		await GovernanceFacet.newProposal(
+			PROPOSAL_NAME_2,
+			DESCRIPTION_2,
+			PROPOSAL_DELAY_2,
+			PROPOSAL_VOTING_DAYS_2,
+			MIN_TOKEN_REQ_2
+		);
 
-	// 	await GovernanceFacet.newProposal(
-	// 		PROPOSAL_NAME_3,
-	// 		DESCRIPTION_3,
-	// 		PROPOSAL_DELAY_3,
-	// 		PROPOSAL_VOTING_DAYS_3
-	// 	);
+		await GovernanceFacet.newProposal(
+			PROPOSAL_NAME_3,
+			DESCRIPTION_3,
+			PROPOSAL_DELAY_3,
+			PROPOSAL_VOTING_DAYS_3,
+			MIN_TOKEN_REQ_3
+		);
 
-	// 	await GovernanceFacet.voteFor('1');
+		await GovernanceFacet.voteFor('1');
 
-	// 	await GovernanceFacet.connect(signer1).voteAgainst('1');
+		await GovernanceFacet.connect(signer1).voteAgainst('1');
 
-	// 	await helpers.time.increase(24 * 60 * 60);
+		await helpers.time.increase(24 * 60 * 60);
 
-	// 	await GovernanceFacet.endVoting('1');
+		await GovernanceFacet.endVoting('1');
 
-	// 	const stalemate = await GovernanceFacet.getStalemate(3, 3);
+		const stalemate = await GovernanceFacet.getStalemate(3, 3);
 
-	// 	expect(await stalemate[0].name).to.equal(PROPOSAL_NAME_1);
-	// });
+		expect(await stalemate[0].name).to.equal(PROPOSAL_NAME_1);
+	});
 
 	it('should be able to start voting on a proposal', async () => {
 		const { GovernanceFacet } = await loadFixture(GovernanceFixture);
 
-		await GovernanceFacet.newProposal(PROPOSAL_NAME_1, DESCRIPTION_1, PROPOSAL_DELAY_1, PROPOSAL_VOTING_DAYS_1);
+		await GovernanceFacet.newProposal(
+			PROPOSAL_NAME_1,
+			DESCRIPTION_1,
+			PROPOSAL_DELAY_1,
+			PROPOSAL_VOTING_DAYS_1,
+			MIN_TOKEN_REQ_1
+		);
 
-		await GovernanceFacet.newProposal(PROPOSAL_NAME_2, DESCRIPTION_2, PROPOSAL_DELAY_2, PROPOSAL_VOTING_DAYS_2);
+		await GovernanceFacet.newProposal(
+			PROPOSAL_NAME_2,
+			DESCRIPTION_2,
+			PROPOSAL_DELAY_2,
+			PROPOSAL_VOTING_DAYS_2,
+			MIN_TOKEN_REQ_2
+		);
 
-		await GovernanceFacet.newProposal(PROPOSAL_NAME_3, DESCRIPTION_3, PROPOSAL_DELAY_3, PROPOSAL_VOTING_DAYS_3);
+		await GovernanceFacet.newProposal(
+			PROPOSAL_NAME_3,
+			DESCRIPTION_3,
+			PROPOSAL_DELAY_3,
+			PROPOSAL_VOTING_DAYS_3,
+			MIN_TOKEN_REQ_3
+		);
 
 		await helpers.time.increase(2 * 60 * 60);
 

@@ -20,6 +20,7 @@
     "@testing-library/user-event": "^14.4.3",
     "aos": "^2.3.4",
     "autoprefixer": "^10.4.13",
+    "axios": "^1.3.4",
     "date-and-time": "^2.4.2",
     "eslint": "8.31.0",
     "eslint-config-next": "13.1.2",
@@ -37,6 +38,7 @@
     "react-loader-spinner": "^5.3.4",
     "react-redux": "^8.0.5",
     "react-toastify": "^9.1.1",
+    "swr": "^2.1.0",
     "truncate-eth-address": "^1.0.2",
     "wagmi": "^0.10.10",
     "words-count": "^2.0.2"

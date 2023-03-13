@@ -2,99 +2,102 @@
 
 pragma solidity 0.8.17;
 
-import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "../libraries/LibGovernance.sol";
 
 contract GovernanceFacet {
-  IERC20 Ekotoken;
+  ERC20 Ekotoken;
   bool init = false;
 
+  // Custom errors
+  error EmptyInput();
+  error InvalidProposal();
+  error InvalidAddress();
+  error ZeroInput();
+  error InsufficientBalance();
+  error InvalidCountInput();
+  error AlreadyInitialized();
+  error VotingPeriodOver();
+  error VotingNotStarted();
+  error AlreadyVoted();
+  error CallerNotDelegate();
+  error StartLessThanCount();
+
   // Modifier to ensure that user inputs an existing Proposal_ID
+
+  function _existingId(uint Proposal_ID) private view {
+    if (Proposal_ID > LibGovernance.getProposalTracker().Proposal_Tracker || Proposal_ID < 0) 
+    revert InvalidProposal();
+  }
+
   modifier existingId(uint Proposal_ID) {
-    LibGovernance.Tracker storage pt = LibGovernance.getProposalTracker();
-    if (!(Proposal_ID <= pt.Proposal_Tracker || Proposal_ID > 0)) {
-      revert("Invalid");
-    } else {
-      _;
-    }
+    _existingId(Proposal_ID);
+    _;
   }
 
   // A modifier that is used to ensure that a user can not input an empty string
+
+  function _noEmptiness(string memory name) private pure {
+    if (bytes(name).length == 0) revert EmptyInput();
+  } 
+
   modifier noEmptiness(string memory name) {
-    if (keccak256(abi.encodePacked(name)) == keccak256(abi.encodePacked(""))) {
-      revert("Can't be empty");
-    } else {
-      _;
-    }
-    // uint byteLength = bytes(name).length;
-    // if (byteLength == 0){
-    //   revert ("Can't be empty");
-    // } else{
-    //   _;
-    // }
+    _noEmptiness(name);
+    _;
   }
 
   // modifier to protect against address zero
+
+  function _addressValidation(address a) private pure {
+    if (a == address(0)) revert InvalidAddress();
+
+  }
+
   modifier addressValidation(address a) {
-    if (a == address(0)) {
-      revert("Invalid address");
-    } else {
-      _;
-    }
+    _addressValidation(a);
+    _;
   }
 
   // modifier to ensure minimum token requirement is not zero
+
+  function _notZero (uint a) private pure{
+    if (a == 0) revert ZeroInput();
+  }
+
   modifier notZero (uint a) {
-    if (a <= 0){
-      revert("Can't be < zero");
-    } else {
-      _;
-    }
+    _notZero(a);
+    _;
   }
 
   // modifier to ensure the voter has enough Eko Stables to vote .
-  modifier enoughEkoStables(address a) {
-    LibGovernance.Tracker storage pt = LibGovernance.getProposalTracker();
-    if (Ekotoken.balanceOf(a) < pt.Minimum_Token_Requirement) {
-      revert("Insufficient Balance");
-    } else {
-      _;
-    }
+  function _enoughEkoStables(address a, uint Proposal_ID) private view {
+    if (Ekotoken.balanceOf(a) < LibGovernance.getMappingStruct().proposal[Proposal_ID].minVotingTokenReq * (10 ** Ekotoken.decimals()))
+     revert InsufficientBalance();
+  }
+
+  modifier enoughEkoStables(address a, uint Proposal_ID) {
+    _enoughEkoStables(a, Proposal_ID);
+    _;
   }
 
   // modifier to check the user max count input
+
+  function _minmaxcount(uint a) private pure {
+    if (a > 50 || a == 0) revert InvalidCountInput();
+  }
+
   modifier minmaxcount(uint a){
-    if (a > 50 || a < 0){
-      revert("input >50 or <0");
-    }
+    _minmaxcount(a);
      _ ;
   }
 
   //Ekotoken contract address is passed on Governance contract initialization
   function intializeGovernance(
-    address _token,
-    uint min
+    address _token
   ) public addressValidation(_token) {
-    if (init) revert("Already Initialized");
-    Ekotoken = IERC20(_token);
+    if (init) revert AlreadyInitialized();
+    Ekotoken = ERC20(_token);
     init = true;
-    setMinimumTokenRequiremnent(min);
-    emit LibGovernance.Minimum_Token_Requirement(min , msg.sender);
-  }
-
-  // function for admin to set the minimum token requirement
-  function setMinimumTokenRequiremnent(
-    uint min
-    ) public notZero(min){
-    LibGovernance.Tracker storage pt = LibGovernance.getProposalTracker();
-    pt.Minimum_Token_Requirement = min * (10 ** 18) ;
-    emit LibGovernance.Minimum_Token_Requirement(min , msg.sender);
-  }
-
-  // funtion to get the minimum Token requirement
-  function getMinimumTokenRequirement() external view returns(uint){
-    LibGovernance.Tracker storage pt = LibGovernance.getProposalTracker();
-    return pt.Minimum_Token_Requirement;
   }
 
   // fucntion to create a new voting Proposal by Ekolance Admins.
@@ -102,12 +105,11 @@ contract GovernanceFacet {
     string calldata _name,
     string calldata _description,
     uint _delay,
-    uint _votingDuration
+    uint _votingDuration,
+    uint16 _minVotingTokenReq
     ) external noEmptiness(_name) noEmptiness(_description) notZero(_votingDuration){
-    LibGovernance.Tracker storage pt = LibGovernance.getProposalTracker();
-    LibGovernance.Mappings storage mp = LibGovernance.getMappingStruct();
-    pt.Proposal_Tracker += 1;
-    uint Proposal_ID = pt.Proposal_Tracker;
+    LibGovernance.getProposalTracker().Proposal_Tracker += 1;
+    uint Proposal_ID = LibGovernance.getProposalTracker().Proposal_Tracker;
     LibGovernance.Proposal memory _newProposal = LibGovernance.Proposal({
       name: _name,
       description: _description,
@@ -118,36 +120,27 @@ contract GovernanceFacet {
       votingPeriod: block.timestamp + _delay + _votingDuration,
       votesFor: 0,
       votesAgainst: 0,
+      minVotingTokenReq: _minVotingTokenReq,
       state : LibGovernance.State.notStarted
     });
     if (_newProposal.votingDelay <= block.timestamp){
       _newProposal.state = LibGovernance.State.ongoing;
-      mp.ongoing[Proposal_ID] = true;
-      mp.notStarted[Proposal_ID] = false;
     }else{
-      mp.notStarted[Proposal_ID] = true;
     }
-    mp.proposal[Proposal_ID] = _newProposal;     
+    LibGovernance.getMappingStruct().proposal[Proposal_ID] = _newProposal;     
     emit LibGovernance.New_Proposal(msg.sender, _newProposal, Proposal_ID);
   }
 
   // function to view an existing proposal
   function viewProposal(
     uint Proposal_ID
-  )
-    external
-    view
-    existingId(Proposal_ID)
-    returns (LibGovernance.Proposal memory)
-  {
-    LibGovernance.Mappings storage mp = LibGovernance.getMappingStruct();
-    return mp.proposal[Proposal_ID];
+  )external view existingId(Proposal_ID) returns (LibGovernance.Proposal memory){
+    return LibGovernance.getMappingStruct().proposal[Proposal_ID];
   }
 
   // function to get the number of existing proposals
   function getNumberOfProposals() external view returns (uint) {
-    LibGovernance.Tracker storage pt = LibGovernance.getProposalTracker();
-    return pt.Proposal_Tracker;
+    return LibGovernance.getProposalTracker().Proposal_Tracker;
   }
 
   // function to delegate voting power for a particular proposal
@@ -155,8 +148,7 @@ contract GovernanceFacet {
     uint Proposal_ID,
     address _delegate
   ) external existingId(Proposal_ID) addressValidation(_delegate) {
-    LibGovernance.Mappings storage mp = LibGovernance.getMappingStruct();
-    mp.votingDelegate[Proposal_ID][msg.sender] = _delegate;
+    LibGovernance.getMappingStruct().votingDelegate[Proposal_ID][msg.sender] = _delegate;
     emit LibGovernance.Add_Delegate(msg.sender, _delegate, Proposal_ID);
   }
 
@@ -164,45 +156,39 @@ contract GovernanceFacet {
   function viewDelegate(
     uint Proposal_ID,
     address _delegate
-  )
-    external
-    view
-    existingId(Proposal_ID)
-    addressValidation(_delegate)
-    returns (address)
-  {
-    LibGovernance.Mappings storage mp = LibGovernance.getMappingStruct();
-    return mp.votingDelegate[Proposal_ID][_delegate];
+  ) external view existingId(Proposal_ID) addressValidation(_delegate) returns (address) {
+    return LibGovernance.getMappingStruct().votingDelegate[Proposal_ID][_delegate];
   }
 
   // function to remove voting delegate
   function removeDelegate(uint Proposal_ID) external existingId(Proposal_ID) {
-    LibGovernance.Mappings storage mp = LibGovernance.getMappingStruct();
-    address _delegate = mp.votingDelegate[Proposal_ID][msg.sender];
-    delete mp.votingDelegate[Proposal_ID][msg.sender];
+    address _delegate = LibGovernance.getMappingStruct().votingDelegate[Proposal_ID][msg.sender];
+    delete LibGovernance.getMappingStruct().votingDelegate[Proposal_ID][msg.sender];
     emit LibGovernance.Remove_Delegate(msg.sender, _delegate, Proposal_ID);
   }
 
   // function to vote on a proposal
   function voteFor(
     uint Proposal_ID
-  ) external existingId(Proposal_ID) enoughEkoStables(msg.sender) {
-    LibGovernance.Mappings storage mp = LibGovernance.getMappingStruct();
-    if(mp.won[Proposal_ID] || mp.lost[Proposal_ID] || mp.stalemate[Proposal_ID] || mp.deleted[Proposal_ID]){
-      revert("voting period over");
+  ) external existingId(Proposal_ID) enoughEkoStables(msg.sender, Proposal_ID) {
+    if(LibGovernance.getMappingStruct().proposal[Proposal_ID].state == LibGovernance.State.won ||
+    LibGovernance.getMappingStruct().proposal[Proposal_ID].state == LibGovernance.State.lost ||
+    LibGovernance.getMappingStruct().proposal[Proposal_ID].state == LibGovernance.State.stalemate ||
+    LibGovernance.getMappingStruct().proposal[Proposal_ID].state == LibGovernance.State.deleted){
+      revert VotingPeriodOver();
     }
-    if (mp.proposal[Proposal_ID].votingDelay >= block.timestamp){
-      revert("can't vote");
-    } else if (mp.proposalVoter[Proposal_ID][msg.sender].voted){
-      revert("already voted");
+    if (LibGovernance.getMappingStruct().proposal[Proposal_ID].votingDelay >= block.timestamp){
+      revert VotingNotStarted();
+    } else if (LibGovernance.getMappingStruct().proposalVoter[Proposal_ID][msg.sender].voted){
+      revert AlreadyVoted();
     }
-    if(mp.proposal[Proposal_ID].votingPeriod <= block.timestamp){
+    if(LibGovernance.getMappingStruct().proposal[Proposal_ID].votingPeriod <= block.timestamp){
       endVoting(Proposal_ID);
     }else{
-    mp.proposalVoter[Proposal_ID][msg.sender].voted = true;
-    mp.proposal[Proposal_ID].votesFor += 1;
+    LibGovernance.getMappingStruct().proposalVoter[Proposal_ID][msg.sender].voted = true;
+    LibGovernance.getMappingStruct().proposal[Proposal_ID].votesFor += 1;
 
-    if (!mp.ongoing[Proposal_ID]){
+    if (LibGovernance.getMappingStruct().proposal[Proposal_ID].state != LibGovernance.State.ongoing){
       startVoting(Proposal_ID);
     }
     emit LibGovernance.Vote_For(msg.sender, Proposal_ID);
@@ -216,28 +202,30 @@ contract GovernanceFacet {
   )
     external
     existingId(Proposal_ID)
-    enoughEkoStables(delegator)
+    enoughEkoStables(delegator, Proposal_ID)
     addressValidation(delegator)
   {
-    LibGovernance.Mappings storage mp = LibGovernance.getMappingStruct();
-    if(mp.won[Proposal_ID] || mp.lost[Proposal_ID] || mp.stalemate[Proposal_ID] ||  mp.deleted[Proposal_ID]){
-      revert("voting period over");
+    if(LibGovernance.getMappingStruct().proposal[Proposal_ID].state == LibGovernance.State.won ||
+    LibGovernance.getMappingStruct().proposal[Proposal_ID].state == LibGovernance.State.lost ||
+    LibGovernance.getMappingStruct().proposal[Proposal_ID].state == LibGovernance.State.stalemate ||
+    LibGovernance.getMappingStruct().proposal[Proposal_ID].state == LibGovernance.State.deleted){
+      revert VotingPeriodOver();
     }
     if (
-      (mp.proposal[Proposal_ID].votingDelay >= block.timestamp) ||
-      (mp.votingDelegate[Proposal_ID][delegator] != msg.sender)
+      (LibGovernance.getMappingStruct().proposal[Proposal_ID].votingDelay >= block.timestamp) ||
+      (LibGovernance.getMappingStruct().votingDelegate[Proposal_ID][delegator] != msg.sender)
       ){
-      revert("can't vote");
-    } else if (mp.proposalVoter[Proposal_ID][delegator].voted){
-      revert("already voted");
+      revert CallerNotDelegate();
+    } else if (LibGovernance.getMappingStruct().proposalVoter[Proposal_ID][delegator].voted){
+      revert AlreadyVoted();
     }
-    if(mp.proposal[Proposal_ID].votingPeriod <= block.timestamp){
+    if(LibGovernance.getMappingStruct().proposal[Proposal_ID].votingPeriod <= block.timestamp){
       endVoting(Proposal_ID);
     }else{
-    mp.proposalVoter[Proposal_ID][delegator].voted = true;
-    mp.proposal[Proposal_ID].votesFor += 1;
+    LibGovernance.getMappingStruct().proposalVoter[Proposal_ID][delegator].voted = true;
+    LibGovernance.getMappingStruct().proposal[Proposal_ID].votesFor += 1;
 
-    if (!mp.ongoing[Proposal_ID]){
+    if (LibGovernance.getMappingStruct().proposal[Proposal_ID].state != LibGovernance.State.ongoing){
       startVoting(Proposal_ID);
     }
     emit LibGovernance.Vote_For_As_Delegate(delegator, msg.sender, Proposal_ID);
@@ -247,24 +235,25 @@ contract GovernanceFacet {
   // function to vote against a proposal
   function voteAgainst(
     uint Proposal_ID
-  ) external existingId(Proposal_ID) enoughEkoStables(msg.sender) {
-    LibGovernance.Mappings storage mp = LibGovernance.getMappingStruct();
-
-    if(mp.won[Proposal_ID] || mp.lost[Proposal_ID] || mp.stalemate[Proposal_ID] ||  mp.deleted[Proposal_ID]){
-      revert("voting period over");
+  ) external existingId(Proposal_ID) enoughEkoStables(msg.sender, Proposal_ID) {
+    if(LibGovernance.getMappingStruct().proposal[Proposal_ID].state == LibGovernance.State.won ||
+    LibGovernance.getMappingStruct().proposal[Proposal_ID].state == LibGovernance.State.lost ||
+    LibGovernance.getMappingStruct().proposal[Proposal_ID].state == LibGovernance.State.stalemate ||
+    LibGovernance.getMappingStruct().proposal[Proposal_ID].state == LibGovernance.State.deleted){
+      revert VotingPeriodOver();
     }
-    if (mp.proposal[Proposal_ID].votingDelay >= block.timestamp){
-      revert("can't vote");
-    } else if (mp.proposalVoter[Proposal_ID][msg.sender].voted){
-      revert("already voted");
+    if (LibGovernance.getMappingStruct().proposal[Proposal_ID].votingDelay >= block.timestamp){
+      revert VotingNotStarted();
+    } else if (LibGovernance.getMappingStruct().proposalVoter[Proposal_ID][msg.sender].voted){
+      revert AlreadyVoted();
     }
-    if(mp.proposal[Proposal_ID].votingPeriod <= block.timestamp){
+    if(LibGovernance.getMappingStruct().proposal[Proposal_ID].votingPeriod <= block.timestamp){
       endVoting(Proposal_ID);
     }else{
-    mp.proposalVoter[Proposal_ID][msg.sender].voted = true;
-    mp.proposal[Proposal_ID].votesAgainst += 1;
+    LibGovernance.getMappingStruct().proposalVoter[Proposal_ID][msg.sender].voted = true;
+    LibGovernance.getMappingStruct().proposal[Proposal_ID].votesAgainst += 1;
 
-    if (!mp.ongoing[Proposal_ID]){
+    if (LibGovernance.getMappingStruct().proposal[Proposal_ID].state != LibGovernance.State.ongoing){
       startVoting(Proposal_ID);
     }
     emit LibGovernance.Vote_Against(msg.sender, Proposal_ID);
@@ -275,31 +264,29 @@ contract GovernanceFacet {
   function voteAgainstAsDelegate(
     uint Proposal_ID,
     address delegator
-  )
-    external
-    existingId(Proposal_ID)
-    enoughEkoStables(delegator)
-    addressValidation(delegator)
+  ) external existingId(Proposal_ID) enoughEkoStables(delegator, Proposal_ID) addressValidation(delegator)
   {
-    LibGovernance.Mappings storage mp = LibGovernance.getMappingStruct();
-    if(mp.won[Proposal_ID] || mp.lost[Proposal_ID] || mp.stalemate[Proposal_ID] ||  mp.deleted[Proposal_ID]){
-      revert("voting period over");
+    if(LibGovernance.getMappingStruct().proposal[Proposal_ID].state == LibGovernance.State.won ||
+    LibGovernance.getMappingStruct().proposal[Proposal_ID].state == LibGovernance.State.lost ||
+    LibGovernance.getMappingStruct().proposal[Proposal_ID].state == LibGovernance.State.stalemate ||
+    LibGovernance.getMappingStruct().proposal[Proposal_ID].state == LibGovernance.State.deleted){
+      revert VotingPeriodOver();
     }
     if (
-      (mp.proposal[Proposal_ID].votingDelay >= block.timestamp) ||
-      (mp.votingDelegate[Proposal_ID][delegator] != msg.sender)
+      (LibGovernance.getMappingStruct().proposal[Proposal_ID].votingDelay >= block.timestamp) ||
+      (LibGovernance.getMappingStruct().votingDelegate[Proposal_ID][delegator] != msg.sender)
       ){
-      revert("can't vote");
-    } else if (mp.proposalVoter[Proposal_ID][delegator].voted){
-      revert("already voted");
+      revert CallerNotDelegate();
+    } else if (LibGovernance.getMappingStruct().proposalVoter[Proposal_ID][delegator].voted){
+      revert VotingPeriodOver();
     }
-    if(mp.proposal[Proposal_ID].votingPeriod <= block.timestamp){
+    if(LibGovernance.getMappingStruct().proposal[Proposal_ID].votingPeriod <= block.timestamp){
       endVoting(Proposal_ID);
     }else{
-    mp.proposalVoter[Proposal_ID][delegator].voted = true;
-    mp.proposal[Proposal_ID].votesAgainst += 1;
+    LibGovernance.getMappingStruct().proposalVoter[Proposal_ID][delegator].voted = true;
+    LibGovernance.getMappingStruct().proposal[Proposal_ID].votesAgainst += 1;
 
-    if (!mp.ongoing[Proposal_ID]){
+    if (LibGovernance.getMappingStruct().proposal[Proposal_ID].state != LibGovernance.State.ongoing){
       startVoting(Proposal_ID);
     } 
     emit LibGovernance.Vote_For_As_Delegate(delegator, msg.sender, Proposal_ID);
@@ -311,35 +298,28 @@ contract GovernanceFacet {
     uint Proposal_ID,
     address voter
   ) external existingId(Proposal_ID) addressValidation(voter) view returns(bool) {
-    LibGovernance.Mappings storage mp = LibGovernance.getMappingStruct();
-
-    return mp.proposalVoter[Proposal_ID][voter].voted;
+    return LibGovernance.getMappingStruct().proposalVoter[Proposal_ID][voter].voted;
   }
 
   // function to delete the last proposal that has been created.
   function deleteProposal(
     uint Proposal_ID
   ) external existingId(Proposal_ID) {
-    // require function caller is an ekolance admin
-    LibGovernance.Mappings storage mp = LibGovernance.getMappingStruct();
-    if (mp.proposal[Proposal_ID].votingDelay < block.timestamp) revert("Can't delete");
-    delete mp.proposal[Proposal_ID];
-    mp.notStarted[Proposal_ID] = false;
-    mp.deleted[Proposal_ID] = true;
-    mp.proposal[Proposal_ID].state = LibGovernance.State.deleted;
+    if (LibGovernance.getMappingStruct().proposal[Proposal_ID].votingDelay < block.timestamp) revert("Can't delete");
+    delete LibGovernance.getMappingStruct().proposal[Proposal_ID];
+    LibGovernance.getMappingStruct().proposal[Proposal_ID].state = LibGovernance.State.deleted;
     emit LibGovernance.Delete_Proposal(msg.sender, Proposal_ID);
   }
 
   function getNumberOfNotStarted(
     uint start,
     uint count
-  ) internal minmaxcount(count) existingId(start) view returns(uint) {
-    LibGovernance.Mappings storage mp = LibGovernance.getMappingStruct();
+  ) minmaxcount(count) existingId(start) private view returns(uint) {
 
     uint counter = start - count;
     uint count1;
     for (uint i= start; i > counter ;i--){
-      if (mp.notStarted[i]){
+      if (LibGovernance.getMappingStruct().proposal[i].state == LibGovernance.State.notStarted){
         count1++;
       }else{
         continue;
@@ -350,13 +330,12 @@ contract GovernanceFacet {
   function getNumberOfOngoing(
     uint start,
     uint count
-  ) internal minmaxcount(count) existingId(start) view returns(uint) {
-    LibGovernance.Mappings storage mp = LibGovernance.getMappingStruct();
+  ) minmaxcount(count) existingId(start) private view returns(uint) {
 
     uint counter = start - count;
     uint count1;
     for (uint i= start; i > counter ;i--){
-      if (mp.ongoing[i]){
+      if (LibGovernance.getMappingStruct().proposal[i].state == LibGovernance.State.ongoing){
         count1++;
       }else{
         continue;
@@ -367,13 +346,12 @@ contract GovernanceFacet {
   function getNumberOfWon(
     uint start,
     uint count
-  ) internal minmaxcount(count) existingId(start) view returns(uint) {
-    LibGovernance.Mappings storage mp = LibGovernance.getMappingStruct();
+  ) minmaxcount(count) existingId(start) private view returns(uint) {
 
     uint counter = start - count;
     uint count1;
     for (uint i= start; i > counter ;i--){
-      if (mp.won[i]){
+      if (LibGovernance.getMappingStruct().proposal[i].state == LibGovernance.State.won){
         count1++;
       }else{
         continue;
@@ -384,13 +362,12 @@ contract GovernanceFacet {
   function getNumberOfLost(
     uint start,
     uint count
-  ) internal minmaxcount(count) existingId(start) view returns(uint) {
-    LibGovernance.Mappings storage mp = LibGovernance.getMappingStruct();
+  ) minmaxcount(count) existingId(start) private view returns(uint) {
 
     uint counter = start - count;
     uint count1;
     for (uint i= start; i > counter ;i--){
-      if (mp.lost[i]){
+      if (LibGovernance.getMappingStruct().proposal[i].state == LibGovernance.State.lost){
         count1++;
       }else{
         continue;
@@ -401,13 +378,12 @@ contract GovernanceFacet {
   function getNumberOfStalemate(
     uint start,
     uint count
-  ) internal minmaxcount(count) existingId(start) view returns(uint) {
-    LibGovernance.Mappings storage mp = LibGovernance.getMappingStruct();
+  ) minmaxcount(count) existingId(start) private view returns(uint) {
 
     uint counter = start - count;
     uint count1;
     for (uint i= start; i > counter ;i--){
-      if (mp.stalemate [i]){
+      if (LibGovernance.getMappingStruct().proposal[i].state == LibGovernance.State.stalemate){
         count1++;
       }else{
         continue;
@@ -422,9 +398,8 @@ contract GovernanceFacet {
     uint count
     ) external minmaxcount(count) existingId(start) view returns(LibGovernance.Proposal[] memory ){
       if(start < count ){
-        revert("start < count");
+        revert StartLessThanCount();
       }
-    LibGovernance.Mappings storage mp = LibGovernance.getMappingStruct();
 
     uint counter = start - count;
 
@@ -432,7 +407,7 @@ contract GovernanceFacet {
 
     uint count2;
     for (uint i= start; i > counter;i--){
-      Proposals[count2] = mp.proposal[i];
+      Proposals[count2] = LibGovernance.getMappingStruct().proposal[i];
       count2++;
       continue;
     }
@@ -445,19 +420,16 @@ contract GovernanceFacet {
     uint count
     ) external minmaxcount(count) existingId(start) view returns(LibGovernance.Proposal[] memory ){
       if(start < count ){
-        revert("start < count");
+        revert StartLessThanCount();
       }
-    LibGovernance.Mappings storage mp = LibGovernance.getMappingStruct();
-
-    uint count1 = getNumberOfNotStarted(start,count);
     
-    LibGovernance.Proposal[] memory Not_Started = new LibGovernance.Proposal[](count1);
+    LibGovernance.Proposal[] memory Not_Started = new LibGovernance.Proposal[](getNumberOfNotStarted(start,count));
 
     uint counter = start - count;
     uint count2;
     for (uint i= start; i > counter;i--){
-      if (mp.notStarted[i]){
-        Not_Started[count2] = mp.proposal[i];
+      if (LibGovernance.getMappingStruct().proposal[i].state == LibGovernance.State.notStarted){
+        Not_Started[count2] = LibGovernance.getMappingStruct().proposal[i];
         count2++;
         continue;
       }
@@ -471,19 +443,16 @@ contract GovernanceFacet {
     uint count
     ) external minmaxcount(count) existingId(start) view returns(LibGovernance.Proposal[] memory ){
       if(start < count ){
-        revert("start < count");
+        revert StartLessThanCount();
       }
-    LibGovernance.Mappings storage mp = LibGovernance.getMappingStruct();
-
-    uint count1 = getNumberOfOngoing(start,count);
     
-    LibGovernance.Proposal[] memory Ongoing = new LibGovernance.Proposal[](count1);
+    LibGovernance.Proposal[] memory Ongoing = new LibGovernance.Proposal[](getNumberOfOngoing(start,count));
 
     uint counter = start - count;
     uint count2;
     for (uint i= start; i > counter;i--){
-      if (mp.ongoing[i]){
-        Ongoing[count2] = mp.proposal[i];
+      if (LibGovernance.getMappingStruct().proposal[i].state == LibGovernance.State.ongoing){
+        Ongoing[count2] = LibGovernance.getMappingStruct().proposal[i];
         count2++;
         continue;
       }
@@ -497,19 +466,17 @@ contract GovernanceFacet {
     uint count
     ) external minmaxcount(count) existingId(start) view returns(LibGovernance.Proposal[] memory ){
       if(start < count ){
-        revert("start < count");
+        revert StartLessThanCount();
       }
-    LibGovernance.Mappings storage mp = LibGovernance.getMappingStruct();
 
-    uint count1 = getNumberOfWon(start,count);
     
-    LibGovernance.Proposal[] memory Won = new LibGovernance.Proposal[](count1);
+    LibGovernance.Proposal[] memory Won = new LibGovernance.Proposal[](getNumberOfWon(start,count));
 
     uint counter = start - count;
     uint count2;
     for (uint i= start; i > counter;i--){
-      if (mp.won[i]){
-        Won[count2] = mp.proposal[i];
+      if (LibGovernance.getMappingStruct().proposal[i].state == LibGovernance.State.won){
+        Won[count2] = LibGovernance.getMappingStruct().proposal[i];
         count2++;
         continue;
       }
@@ -523,19 +490,16 @@ contract GovernanceFacet {
     uint count
     ) external minmaxcount(count) existingId(start) view returns(LibGovernance.Proposal[] memory ){
       if(start < count ){
-        revert("start < count");
+        revert StartLessThanCount();
       }
-    LibGovernance.Mappings storage mp = LibGovernance.getMappingStruct();
-
-    uint count1 = getNumberOfLost(start,count);
     
-    LibGovernance.Proposal[] memory Lost = new LibGovernance.Proposal[](count1); 
+    LibGovernance.Proposal[] memory Lost = new LibGovernance.Proposal[](getNumberOfLost(start,count)); 
 
     uint counter = start - count;
     uint count2;
     for (uint i= start; i > counter;i--){
-      if (mp.lost[i]){
-        Lost[count2] = mp.proposal[i];
+      if (LibGovernance.getMappingStruct().proposal[i].state == LibGovernance.State.lost){
+        Lost[count2] = LibGovernance.getMappingStruct().proposal[i];
         count2++;
         continue;
       }
@@ -544,40 +508,34 @@ contract GovernanceFacet {
   }
 
   // returns proposals that have finshed and ended as a stalemate within a specified range
-  // function getStalemate(
-  //   uint start, 
-  //   uint count
-  //   ) external minmaxcount(count) existingId(start) view returns(LibGovernance.Proposal[] memory ){
-  //     if(start < count ){
-  //       revert("start < count");
-  //     }
-  //   LibGovernance.Mappings storage mp = LibGovernance.getMappingStruct();
-
-  //   uint count1 = getNumberOfStalemate(start,count);
+  function getStalemate(
+    uint start, 
+    uint count
+    ) external minmaxcount(count) existingId(start) view returns(LibGovernance.Proposal[] memory ){
+      if(start < count ){
+        revert StartLessThanCount();
+      }
     
-  //   LibGovernance.Proposal[] memory Stalemate = new LibGovernance.Proposal[](count1);
+    LibGovernance.Proposal[] memory Stalemate = new LibGovernance.Proposal[](getNumberOfStalemate(start,count));
 
-  //   uint counter = start - count;
-  //   uint count2;
-  //   for (uint i= start; i > counter;i--){
-  //     if (mp.stalemate[i]){
-  //       Stalemate[count2] = mp.proposal[i];
-  //       count2++;
-  //       continue;
-  //     }
-  //   }
-  //   return Stalemate;
-  // }
+    uint counter = start - count;
+    uint count2;
+    for (uint i= start; i > counter;i--){
+      if (LibGovernance.getMappingStruct().proposal[i].state == LibGovernance.State.stalemate){
+        Stalemate[count2] = LibGovernance.getMappingStruct().proposal[i];
+        count2++;
+        continue;
+      }
+    }
+    return Stalemate;
+  }
 
   // function to start voting on a proposal
   function startVoting(
     uint Proposal_ID
   ) public existingId(Proposal_ID) {
-      LibGovernance.Mappings storage mp = LibGovernance.getMappingStruct();
-      if (mp.proposal[Proposal_ID].votingDelay <= block.timestamp){
-        mp.ongoing[Proposal_ID] = true;
-        mp.notStarted[Proposal_ID] = false; 
-        mp.proposal[Proposal_ID].state = LibGovernance.State.ongoing;
+      if (LibGovernance.getMappingStruct().proposal[Proposal_ID].votingDelay <= block.timestamp){ 
+        LibGovernance.getMappingStruct().proposal[Proposal_ID].state = LibGovernance.State.ongoing;
       }
     }
 
@@ -585,20 +543,13 @@ contract GovernanceFacet {
   function endVoting(
     uint Proposal_ID
   ) public existingId(Proposal_ID) {
-    LibGovernance.Mappings storage mp = LibGovernance.getMappingStruct();
-    if(mp.proposal[Proposal_ID].votingPeriod <= block.timestamp){
-      if(mp.proposal[Proposal_ID].votesFor > mp.proposal[Proposal_ID].votesAgainst){
-        mp.ongoing[Proposal_ID] = false;
-        mp.won[Proposal_ID] = true;
-        mp.proposal[Proposal_ID].state = LibGovernance.State.won;
-        }else if (mp.proposal[Proposal_ID].votesFor < mp.proposal[Proposal_ID].votesAgainst){
-          mp.ongoing[Proposal_ID] = false;
-          mp.lost[Proposal_ID] = true;
-          mp.proposal[Proposal_ID].state = LibGovernance.State.lost;
-        }else if (mp.proposal[Proposal_ID].votesFor == mp.proposal[Proposal_ID].votesAgainst){
-          mp.ongoing[Proposal_ID] = false;
-          mp.stalemate[Proposal_ID] = true;
-          mp.proposal[Proposal_ID].state = LibGovernance.State.stalemate;
+    if(LibGovernance.getMappingStruct().proposal[Proposal_ID].votingPeriod <= block.timestamp){
+      if(LibGovernance.getMappingStruct().proposal[Proposal_ID].votesFor > LibGovernance.getMappingStruct().proposal[Proposal_ID].votesAgainst){
+        LibGovernance.getMappingStruct().proposal[Proposal_ID].state = LibGovernance.State.won;
+        }else if (LibGovernance.getMappingStruct().proposal[Proposal_ID].votesFor < LibGovernance.getMappingStruct().proposal[Proposal_ID].votesAgainst){
+          LibGovernance.getMappingStruct().proposal[Proposal_ID].state = LibGovernance.State.lost;
+        }else if (LibGovernance.getMappingStruct().proposal[Proposal_ID].votesFor == LibGovernance.getMappingStruct().proposal[Proposal_ID].votesAgainst){
+          LibGovernance.getMappingStruct().proposal[Proposal_ID].state = LibGovernance.State.stalemate;
         }
     }
   }

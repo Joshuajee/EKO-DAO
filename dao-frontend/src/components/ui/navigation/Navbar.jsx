@@ -1,19 +1,11 @@
 import { useState, useContext } from "react"
 import Link from "next/link"
 import { useScroll } from "@/hooks/windows"
-import { links } from "@/libs/routes"
+import { links, navigation } from "@/libs/routes"
 import HambuggerMenu from "./HambuggerMenu"
 import Connection from "../../connection"
 import { AuthContext } from "@/context/AuthContext"
 
-
-const navigation = [
-    { name: 'Join Cohort', href: links.cohorts },
-    { name: 'Proposals', href: links.proposals },
-    { name: 'Hackathons', href: links.hackathons },
-    { name: 'CrowdFunding', href: links.crowdfunding },
-    { name: 'Get USDC', href: links.faucet }
-]
 
 const Navbar = () => {
 
@@ -39,6 +31,7 @@ const Navbar = () => {
                         isAdminLoggedIn && <Link className="mr-2 lg:mr-5 hover:text-gray-900" href={"/admin"}>{"Admin"}</Link>
                     }
                 </nav>
+
                 <HambuggerMenu open={open} setOpen={setOpen} /> 
 
                 <div className="hidden md:block"><Connection /></div>

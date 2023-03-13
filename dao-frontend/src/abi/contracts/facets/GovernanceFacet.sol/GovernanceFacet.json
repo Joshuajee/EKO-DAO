@@ -1,5 +1,65 @@
 [
   {
+    "inputs": [],
+    "name": "AlreadyInitialized",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "AlreadyVoted",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "CallerNotDelegate",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "EmptyInput",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "InsufficientBalance",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "InvalidAddress",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "InvalidCountInput",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "InvalidProposal",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "StartLessThanCount",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "VotingNotStarted",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "VotingPeriodOver",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "ZeroInput",
+    "type": "error"
+  },
+  {
     "inputs": [
       {
         "internalType": "uint256",
@@ -120,14 +180,19 @@
             "type": "uint256"
           },
           {
-            "internalType": "uint256",
+            "internalType": "uint32",
             "name": "votesFor",
-            "type": "uint256"
+            "type": "uint32"
           },
           {
-            "internalType": "uint256",
+            "internalType": "uint32",
             "name": "votesAgainst",
-            "type": "uint256"
+            "type": "uint32"
+          },
+          {
+            "internalType": "uint16",
+            "name": "minVotingTokenReq",
+            "type": "uint16"
           },
           {
             "internalType": "enum LibGovernance.State",
@@ -138,19 +203,6 @@
         "internalType": "struct LibGovernance.Proposal[]",
         "name": "",
         "type": "tuple[]"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "getMinimumTokenRequirement",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
       }
     ],
     "stateMutability": "view",
@@ -209,14 +261,19 @@
             "type": "uint256"
           },
           {
-            "internalType": "uint256",
+            "internalType": "uint32",
             "name": "votesFor",
-            "type": "uint256"
+            "type": "uint32"
           },
           {
-            "internalType": "uint256",
+            "internalType": "uint32",
             "name": "votesAgainst",
-            "type": "uint256"
+            "type": "uint32"
+          },
+          {
+            "internalType": "uint16",
+            "name": "minVotingTokenReq",
+            "type": "uint16"
           },
           {
             "internalType": "enum LibGovernance.State",
@@ -298,14 +355,19 @@
             "type": "uint256"
           },
           {
-            "internalType": "uint256",
+            "internalType": "uint32",
             "name": "votesFor",
-            "type": "uint256"
+            "type": "uint32"
           },
           {
-            "internalType": "uint256",
+            "internalType": "uint32",
             "name": "votesAgainst",
-            "type": "uint256"
+            "type": "uint32"
+          },
+          {
+            "internalType": "uint16",
+            "name": "minVotingTokenReq",
+            "type": "uint16"
           },
           {
             "internalType": "enum LibGovernance.State",
@@ -374,14 +436,100 @@
             "type": "uint256"
           },
           {
-            "internalType": "uint256",
+            "internalType": "uint32",
             "name": "votesFor",
+            "type": "uint32"
+          },
+          {
+            "internalType": "uint32",
+            "name": "votesAgainst",
+            "type": "uint32"
+          },
+          {
+            "internalType": "uint16",
+            "name": "minVotingTokenReq",
+            "type": "uint16"
+          },
+          {
+            "internalType": "enum LibGovernance.State",
+            "name": "state",
+            "type": "uint8"
+          }
+        ],
+        "internalType": "struct LibGovernance.Proposal[]",
+        "name": "",
+        "type": "tuple[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "start",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "count",
+        "type": "uint256"
+      }
+    ],
+    "name": "getStalemate",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "string",
+            "name": "name",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "description",
+            "type": "string"
+          },
+          {
+            "internalType": "address",
+            "name": "author",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "id",
             "type": "uint256"
           },
           {
             "internalType": "uint256",
-            "name": "votesAgainst",
+            "name": "creationTime",
             "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "votingDelay",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "votingPeriod",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint32",
+            "name": "votesFor",
+            "type": "uint32"
+          },
+          {
+            "internalType": "uint32",
+            "name": "votesAgainst",
+            "type": "uint32"
+          },
+          {
+            "internalType": "uint16",
+            "name": "minVotingTokenReq",
+            "type": "uint16"
           },
           {
             "internalType": "enum LibGovernance.State",
@@ -450,14 +598,19 @@
             "type": "uint256"
           },
           {
-            "internalType": "uint256",
+            "internalType": "uint32",
             "name": "votesFor",
-            "type": "uint256"
+            "type": "uint32"
           },
           {
-            "internalType": "uint256",
+            "internalType": "uint32",
             "name": "votesAgainst",
-            "type": "uint256"
+            "type": "uint32"
+          },
+          {
+            "internalType": "uint16",
+            "name": "minVotingTokenReq",
+            "type": "uint16"
           },
           {
             "internalType": "enum LibGovernance.State",
@@ -479,11 +632,6 @@
         "internalType": "address",
         "name": "_token",
         "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "min",
-        "type": "uint256"
       }
     ],
     "name": "intializeGovernance",
@@ -512,6 +660,11 @@
         "internalType": "uint256",
         "name": "_votingDuration",
         "type": "uint256"
+      },
+      {
+        "internalType": "uint16",
+        "name": "_minVotingTokenReq",
+        "type": "uint16"
       }
     ],
     "name": "newProposal",
@@ -528,19 +681,6 @@
       }
     ],
     "name": "removeDelegate",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "min",
-        "type": "uint256"
-      }
-    ],
-    "name": "setMinimumTokenRequiremnent",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -630,14 +770,19 @@
             "type": "uint256"
           },
           {
-            "internalType": "uint256",
+            "internalType": "uint32",
             "name": "votesFor",
-            "type": "uint256"
+            "type": "uint32"
           },
           {
-            "internalType": "uint256",
+            "internalType": "uint32",
             "name": "votesAgainst",
-            "type": "uint256"
+            "type": "uint32"
+          },
+          {
+            "internalType": "uint16",
+            "name": "minVotingTokenReq",
+            "type": "uint16"
           },
           {
             "internalType": "enum LibGovernance.State",

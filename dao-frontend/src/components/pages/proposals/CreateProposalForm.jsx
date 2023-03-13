@@ -1,7 +1,7 @@
 import Input from "@/components/ui/form/Input"
 import { useState, useEffect } from "react"
 import wordsCount from 'words-count';
-import { contractAddress } from "@/libs/utils"
+import { contractAddress, convertToWEI } from "@/libs/utils"
 import { useContractWrite } from "wagmi";
 import ProposalFacetABI from '@/abi/contracts/facets/GovernanceFacet.sol/GovernanceFacet.json';
 import { toast } from "react-toastify";
@@ -27,7 +27,7 @@ const CreateProposalForm = ({close}) => {
         address: contractAddress,
         abi: ProposalFacetABI,
         functionName: 'newProposal',
-        args: [name, description, delay, duration],
+        args: [name, description, delay, duration, 10],
     })
 
     const submit = (e) => {

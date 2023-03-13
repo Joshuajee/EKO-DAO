@@ -109,14 +109,19 @@
             "type": "uint256"
           },
           {
-            "internalType": "uint256",
+            "internalType": "uint32",
             "name": "votesFor",
-            "type": "uint256"
+            "type": "uint32"
           },
           {
-            "internalType": "uint256",
+            "internalType": "uint32",
             "name": "votesAgainst",
-            "type": "uint256"
+            "type": "uint32"
+          },
+          {
+            "internalType": "uint16",
+            "name": "minVotingTokenReq",
+            "type": "uint16"
           },
           {
             "internalType": "enum LibGovernance.State",
