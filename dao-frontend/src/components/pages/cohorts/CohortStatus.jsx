@@ -25,9 +25,9 @@ const CohortStatus = ({fee, students, start,  end, expanded}) => {
 
                 <div className="flex flex-col md:flex-row justify-between">
 
-                    <p className="font-semibold">Start Date: {date.format(new Date(Number(start.toString())), 'ddd, MMM DD YYYY')}</p>
+                    <p className="font-semibold">Start Date: {date.format(new Date(Number(start.toString() * 1000)), 'ddd, MMM DD YYYY')}</p>
                     
-                    <p className="font-semibold">End Date: {date.format(new Date(Number(end.toString())), 'ddd, MMM DD YYYY')}</p>
+                    <p className="font-semibold">End Date: {date.format(new Date(Number(end.toString() * 1000)), 'ddd, MMM DD YYYY')}</p>
 
                 </div>
 

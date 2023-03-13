@@ -7,7 +7,7 @@ import { AuthContext } from "@/context/AuthContext";
 import LoadingButton from "@/components/ui/form/LoadingButton";
 import hackathonABI from "@/abi/contracts/Hackathon.sol/Hackathon.json";
 
-const HackActions = ({status, contract, isRigistered}) => {
+const HackActions = ({status, contract, isRigistered, hackStatus}) => {
 
     const { address, isConnected } = useAccount()
 
@@ -28,10 +28,10 @@ const HackActions = ({status, contract, isRigistered}) => {
         args: [address],
     })
 
-    const adminWithdraw = useContractWrite({
+    const endHack = useContractWrite({
         address: contract,
         abi: ProjectABI,
-        functionName: 'adminWithdraw',
+        functionName: 'endHackathon',
         args: [address],
     })
 
@@ -46,10 +46,10 @@ const HackActions = ({status, contract, isRigistered}) => {
         if (initHack.isError) 
             return toast.error(initHack?.error?.reason)
     
-        if (adminWithdraw.isError) 
-            return toast.error(adminWithdraw?.error?.reason)
+        if (endHack.isError) 
+            return toast.error(endHack?.error?.reason)
 
-    }, [adminWithdraw.isError, adminWithdraw?.error, initHack?.isError, initHack?.error]);
+    }, [endHack.isError, endHack?.error, initHack?.isError, initHack?.error]);
 
     return (
         <div className="block py-4 w-full">
@@ -81,7 +81,7 @@ const HackActions = ({status, contract, isRigistered}) => {
                     </div>
             }
 
-            {/* { 
+            { 
                 (isAdmin && status === 0) &&
                     <div className="flex justify-center">
                         <div className="w-60">
@@ -92,7 +92,7 @@ const HackActions = ({status, contract, isRigistered}) => {
                             </LoadingButton>
                         </div>
                     </div>
-            } */}
+            }
 
         </div>
     )

@@ -1,5 +1,5 @@
 import Input from "@/components/ui/form/Input"
-import { useState, useEffect, useLayoutEffect, useContext } from "react"
+import { useState, useEffect, useLayoutEffect, useContext, memo } from "react"
 import wordsCount from 'words-count';
 import { contractAddress, convertToWEI, getDate } from "@/libs/utils"
 import { useContractWrite } from "wagmi";
@@ -11,6 +11,10 @@ import AuthRequest from "@/libs/requests";
 import { AuthContext } from "@/context/AuthContext";
 
 const currentDate = getDate()
+
+const dateToTimeStamp = (date) => {
+    return new Date(date).getTime() / 1000
+}
 
 const CreateCohortForm = ({close}) => {
 
@@ -45,12 +49,11 @@ const CreateCohortForm = ({close}) => {
         address: contractAddress,
         abi: cohortFacetABI,
         functionName: 'newCohort',
-        args: [id, name, new Date(startDate).getTime(), new Date(endDate).getTime(), student, convertToWEI(commitment), description],
+        args: [id, name, dateToTimeStamp(startDate), dateToTimeStamp(endDate), student, convertToWEI(commitment), description],
     })
 
     const submit = async(e) => {
         e.preventDefault()
-
         isAdminLoggedIn ? await httpCreate() : create?.write()
     }
 
@@ -67,21 +70,22 @@ const CreateCohortForm = ({close}) => {
                 startDate: startDate,
                 endDate: endDate,
                 size: Number(student),
-                commitment: Number(commitment),
+                commitment: (Number(commitment)),
                 briefDescription: description,
                 exhaustiveDescription: "Why this training is important?, Training structure, Meet the team, Why should you apply for this training"
             })
 
+            // toast.success("Cohort Created Successfully")
+            // close()
             console.log(response)
-            
 
         } catch (e) {
             console.error(e)
         }
 
         setLoading(false)
-
     }
+
 
     const isDisabled = () => {
         return idError || nameError || startDateError || endDateError || studentError || commitmentError
@@ -122,10 +126,7 @@ const CreateCohortForm = ({close}) => {
 
         if (create.isSuccess) {
             toast.success("Cohort Created Successfully")
-
-            setTimeout(() => {
-                close()
-            }, 600)
+            close()
         }
 
         if (create?.isError) {
@@ -160,4 +161,4 @@ const CreateCohortForm = ({close}) => {
     )
 }
 
-export default CreateCohortForm
+export default memo(CreateCohortForm)
