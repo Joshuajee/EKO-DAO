@@ -40,8 +40,8 @@ export class CohortsService {
       throw new BadRequestException();
     }
     const id = row.id;
-    const startDate = Math.floor(cohortDto.startDate.getTime());
-    const endDate = Math.floor(cohortDto.endDate.getTime());
+    const startDate = Math.floor(cohortDto.startDate.getTime() / 1000);
+    const endDate = Math.floor(cohortDto.endDate.getTime() / 1000);
     const CohortFactoryFacet = this.getCohortFactoryFacet();
     const encodedData: string = CohortFactoryFacet.methods
       .newCohort(
