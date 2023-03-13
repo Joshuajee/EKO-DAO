@@ -1,6 +1,7 @@
 import { memo } from "react"
 import date from 'date-and-time';
 import { dollarFormat } from "@/libs/utils"
+import LoadingButton from "@/components/ui/form/LoadingButton";
 
 
 const PrizeHack = ({hackathon, expanded, prizePool}) => {
@@ -34,6 +35,9 @@ const PrizeHack = ({hackathon, expanded, prizePool}) => {
                     <p>Second Runner Up: {dollarFormat(prizePool * Number(secondRunnerUpPercentage.toString()))} USDC </p> 
                 </div>
 
+                <button>
+                    Award Prize
+                </button>
 
             </div>
 

@@ -73,9 +73,9 @@ const CohortCard = ({cohort, contract, expanded}) => {
     }, [endDate])
 
     useEffect(() => {
-        setCurrentTime(Number(new Date()))
+        setCurrentTime(Number(new Date()) / 1000)
         const interval = setInterval(() => {
-            setCurrentTime(Number(new Date()))
+            setCurrentTime(Number(new Date()) / 1000)
         }, 1000)
         return clearInterval(interval)
     }, [])

@@ -13,6 +13,8 @@ export const USDC = process.env.NEXT_PUBLIC_USDC
 
 export const EKONFT = process.env.NEXT_PUBLIC_EKONFT
 
+export const EKONFTCERT = process.env.NEXT_PUBLIC_EKONFTCERT
+
 export const EKOTOKEN = process.env.NEXT_PUBLIC_EKOTOKEN
 
 export const API_SERVER = process.env.NEXT_PUBLIC_API

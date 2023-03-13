@@ -1,4 +1,4 @@
-import { contractAddress, convertToEther, dollarFormat, EKONFT, USDC } from "@/libs/utils"
+import { contractAddress, convertToEther, dollarFormat, EKONFT, EKONFTCERT, USDC } from "@/libs/utils"
 import { memo, useState, useEffect, useContext } from "react"
 import { useAccount, useContractRead, useContractWrite } from "wagmi"
 import { toast } from "react-toastify";
@@ -36,7 +36,7 @@ const CohortActions = ({status, contract, commitment, isStudent}) => {
         address: contractAddress,
         abi: CohortFacetABI,
         functionName: 'initCohort',
-        args: [contract, USDC, EKONFT],
+        args: [contract, USDC, EKONFTCERT],
     })
 
     const handleClose = () => {
