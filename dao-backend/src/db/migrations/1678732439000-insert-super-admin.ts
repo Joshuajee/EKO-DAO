@@ -2,11 +2,12 @@ import { Admin } from 'src/features/admins/entities/admin.entity';
 import { RolesEnum } from 'src/features/admins/enums/roles.enum';
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class insertSuperAdmin1677445602535 implements MigrationInterface {
+export class insertSuperAdmin1678732439000 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     const superAdmin = new Admin(
       'super-admin@ekolance.com',
       '0xE33C28d21BB90a95E3745296124d338a4D15603f',
+      '$2b$10$k2zbWzzEJylf3/NpHDdEgejaPUDGjaBrmeTfzn8IJOttHVUziu3Ca',
       RolesEnum.SUPER_ADMIN,
     );
     await queryRunner.manager.save(superAdmin);

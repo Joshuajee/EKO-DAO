@@ -1,5 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsNotEmpty, IsString, Matches } from 'class-validator';
+import { PASSWORD_REGEX } from 'src/commons/constants/constants';
+import { INVALID_PASSWORD } from 'src/commons/constants/messages';
 
 export class LoginDto {
   @ApiProperty({
@@ -9,4 +11,11 @@ export class LoginDto {
   @IsString()
   @IsNotEmpty()
   walletAddress: string;
+
+  @ApiProperty({
+    description: "Admin's password",
+    example: 'Password@123',
+  })
+  @Matches(PASSWORD_REGEX, { message: INVALID_PASSWORD })
+  password: string;
 }

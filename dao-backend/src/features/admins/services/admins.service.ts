@@ -8,8 +8,11 @@ import { ADMIN_FACET_ABI } from 'src/commons/constants/abis';
 import { Web3Helper } from 'src/commons/helpers/web3-helper';
 import { ConfigurationService } from 'src/config/configuration.service';
 import { Repository } from 'typeorm';
+import * as bcrypt from 'bcrypt';
 import { AdminDto } from '../dtos/admin.dto';
+import { LoginDto } from '../dtos/login.dto';
 import { Admin } from '../entities/admin.entity';
+import { PASSWORD_INCORRECT } from 'src/commons/constants/messages';
 
 @Injectable()
 export class AdminsService {
@@ -45,12 +48,15 @@ export class AdminsService {
   }
 
   async getAll(): Promise<Admin[]> {
-    return this.adminsRepository.find();
+    return this.adminsRepository.find({
+      select: ['id', 'email', 'walletAddress', 'createdAt', 'updatedAt'],
+    });
   }
 
   async getById(id: number): Promise<Admin> {
     try {
       const admin: Admin = await this.adminsRepository.findOneOrFail({
+        select: ['id', 'email', 'walletAddress', 'createdAt', 'updatedAt'],
         where: { id },
       });
       return admin;
@@ -60,23 +66,9 @@ export class AdminsService {
     }
   }
 
-  async getByWalletAddress(walletAddress: string): Promise<Admin> {
-    try {
-      const admin: Admin = await this.adminsRepository.findOneOrFail({
-        where: { walletAddress },
-      });
-      return admin;
-    } catch (error) {
-      console.error(error);
-      throw new NotFoundException(
-        `Admin with wallet address ${walletAddress} not found`,
-      );
-    }
-  }
-
   async update(id: number, adminDto: AdminDto): Promise<void> {
     const admin: Admin = await this.getById(id);
-    await this.adminsRepository.update(id, adminDto);
+    await this.adminsRepository.save(Object.assign(admin, adminDto));
     if (admin.role !== adminDto.role) {
       const AdminFacet = this.getAdminFacet();
       const encodedData: string = AdminFacet.methods
@@ -104,6 +96,26 @@ export class AdminsService {
       this.configService.superAdminAddress,
       this.configService.superAdminPrivateKey,
     );
+  }
+
+  async login(loginDto: LoginDto): Promise<Admin> {
+    try {
+      const admin: Admin = await this.adminsRepository.findOneOrFail({
+        where: {
+          walletAddress: loginDto.walletAddress,
+        },
+      });
+      const match = await bcrypt.compare(loginDto.password, admin.password);
+      if (!match) {
+        throw new Error(PASSWORD_INCORRECT);
+      }
+      return admin;
+    } catch (error) {
+      console.error(error);
+      throw new NotFoundException(
+        `Admin with wallet address ${loginDto.walletAddress} not found`,
+      );
+    }
   }
 
   getAdminFacet() {

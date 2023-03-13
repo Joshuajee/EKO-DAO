@@ -6,7 +6,10 @@ import {
   BaseEntity,
   CreateDateColumn,
   UpdateDateColumn,
+  BeforeInsert,
+  BeforeUpdate,
 } from 'typeorm';
+import * as bcrypt from 'bcrypt';
 import { RolesEnum } from '../enums/roles.enum';
 
 @Entity('admins')
@@ -24,6 +27,11 @@ export class Admin extends BaseEntity {
   walletAddress: string;
 
   @Column()
+  @IsString()
+  @IsNotEmpty()
+  password: string;
+
+  @Column()
   @IsEnum(RolesEnum)
   role: RolesEnum;
 
@@ -33,10 +41,20 @@ export class Admin extends BaseEntity {
   @UpdateDateColumn()
   updatedAt: Date;
 
-  constructor(email: string, walletAddress: string, role: RolesEnum) {
+  constructor(
+    email: string,
+    walletAddress: string,
+    password: string,
+    role: RolesEnum,
+  ) {
     super();
     this.email = email;
     this.walletAddress = walletAddress;
+    this.password = password;
     this.role = role;
+  }
+
+  @BeforeInsert() @BeforeUpdate() async hashPassword() {
+    this.password = await bcrypt.hash(this.password, 10);
   }
 }

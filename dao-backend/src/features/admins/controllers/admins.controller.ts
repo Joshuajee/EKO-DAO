@@ -194,6 +194,6 @@ export class AdminsController {
   })
   @Post('/login')
   login(@Body() loginDto: LoginDto): { [key: string]: any } {
-    return this.authService.login(loginDto.walletAddress);
+    return this.authService.login(loginDto);
   }
 }
