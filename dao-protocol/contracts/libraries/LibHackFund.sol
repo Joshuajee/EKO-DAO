@@ -1,22 +1,20 @@
-//SPDX-License-Identifier: Unlicense
+// SPDX-License-Identifier: MIT
 
 pragma solidity 0.8.17;
 
 
 
-import "../Hackathon.sol";
-
-// track state of hackathon
-enum State{
-    Uninitialized,
-    Admitting,
-    Ongoing,
-    Ended
-}
-
+import {Hackathon} from "../Hackathon.sol";
 
 
 library LibHackFund {
+    // track state of hackathon
+    enum State{
+        Uninitialized,
+        Admitting,
+        Ongoing,
+        Ended
+    }
 
     bytes32 constant HACKFUND_STORAGE_POSITION = keccak256("diamond.standard.hackfund.storage");
 
@@ -39,11 +37,11 @@ library LibHackFund {
         address winner;
         address firstRunnerUp;
         address secondRunnerUp;
-        uint winnerPercentage;
-        uint firstRunnerUpPercentage;
-        uint secondRunnerUpPercentage;
+        uint8 winnerPercentage;
+        uint8 firstRunnerUpPercentage;
+        uint8 secondRunnerUpPercentage;
         uint funding;
-        uint minScoreTokenRequired;
+        uint16 minScoreTokenRequired;
         State state;
     }
 
@@ -95,5 +93,29 @@ library LibHackFund {
             hackTracker.slot := position
         }
     }
+
+    //  function to return hackathons within a specific range
+    // function _getHackathons(
+    //     uint start,
+    //     uint8 count
+    //     ) /*existingHackathon(start)*/  internal view returns (Hack[] memory) {
+    //         // if (count > 50 || count < 0) revert InvalidCountInput();
+    //         // if (start < count) revert WrongStartAndCountInput();
+
+    //          HackathonsTracker storage hackTracker = getHackathonTracker() ;
+            
+             
+    //         Hack[] memory Hackathons = new Hack[](count);
+
+    //         uint count1;
+    //         for (uint i = start; i > (start - count); i--){
+
+    //             Hackathons[count1] = hackTracker.Hackathons[i].getHackathon();
+    //             count1++;
+    //             continue;
+    //         }
+
+    //         return Hackathons;
+    // }
 
 }  

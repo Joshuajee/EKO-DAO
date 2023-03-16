@@ -37,24 +37,24 @@
         "type": "uint16"
       },
       {
-        "internalType": "uint256",
+        "internalType": "uint8",
         "name": "_winnerPercentage",
-        "type": "uint256"
+        "type": "uint8"
       },
       {
-        "internalType": "uint256",
+        "internalType": "uint8",
         "name": "_firstRunnerUpPercentage",
-        "type": "uint256"
+        "type": "uint8"
       },
       {
-        "internalType": "uint256",
+        "internalType": "uint8",
         "name": "_secondRunnerUpPercentage",
-        "type": "uint256"
+        "type": "uint8"
       },
       {
-        "internalType": "uint256",
+        "internalType": "uint16",
         "name": "_minScoreTokenRequiurement",
-        "type": "uint256"
+        "type": "uint16"
       }
     ],
     "stateMutability": "nonpayable",
@@ -92,11 +92,6 @@
   },
   {
     "inputs": [],
-    "name": "HackathonNotFound",
-    "type": "error"
-  },
-  {
-    "inputs": [],
     "name": "HackathonOngoing",
     "type": "error"
   },
@@ -122,27 +117,22 @@
   },
   {
     "inputs": [],
-    "name": "NotFirstRunnerUp",
-    "type": "error"
-  },
-  {
-    "inputs": [],
     "name": "NotParticipant",
     "type": "error"
   },
   {
     "inputs": [],
-    "name": "NotSecondRunnerUp",
-    "type": "error"
-  },
-  {
-    "inputs": [],
-    "name": "NotWinner",
+    "name": "NotPrizeWinner",
     "type": "error"
   },
   {
     "inputs": [],
     "name": "PercentageError",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "StartDateNotReached",
     "type": "error"
   },
   {
@@ -156,15 +146,253 @@
     "type": "error"
   },
   {
-    "inputs": [],
-    "name": "endHackathon",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "enum LibHackFund.State",
+        "name": "hackathonState",
+        "type": "uint8"
+      }
+    ],
+    "name": "hackathonEnded",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "funder",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "amount",
+        "type": "uint256"
+      }
+    ],
+    "name": "hackathonFunded",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "_acceptedCurrency",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "_scoretoken",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "enum LibHackFund.State",
+        "name": "hackathonState",
+        "type": "uint8"
+      }
+    ],
+    "name": "hackathonInitialized",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "winner",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "firstRunnerUp",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "secondRunnerUp",
+        "type": "address"
+      }
+    ],
+    "name": "hackathonPrizeWinners",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "participant",
+        "type": "address"
+      }
+    ],
+    "name": "hackathonRegistration",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "enum LibHackFund.State",
+        "name": "hackathonState",
+        "type": "uint8"
+      }
+    ],
+    "name": "hackathonStarted",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "components": [
+          {
+            "internalType": "uint256",
+            "name": "id",
+            "type": "uint256"
+          },
+          {
+            "internalType": "address",
+            "name": "hackathonAddress",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "author",
+            "type": "address"
+          },
+          {
+            "internalType": "string",
+            "name": "name",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "description",
+            "type": "string"
+          },
+          {
+            "internalType": "uint256",
+            "name": "startDate",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "endDate",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint16",
+            "name": "maxNumAdmittable",
+            "type": "uint16"
+          },
+          {
+            "internalType": "uint16",
+            "name": "numOfStudent",
+            "type": "uint16"
+          },
+          {
+            "internalType": "address",
+            "name": "winner",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "firstRunnerUp",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "secondRunnerUp",
+            "type": "address"
+          },
+          {
+            "internalType": "uint8",
+            "name": "winnerPercentage",
+            "type": "uint8"
+          },
+          {
+            "internalType": "uint8",
+            "name": "firstRunnerUpPercentage",
+            "type": "uint8"
+          },
+          {
+            "internalType": "uint8",
+            "name": "secondRunnerUpPercentage",
+            "type": "uint8"
+          },
+          {
+            "internalType": "uint256",
+            "name": "funding",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint16",
+            "name": "minScoreTokenRequired",
+            "type": "uint16"
+          },
+          {
+            "internalType": "enum LibHackFund.State",
+            "name": "state",
+            "type": "uint8"
+          }
+        ],
+        "indexed": false,
+        "internalType": "struct LibHackFund.Hack",
+        "name": "hack",
+        "type": "tuple"
+      }
+    ],
+    "name": "newHackathon",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "prizeWinner",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "amountWithdrawn",
+        "type": "uint256"
+      }
+    ],
+    "name": "prizeWithdrawn",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "participant",
+        "type": "address"
+      }
+    ],
+    "name": "scoreTokenRefund",
+    "type": "event"
   },
   {
     "inputs": [],
-    "name": "firstRunnerUpWithdrawal",
+    "name": "endHackathon",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -175,29 +403,16 @@
         "internalType": "uint256",
         "name": "_amount",
         "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "_funder",
+        "type": "address"
       }
     ],
     "name": "fundHackathon",
     "outputs": [],
     "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "getAcceptedCurrencyAndScoreToken",
-    "outputs": [
-      {
-        "internalType": "contract IERC20",
-        "name": "",
-        "type": "address"
-      },
-      {
-        "internalType": "contract IERC20",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -267,19 +482,19 @@
             "type": "address"
           },
           {
-            "internalType": "uint256",
+            "internalType": "uint8",
             "name": "winnerPercentage",
-            "type": "uint256"
+            "type": "uint8"
           },
           {
-            "internalType": "uint256",
+            "internalType": "uint8",
             "name": "firstRunnerUpPercentage",
-            "type": "uint256"
+            "type": "uint8"
           },
           {
-            "internalType": "uint256",
+            "internalType": "uint8",
             "name": "secondRunnerUpPercentage",
-            "type": "uint256"
+            "type": "uint8"
           },
           {
             "internalType": "uint256",
@@ -287,12 +502,12 @@
             "type": "uint256"
           },
           {
-            "internalType": "uint256",
+            "internalType": "uint16",
             "name": "minScoreTokenRequired",
-            "type": "uint256"
+            "type": "uint16"
           },
           {
-            "internalType": "enum State",
+            "internalType": "enum LibHackFund.State",
             "name": "state",
             "type": "uint8"
           }
@@ -302,31 +517,18 @@
         "type": "tuple"
       }
     ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "init",
-    "outputs": [
-      {
-        "internalType": "bool",
-        "name": "",
-        "type": "bool"
-      }
-    ],
-    "stateMutability": "view",
+    "stateMutability": "pure",
     "type": "function"
   },
   {
     "inputs": [
       {
-        "internalType": "contract IERC20",
+        "internalType": "address",
         "name": "_acceptedCurrency",
         "type": "address"
       },
       {
-        "internalType": "contract IERC20",
+        "internalType": "address",
         "name": "_scoretoken",
         "type": "address"
       }
@@ -356,48 +558,40 @@
     "type": "function"
   },
   {
-    "inputs": [],
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_prizeWinner",
+        "type": "address"
+      }
+    ],
+    "name": "prizeWithdrawal",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_participant",
+        "type": "address"
+      }
+    ],
     "name": "refundScoreTokens",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
   },
   {
-    "inputs": [],
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_participant",
+        "type": "address"
+      }
+    ],
     "name": "register",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "secondRunnerUpWithdrawal",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "_firstRunnerUp",
-        "type": "address"
-      }
-    ],
-    "name": "setFirstRunnerUp",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "_secondRunnerUp",
-        "type": "address"
-      }
-    ],
-    "name": "setSecondRunnerUp",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -408,9 +602,19 @@
         "internalType": "address",
         "name": "_winner",
         "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_firstRunnerUp",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_secondRunnerUp",
+        "type": "address"
       }
     ],
-    "name": "setWinner",
+    "name": "setPrizeWinners",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -418,13 +622,6 @@
   {
     "inputs": [],
     "name": "startHackathon",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "winnerWithdrawal",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
