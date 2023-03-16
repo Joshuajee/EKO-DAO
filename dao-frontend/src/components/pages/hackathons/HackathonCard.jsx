@@ -12,6 +12,7 @@ import Badge from "@/components/ui/Badge"
 import JoinHackathon from "./JoinHackForm"
 import { convertToEther } from "@/libs/utils"
 import PrizeHack from "./PrizeHack"
+import { toast } from "react-toastify"
 
 const HackathonCard = ({hackathon, expanded}) => {
 
@@ -58,13 +59,12 @@ const HackathonCard = ({hackathon, expanded}) => {
     }
 
     useEffect(() => {
-        setCurrentTime(Number(new Date()))
+        setCurrentTime(Number(new Date()) / 1000)
         const interval = setInterval(() => {
-            setCurrentTime(Number(new Date()))
+            setCurrentTime(Number(new Date() / 1000))
         }, 1000)
         return clearInterval(interval)
     }, [])
-
 
     useEffect(() => {
         switch (state) {

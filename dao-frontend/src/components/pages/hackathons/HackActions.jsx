@@ -9,24 +9,9 @@ import hackathonABI from "@/abi/contracts/Hackathon.sol/Hackathon.json";
 
 const HackActions = ({status, contract, isRigistered, hackStatus}) => {
 
-    const { address, isConnected } = useAccount()
+    const { address } = useAccount()
 
     const { isAdmin, isAdminLoggedIn } = useContext(AuthContext);
-
-    const { data } = useContractRead({
-        address: contract,
-        abi: ProjectABI,
-        functionName: 'isDonor',
-        args: [address],
-        enabled: isConnected
-    })
-
-    const donorWithdraw = useContractWrite({
-        address: contract,
-        abi: ProjectABI,
-        functionName: 'donorWithdraw',
-        args: [address],
-    })
 
     const endHack = useContractWrite({
         address: contract,
@@ -67,19 +52,6 @@ const HackActions = ({status, contract, isRigistered, hackStatus}) => {
 
             
             {/* ADMIN */}
-
-            { 
-                (isAdmin && status === 0) &&
-                    <div className="flex justify-center">
-                        <div className="w-60">
-                            <LoadingButton
-                                onClick={initHack?.write}
-                                color="blue" loading={initHack?.isLoading}> 
-                                Init Hackathon
-                            </LoadingButton>
-                        </div>
-                    </div>
-            }
 
             { 
                 (isAdmin && status === 0) &&

@@ -1,7 +1,7 @@
 import Input from "@/components/ui/form/Input"
 import { useState, useEffect } from "react"
 import wordsCount from 'words-count';
-import { contractAddress, convertToWEI, getDate, USDC } from "@/libs/utils"
+import { contractAddress, convertToWEI, dateToTimeStamp, getDate, USDC } from "@/libs/utils"
 import { useContractWrite } from "wagmi";
 import { toast } from "react-toastify";
 import LoadingButton from "@/components/ui/form/LoadingButton";
@@ -49,11 +49,16 @@ const CreateHackForm = ({close}) => {
         abi: HackathonFacetABI,
         functionName: 'newHackathon',
         args: [
-            name, description, Number(new Date(startDate)), 
-            Number(new Date(endDate)), maxNumAdmittable, first,
+            name, description, dateToTimeStamp(startDate),
+            dateToTimeStamp(endDate), maxNumAdmittable, first,
             second, third, convertToWEI(minToken)
         ],
     })
+
+    console.log(            name, description, dateToTimeStamp(startDate),
+    dateToTimeStamp(endDate), maxNumAdmittable, first,
+    second, third, convertToWEI(minToken))
+
 
     const submit = (e) => {
         e.preventDefault()

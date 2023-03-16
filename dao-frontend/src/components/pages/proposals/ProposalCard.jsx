@@ -156,18 +156,19 @@ const ProposalCard = ({proposal, expanded}) => {
 
                 {   
                     proposalStatus?.state === 1 &&
-                        <div>
+                        <div className="flex flex-row space-x-2">
 
                             <LoadingButtonSM 
                                 loading={voteFor?.isLoading} 
                                 onClick={yesVote}
-                                className="bg-green-600 hover:bg-green-700 rounded-lg px-8 py-2 text-white mr-2 disabled:bg-gray-400">
+                                color="green">
                                 Yes
                             </LoadingButtonSM>
 
                             <LoadingButtonSM 
                                 loading={voteAgainst?.isLoading}
                                 onClick={noVote}
+                                color="red"
                                 className="bg-red-600 hover:bg-red-700 rounded-lg px-8 py-2 text-white disabled:bg-gray-400">
                                 No
                             </LoadingButtonSM>
