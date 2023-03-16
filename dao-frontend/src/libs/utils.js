@@ -68,3 +68,7 @@ export const convertToWEI = (amount) => {
 export const decodeByte32 = (byte32) => {
     return ethers.utils.parseBytes32String(byte32)
 }
+
+export const dateToTimeStamp = (date) => {
+    return new Date(date).getTime() / 1000
+}

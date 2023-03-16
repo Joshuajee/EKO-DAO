@@ -55,7 +55,7 @@ export default function Hackathons() {
   }, [hackathonCount?.data])
 
   useEffect(() => {
-    if (hackathons?.data) setData([...hackathons?.data].reverse())
+    if (hackathons?.data) setData([...hackathons?.data])
     setIsError(hackathons?.isError)
     setIsSuccess(hackathons?.isSuccess)
     setIsLoading(hackathons?.isLoading)

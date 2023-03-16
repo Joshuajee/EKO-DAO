@@ -6,7 +6,7 @@ import { toast } from "react-toastify";
 import ApprovalBtn from "@/components/ui/form/ApprovalBtn";
 import Balance from "@/components/ui/form/Balance";
 import hackathonABI from "@/abi/contracts/Hackathon.sol/Hackathon.json";
-import { convertToEther, convertToWEI } from "@/libs/utils";
+import { convertToWEI } from "@/libs/utils";
 
 
 const DonationHackForm = ({hackathon, close}) => {
