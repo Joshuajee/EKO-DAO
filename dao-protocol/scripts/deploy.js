@@ -25,7 +25,8 @@ async function deployDiamond(test = false) {
     "CohortFacet",
     "GovernanceFacet",
     "CrowdFundFacet",
-    "HackathonFacet"
+    "HackathonFacet",
+    "HackathonFacetGetters",
   ];
   // The `facetCuts` variable is the FacetCut[] that contains the functions to add during diamond deployment
   const facetCuts = [];

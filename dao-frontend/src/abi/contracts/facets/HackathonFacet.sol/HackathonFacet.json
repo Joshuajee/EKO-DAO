@@ -101,9 +101,9 @@
         "type": "uint8"
       },
       {
-        "internalType": "uint16",
+        "internalType": "uint256",
         "name": "_minScoreTokenRequiurement",
-        "type": "uint16"
+        "type": "uint256"
       }
     ],
     "name": "newHackathon",

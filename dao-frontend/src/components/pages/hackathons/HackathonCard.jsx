@@ -28,7 +28,7 @@ const HackathonCard = ({hackathon, expanded}) => {
         state, startDate, endDate, 
         funding, minScoreTokenRequired } = hackathon
 
-    const prizePool = Number(convertToEther(funding.toString()))
+    const prizePool = Number(funding.toString())
 
     const router = useRouter()
 

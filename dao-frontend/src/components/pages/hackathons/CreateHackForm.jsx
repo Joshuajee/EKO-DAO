@@ -55,10 +55,17 @@ const CreateHackForm = ({close}) => {
         ],
     })
 
-    console.log(            name, description, dateToTimeStamp(startDate),
-    dateToTimeStamp(endDate), maxNumAdmittable, first,
-    second, third, convertToWEI(minToken))
-
+    // const create = useContractWrite({
+    //     mode: 'recklesslyUnprepared',
+    //     address: contractAddress,
+    //     abi: HackathonFacetABI,
+    //     functionName: 'newHackathon',
+    //     args: [
+    //         name, description, Math.round(Number(new Date() / 1000) + 1000),
+    //         Math.round(Number(new Date() / 1000) + 2000), maxNumAdmittable, first,
+    //         second, third, convertToWEI(minToken)
+    //     ],
+    // })
 
     const submit = (e) => {
         e.preventDefault()

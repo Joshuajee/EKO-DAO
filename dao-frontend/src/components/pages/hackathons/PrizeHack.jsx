@@ -8,7 +8,7 @@ import hackathonABI from "@/abi/contracts/Hackathon.sol/Hackathon.json";
 import { useContractWrite } from "wagmi";
 
 
-const PrizeHack = ({hackathon, expanded, prizePool}) => {
+const PrizeHack = ({hackathon, prizePool}) => {
 
     const { 
         startDate, endDate, numOfStudent, 
@@ -54,15 +54,15 @@ const PrizeHack = ({hackathon, expanded, prizePool}) => {
 
 
                 <div className="my-2 flex flex-col md:flex-row justify-between font-medium">
-                    <p>Winner Prize: {dollarFormat(prizePool * Number(winnerPercentage.toString()))} USDC </p> 
+                    <p>Winner Prize: {dollarFormat(prizePool * Number(winnerPercentage.toString()) / 100)} USDC </p> 
                 </div>
 
                 <div className="my-2 flex flex-col md:flex-row justify-between font-medium">
-                    <p>First Runner Up Prize: {dollarFormat(prizePool * Number(firstRunnerUpPercentage.toString()))} USDC </p> 
+                    <p>First Runner Up Prize: {dollarFormat(prizePool * Number(firstRunnerUpPercentage.toString()) / 100)} USDC </p> 
                 </div>
 
                 <div className="my-2 mb-8 flex flex-col md:flex-row justify-between font-medium">
-                    <p>Second Runner Up: {dollarFormat(prizePool * Number(secondRunnerUpPercentage.toString()))} USDC </p> 
+                    <p>Second Runner Up: {dollarFormat(prizePool * Number(secondRunnerUpPercentage.toString()) / 100)} USDC </p> 
                 </div>
 
                 { state < 3 ?             

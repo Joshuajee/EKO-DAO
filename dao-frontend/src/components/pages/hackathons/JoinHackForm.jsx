@@ -24,6 +24,7 @@ const JoinHackathon = ({hackathon, close}) => {
         address: hackathonAddress,
         abi: hackathonABI,
         functionName: 'register',
+        args: [address]
     })
 
     useEffect(() => {

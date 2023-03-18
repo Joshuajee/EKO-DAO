@@ -45,7 +45,7 @@ library LibHackFund {
         uint8 firstRunnerUpPercentage;
         uint8 secondRunnerUpPercentage;
         uint funding;
-        uint16 minScoreTokenRequired;
+        uint minScoreTokenRequired;
         State state;
     }
 
