@@ -9,8 +9,9 @@ import LoadingScreen from '@/components/ui/screens/LoadingScreen';
 import { AuthContext } from '@/context/AuthContext';
 import { useContractRead } from 'wagmi';
 import { contractAddress } from '@/libs/utils';
-import HackathonFacetABI from '@/abi/contracts/facets/HackathonFacet.sol/HackathonFacet.json';
 import CreateHackForm from '@/components/pages/hackathons/CreateHackForm';
+import HackathonFacetGettersABI from '@/abi/contracts/facets/HackathonFacetGetters.sol/HackathonFacetGetters.json'
+
 
 
 export default function Hackathons() {
@@ -35,20 +36,18 @@ export default function Hackathons() {
 
   const hackathonCount = useContractRead({
     address: contractAddress,
-    abi: HackathonFacetABI,
+    abi: HackathonFacetGettersABI,
     functionName: 'numberofHackathons',
     watch: true
   })
 
   const hackathons = useContractRead({
     address: contractAddress,
-    abi: HackathonFacetABI,
+    abi: HackathonFacetGettersABI,
     functionName: 'getHackathons',
     args: [counts, counts],
     enabled: hackathonCount?.data > 0,
   })
-  
-  console.log(hackathons)
 
   useEffect(() => {
     setCounts(Number(hackathonCount?.data?.toString()))

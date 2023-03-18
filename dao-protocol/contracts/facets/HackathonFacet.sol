@@ -20,7 +20,7 @@ contract HackathonFacet is HackathonBase {
         uint8 _winnerPercentage, 
         uint8 _firstRunnerUpPercentage, 
         uint8 _secondRunnerUpPercentage,
-        uint16 _minScoreTokenRequiurement
+        uint _minScoreTokenRequiurement
     ) external {
         address _author = msg.sender;
         LibHackFund.getHackathonTracker().hackathonCount++;

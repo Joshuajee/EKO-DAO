@@ -52,9 +52,9 @@
         "type": "uint8"
       },
       {
-        "internalType": "uint16",
+        "internalType": "uint256",
         "name": "_minScoreTokenRequiurement",
-        "type": "uint16"
+        "type": "uint256"
       }
     ],
     "stateMutability": "nonpayable",
@@ -339,9 +339,9 @@
             "type": "uint256"
           },
           {
-            "internalType": "uint16",
+            "internalType": "uint256",
             "name": "minScoreTokenRequired",
-            "type": "uint16"
+            "type": "uint256"
           },
           {
             "internalType": "enum LibHackFund.State",
@@ -502,9 +502,9 @@
             "type": "uint256"
           },
           {
-            "internalType": "uint16",
+            "internalType": "uint256",
             "name": "minScoreTokenRequired",
-            "type": "uint16"
+            "type": "uint256"
           },
           {
             "internalType": "enum LibHackFund.State",
