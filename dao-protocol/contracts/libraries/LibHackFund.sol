@@ -1,13 +1,17 @@
 // SPDX-License-Identifier: MIT
 
-pragma solidity 0.8.17;
-
-
+pragma solidity ^0.8.17;
 
 import {Hackathon} from "../Hackathon.sol";
 
 
 library LibHackFund {
+    
+    // custom errors
+    error HackathonNotFound();
+    error WrongStartAndCountInput();
+    error InvalidCountInput();
+
     // track state of hackathon
     enum State{
         Uninitialized,
@@ -118,4 +122,17 @@ library LibHackFund {
     //         return Hackathons;
     // }
 
+
 }  
+
+
+
+contract HackathonBase {
+
+    modifier existingHackathon(uint hackID) {
+        if (hackID == 0) revert LibHackFund.HackathonNotFound();
+        if (hackID > LibHackFund.getHackathonTracker().hackathonCount) revert LibHackFund.HackathonNotFound();
+        _;
+    } 
+
+}

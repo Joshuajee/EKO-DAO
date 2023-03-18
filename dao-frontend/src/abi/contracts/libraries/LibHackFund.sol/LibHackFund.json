@@ -1,0 +1,17 @@
+[
+  {
+    "inputs": [],
+    "name": "HackathonNotFound",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "InvalidCountInput",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "WrongStartAndCountInput",
+    "type": "error"
+  }
+]
