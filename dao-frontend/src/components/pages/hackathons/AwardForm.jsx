@@ -28,11 +28,10 @@ const AwardForm = ({contract, close}) => {
 
         if (award.isError) toast.error(award?.error?.reason)
     
-    }, [award?.isSuccess, award?.isError, award?.error])
+    }, [award?.isSuccess, award?.isError, award?.error, close])
 
 
     const disabled = !isAddress(winner) || !isAddress(second) || !isAddress(third)
-    
     
     return (
         <div>

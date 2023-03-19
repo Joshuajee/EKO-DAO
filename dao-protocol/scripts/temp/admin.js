@@ -5,7 +5,7 @@ const setAdmin = async (address) => {
 
     const govt = await ethers.getContractAt("AdminFacet", address);
 
-    await govt.setAdmin("0x120c5810b9aa689037277d1142547f62d961b941", 2);
+    await govt.setAdmin("0xd0F6816983cdDD67ec49d607D6B33f1f988dD244", 2);
 
     console.log("Done!")
 }

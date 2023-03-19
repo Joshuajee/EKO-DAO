@@ -2,15 +2,8 @@
 
 pragma solidity ^0.8.17;
 
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {LibHackFund} from "./libraries/LibHackFund.sol";
-
-interface IERC20{
-   function transfer(address to, uint amount) external  returns (bool);   
-   function balanceOf(address account) external view returns (uint);
-   function symbol() external view returns (string memory);
-   function decimals() external view returns (uint8);
-   function transferFrom(address from, address to, uint amount) external returns (bool);
-}
 
 contract Hackathon{
    
@@ -63,8 +56,6 @@ contract Hackathon{
    ); 
 
    //  Modifier to check requirements for registration
-
-
    modifier registrationRequirements(){
       LibHackFund.Hack storage hack = LibHackFund.getHack();
       LibHackFund.HackathonMapping storage hackathonmapping = LibHackFund.getMapping();
@@ -197,6 +188,11 @@ contract Hackathon{
       return hack;
    }
 
+   function getHackathonStatus() external pure returns(LibHackFund.Hack memory) { 
+      LibHackFund.Hack storage hack = LibHackFund.getHack();
+      return hack;
+   }
+
    function isParticipant(address participant) addressValidation(participant) external view returns (bool) {
       LibHackFund.Hack storage hack = LibHackFund.getHack();
       LibHackFund.HackathonMapping storage hackathonmapping = LibHackFund.getMapping();
@@ -259,7 +255,7 @@ contract Hackathon{
       if (hackathonmapping.registered[hack.id][_participant]) revert NotParticipant();
       hackathonmapping.scoreTokenRefund[hack.id][_participant] = true;
       uint amount = hack.minScoreTokenRequired;
-      bool success = Scoretoken.transferFrom(address(this), _participant, amount);
+      bool success = Scoretoken.transfer(_participant, amount);
       if(!success) revert UnsuccessfulTransfer();
       emit scoreTokenRefund(_participant);
    }
@@ -273,7 +269,7 @@ contract Hackathon{
          uint _amount = hack.funding;
          uint amount = (hack.winnerPercentage * _amount) / 100;
          hackathonmapping.winnerWithdrawn[hack.id] = true;
-         bool success = Ekostable.transferFrom(address(this), _prizeWinner, amount);
+         bool success = Ekostable.transfer(_prizeWinner, amount);
          if(!success) revert UnsuccessfulTransfer();
          emit prizeWithdrawn(_prizeWinner, amount);
       }else if (hackathonmapping.isFirstRunnerUp[hack.id][_prizeWinner]){
@@ -281,7 +277,7 @@ contract Hackathon{
          uint _amount = hack.funding;
          uint amount = (hack.firstRunnerUpPercentage * _amount) / 100;
          hackathonmapping.firstRunnerUpWithdrawn[hack.id] = true;
-         bool success = Ekostable.transferFrom(address(this), _prizeWinner, amount);
+         bool success = Ekostable.transfer(_prizeWinner, amount);
          if(!success) revert UnsuccessfulTransfer();
          emit prizeWithdrawn(_prizeWinner, amount);
       }else if (hackathonmapping.isSecondRunnerUp[hack.id][_prizeWinner]){
@@ -289,7 +285,7 @@ contract Hackathon{
          uint _amount = hack.funding;
          uint amount = (hack.secondRunnerUpPercentage * _amount) / 100;
          hackathonmapping.secondRunnerUpWithdrawn[hack.id] = true;
-         bool success = Ekostable.transferFrom(address(this), _prizeWinner, amount);
+         bool success = Ekostable.transfer(_prizeWinner, amount);
          if(!success) revert UnsuccessfulTransfer();
          emit prizeWithdrawn(_prizeWinner, amount);
       }else{
