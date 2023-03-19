@@ -1,4 +1,4 @@
-import { memo, useState, useEffect } from "react"
+import { memo, useState, useEffect, useContext } from "react"
 import { toast } from "react-toastify";
 import { dollarFormat } from "@/libs/utils"
 import ModalWrapper from "@/components/ui/ModalWrapper";
@@ -6,9 +6,12 @@ import AwardForm from "./AwardForm";
 import LoadingButtonSM from "@/components/ui/form/LoadingButtonSM";
 import hackathonABI from "@/abi/contracts/Hackathon.sol/Hackathon.json";
 import { useContractWrite } from "wagmi";
+import { AuthContext } from "@/context/AuthContext";
 
 
 const PrizeHack = ({hackathon, prizePool}) => {
+
+    const { isAdmin } = useContext(AuthContext);
 
     const { 
         startDate, endDate, numOfStudent, 
@@ -65,7 +68,7 @@ const PrizeHack = ({hackathon, prizePool}) => {
                     <p>Second Runner Up: {dollarFormat(prizePool * Number(secondRunnerUpPercentage.toString()) / 100)} USDC </p> 
                 </div>
 
-                { state < 3 ?             
+                { state < 3 && isAdmin ?             
                     <div>
                         <LoadingButtonSM
                             loading={endHack.isLoading}
@@ -83,7 +86,7 @@ const PrizeHack = ({hackathon, prizePool}) => {
 
             <ModalWrapper open={open} handleClose={handleClose} title="Award Prize">
 
-                <AwardForm contract={hackathonAddress} />
+                <AwardForm contract={hackathonAddress} close={handleClose} />
                
             </ModalWrapper>
 

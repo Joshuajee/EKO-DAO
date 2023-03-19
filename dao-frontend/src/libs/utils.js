@@ -72,3 +72,19 @@ export const decodeByte32 = (byte32) => {
 export const dateToTimeStamp = (date) => {
     return new Date(date).getTime() / 1000
 }
+
+export const winnerDetails = (hackathon, address) => {
+
+    const { winner, secondRunnerUp } = hackathon
+
+    if (winner === address) {
+        return { status: 0, }
+    } else if (winner === address) {
+
+    } else if (winner === address) {
+
+    }
+
+
+    return null
+}
