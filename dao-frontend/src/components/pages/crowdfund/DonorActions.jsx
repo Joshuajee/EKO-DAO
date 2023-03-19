@@ -10,7 +10,7 @@ const DonorActions = ({status, contract, expired}) => {
 
     const { address, isConnected } = useAccount()
 
-    const { isAdminLoggedIn } = useContext(AuthContext);
+    const { isAdmin } = useContext(AuthContext);
 
     const { data } = useContractRead({
         address: contract,
@@ -72,7 +72,8 @@ const DonorActions = ({status, contract, expired}) => {
                     </div>)
             }
 
-            { (status === 2 && isAdminLoggedIn) &&
+            { (status === 2 && isAdmin) &&
+            <div className="flex justify-center">
                 <div className="w-60">
                     <LoadingButton
                         loading={adminWithdraw?.isLoading}
@@ -80,6 +81,7 @@ const DonorActions = ({status, contract, expired}) => {
                         Withdraw your funds
                     </LoadingButton>
                 </div>
+            </div>
             }
 
         </div>

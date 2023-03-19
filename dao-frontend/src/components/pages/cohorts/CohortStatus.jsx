@@ -1,4 +1,3 @@
-import { AiFillInfoCircle } from "react-icons/ai"
 import date from 'date-and-time';
 import { convertToEther, dollarFormat } from "@/libs/utils"
 import { memo } from "react";
@@ -9,13 +8,11 @@ const CohortStatus = ({fee, students, start,  end, expanded}) => {
 
             <div className="text-sm flex flex-col">
 
-                <h4 className="text-sm mb-2">Cohort Status</h4>
-
                 {  expanded &&            
                     <div className="flex flex-col md:flex-row justify-between">
 
                         <p className="flex font-semibold">
-                            Commitment Fee <AiFillInfoCircle className="ml-1" size={18} /> : {dollarFormat(convertToEther(fee))}   
+                            Commitment Fee : {dollarFormat(convertToEther(fee))}   
                         </p>
 
                         <p className="font-semibold">Students: {students} </p>
@@ -32,6 +29,7 @@ const CohortStatus = ({fee, students, start,  end, expanded}) => {
                 </div>
 
             </div>
+
         </div>
     )
 }

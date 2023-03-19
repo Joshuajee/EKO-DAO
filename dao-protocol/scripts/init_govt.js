@@ -5,7 +5,7 @@ const initGovt = async (address) => {
 
     const govt = await ethers.getContractAt("GovernanceFacet", address);
   
-    await govt.intializeGovernance("0xe1d073C740fE2b3c5951aa09EAa2F34717e1599C");
+    await govt.intializeGovernance("0xd0F6816983cdDD67ec49d607D6B33f1f988dD244");
 
     console.log("Done!")
   }

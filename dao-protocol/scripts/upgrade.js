@@ -22,7 +22,7 @@ async function upgradeDiamond() {
             action: FacetCutAction.Replace,
             functionSelectors: selectors
         }],
-        ethers.constants.AddressZero, '0x', { gasLimit: 100_000_000 }
+        facet.address, '0x', { gasLimit: 100_000_000 }
     )
 
     const receipt = await tx.wait()

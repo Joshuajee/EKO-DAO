@@ -21,13 +21,22 @@ const DonationHackForm = ({hackathon, close}) => {
 
     const { address } = useAccount()
 
+    // const donation = useContractWrite({
+    //     mode: 'recklesslyUnprepared',
+    //     address: hackathonAddress,
+    //     abi: hackathonABI,
+    //     functionName: 'fundHackathon',
+    //     args: [convertToWEI(amount), address],
+    // })
+
     const donation = useContractWrite({
         mode: 'recklesslyUnprepared',
         address: hackathonAddress,
         abi: hackathonABI,
         functionName: 'fundHackathon',
-        args: [convertToWEI(amount)],
+        args: [(amount), address],
     })
+
 
     const submit = (e) => {
         e.preventDefault()
