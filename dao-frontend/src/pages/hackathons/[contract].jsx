@@ -20,6 +20,7 @@ export default function Hackathons() {
     watch: true
   })
 
+  console.log(data)
 
   return (
     <Layout>

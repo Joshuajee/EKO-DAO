@@ -10,7 +10,6 @@ import ModalWrapper from "@/components/ui/ModalWrapper"
 import DonationHackForm from "./DonationHackForm"
 import Badge from "@/components/ui/Badge"
 import JoinHackathon from "./JoinHackForm"
-import { convertToEther } from "@/libs/utils"
 import PrizeHack from "./PrizeHack"
 import { toast } from "react-toastify"
 
@@ -69,19 +68,21 @@ const HackathonCard = ({hackathon, expanded}) => {
     useEffect(() => {
         switch (state) {
             case 1:
+                if (startDate > currentTime)
+                    setHackStatus({color: "blue", status: "Registration is open", state: 1})
                 if (endDate > currentTime)
                     setHackStatus({color: "green", status: "Hackathon in session", state: 2})
                 if (endDate < currentTime)
                     setHackStatus({color: "yellow", status: "Hackathon has ended", state: 3})
                 break
             case 2:
-                setHackStatus({color: "green", status: "Successful"})
+                setHackStatus({color: "green", status: "Hackathon in session", state: 2})
                 break
             case 3:
-                setHackStatus({color: "gray", status: "Executed"})
+                setHackStatus({color: "yellow", status: "Hackathon has ended", state: 3})
                 break
             default:
-                setHackStatus({color: "gray", status: "Enrollment not started", state: 0})
+                setHackStatus({color: "gray", status: "Registration not started", state: 0})
         }
     }, [state, startDate, endDate, currentTime]);
 

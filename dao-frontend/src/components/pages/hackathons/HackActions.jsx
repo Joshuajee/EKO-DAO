@@ -7,7 +7,7 @@ import { AuthContext } from "@/context/AuthContext";
 import LoadingButton from "@/components/ui/form/LoadingButton";
 import hackathonABI from "@/abi/contracts/Hackathon.sol/Hackathon.json";
 
-const HackActions = ({status, contract, isRigistered, hackStatus}) => {
+const HackActions = ({status, contract, isRigistered}) => {
 
     const { address } = useAccount()
 
@@ -54,7 +54,7 @@ const HackActions = ({status, contract, isRigistered, hackStatus}) => {
             {/* ADMIN */}
 
             { 
-                (isAdmin && status === 0) &&
+                (true && status === 0) &&
                     <div className="flex justify-center">
                         <div className="w-60">
                             <LoadingButton
