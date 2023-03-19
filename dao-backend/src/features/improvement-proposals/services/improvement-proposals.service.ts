@@ -14,13 +14,71 @@ export class ImprovementProposalsService {
   async create(improvementProposalDto: ImprovementProposalDto): Promise<void> {
     try {
       const ImprovementProposalFacet = this.getImprovementProposalFacet();
+      const minVotingTokenRequired = this.web3Helper.toWei(
+        improvementProposalDto.minVotingTokenRequired.toString(),
+      );
       const encodedData: string = ImprovementProposalFacet.methods
         .newProposal(
           improvementProposalDto.name,
           improvementProposalDto.description,
           improvementProposalDto.delay,
           improvementProposalDto.votingDuration,
+          minVotingTokenRequired,
         )
+        .encodeABI();
+      await this.web3Helper.callContract(
+        encodedData,
+        this.configService.diamondAddress,
+        this.configService.superAdminAddress,
+        this.configService.superAdminPrivateKey,
+      );
+    } catch (error) {
+      console.error(error);
+      throw new BadRequestException();
+    }
+  }
+
+  async start(id: number): Promise<void> {
+    try {
+      const ImprovementProposalFacet = this.getImprovementProposalFacet();
+      const encodedData: string = ImprovementProposalFacet.methods
+        .startVoting(id)
+        .encodeABI();
+      await this.web3Helper.callContract(
+        encodedData,
+        this.configService.diamondAddress,
+        this.configService.superAdminAddress,
+        this.configService.superAdminPrivateKey,
+      );
+    } catch (error) {
+      console.error(error);
+      throw new BadRequestException();
+    }
+  }
+
+  async end(id: number): Promise<void> {
+    try {
+      const ImprovementProposalFacet = this.getImprovementProposalFacet();
+      const encodedData: string = ImprovementProposalFacet.methods
+        .endVoting(id)
+        .encodeABI();
+      await this.web3Helper.callContract(
+        encodedData,
+        this.configService.diamondAddress,
+        this.configService.superAdminAddress,
+        this.configService.superAdminPrivateKey,
+      );
+    } catch (error) {
+      console.error(error);
+      throw new BadRequestException();
+    }
+  }
+
+  async delete(id: number): Promise<void> {
+    try {
+      const ImprovementProposalFacet = this.getImprovementProposalFacet();
+      const encodedData: string = ImprovementProposalFacet.methods
+        .deleteProposal(id)
         .encodeABI();
       await this.web3Helper.callContract(
         encodedData,

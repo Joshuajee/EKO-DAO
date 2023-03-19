@@ -16,7 +16,7 @@ import { ConfigurationService } from 'src/config/configuration.service';
 import { Repository } from 'typeorm';
 import { CohortDto } from '../dtos/cohort.dto';
 import { InitCohortDto } from '../dtos/init-cohort.dto';
-import { UpdateStatusDto } from '../dtos/update-status.dto';
+import { UpdateCohortStatusDto } from '../dtos/update-cohort-status.dto';
 import { Cohort } from '../entities/cohorts.entity';
 
 @Injectable()
@@ -39,10 +39,11 @@ export class CohortsService {
       console.error(error);
       throw new BadRequestException();
     }
+    const CohortFactoryFacet = this.getCohortFactoryFacet();
     const id = row.id;
     const startDate = Math.floor(cohortDto.startDate.getTime() / 1000);
     const endDate = Math.floor(cohortDto.endDate.getTime() / 1000);
-    const CohortFactoryFacet = this.getCohortFactoryFacet();
+    const commitment = this.web3Helper.toWei(cohortDto.commitment.toString());
     const encodedData: string = CohortFactoryFacet.methods
       .newCohort(
         id,
@@ -50,7 +51,7 @@ export class CohortsService {
         startDate,
         endDate,
         cohortDto.size,
-        cohortDto.commitment,
+        commitment,
         cohortDto.briefDescription,
       )
       .encodeABI();
@@ -97,11 +98,11 @@ export class CohortsService {
 
   async updateStatus(
     address: string,
-    updateStatusDto: UpdateStatusDto,
+    updateCohortStatusDto: UpdateCohortStatusDto,
   ): Promise<void> {
     const Cohort = this.getCohort(address);
     const encodedData: string = Cohort.methods
-      .updateStatus(updateStatusDto.status)
+      .updateStatus(updateCohortStatusDto.status)
       .encodeABI();
     try {
       await this.web3Helper.callContract(

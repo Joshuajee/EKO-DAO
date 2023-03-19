@@ -1040,6 +1040,66 @@ export const CROWDFUNDING_FACET_ABI = [
 
 export const GOVERNANCE_FACET_ABI = [
   {
+    inputs: [],
+    name: 'AlreadyInitialized',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'AlreadyVoted',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'CallerNotDelegate',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'EmptyInput',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'InsufficientBalance',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'InvalidAddress',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'InvalidCountInput',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'InvalidProposal',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'StartLessThanCount',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'VotingNotStarted',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'VotingPeriodOver',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'ZeroInput',
+    type: 'error',
+  },
+  {
     inputs: [
       {
         internalType: 'uint256',
@@ -1160,14 +1220,19 @@ export const GOVERNANCE_FACET_ABI = [
             type: 'uint256',
           },
           {
-            internalType: 'uint256',
+            internalType: 'uint32',
             name: 'votesFor',
-            type: 'uint256',
+            type: 'uint32',
           },
           {
-            internalType: 'uint256',
+            internalType: 'uint32',
             name: 'votesAgainst',
-            type: 'uint256',
+            type: 'uint32',
+          },
+          {
+            internalType: 'uint16',
+            name: 'minVotingTokenReq',
+            type: 'uint16',
           },
           {
             internalType: 'enum LibGovernance.State',
@@ -1178,19 +1243,6 @@ export const GOVERNANCE_FACET_ABI = [
         internalType: 'struct LibGovernance.Proposal[]',
         name: '',
         type: 'tuple[]',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [],
-    name: 'getMinimumTokenRequirement',
-    outputs: [
-      {
-        internalType: 'uint256',
-        name: '',
-        type: 'uint256',
       },
     ],
     stateMutability: 'view',
@@ -1249,14 +1301,19 @@ export const GOVERNANCE_FACET_ABI = [
             type: 'uint256',
           },
           {
-            internalType: 'uint256',
+            internalType: 'uint32',
             name: 'votesFor',
-            type: 'uint256',
+            type: 'uint32',
           },
           {
-            internalType: 'uint256',
+            internalType: 'uint32',
             name: 'votesAgainst',
-            type: 'uint256',
+            type: 'uint32',
+          },
+          {
+            internalType: 'uint16',
+            name: 'minVotingTokenReq',
+            type: 'uint16',
           },
           {
             internalType: 'enum LibGovernance.State',
@@ -1338,14 +1395,19 @@ export const GOVERNANCE_FACET_ABI = [
             type: 'uint256',
           },
           {
-            internalType: 'uint256',
+            internalType: 'uint32',
             name: 'votesFor',
-            type: 'uint256',
+            type: 'uint32',
           },
           {
-            internalType: 'uint256',
+            internalType: 'uint32',
             name: 'votesAgainst',
-            type: 'uint256',
+            type: 'uint32',
+          },
+          {
+            internalType: 'uint16',
+            name: 'minVotingTokenReq',
+            type: 'uint16',
           },
           {
             internalType: 'enum LibGovernance.State',
@@ -1414,14 +1476,100 @@ export const GOVERNANCE_FACET_ABI = [
             type: 'uint256',
           },
           {
-            internalType: 'uint256',
+            internalType: 'uint32',
             name: 'votesFor',
+            type: 'uint32',
+          },
+          {
+            internalType: 'uint32',
+            name: 'votesAgainst',
+            type: 'uint32',
+          },
+          {
+            internalType: 'uint16',
+            name: 'minVotingTokenReq',
+            type: 'uint16',
+          },
+          {
+            internalType: 'enum LibGovernance.State',
+            name: 'state',
+            type: 'uint8',
+          },
+        ],
+        internalType: 'struct LibGovernance.Proposal[]',
+        name: '',
+        type: 'tuple[]',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: 'start',
+        type: 'uint256',
+      },
+      {
+        internalType: 'uint256',
+        name: 'count',
+        type: 'uint256',
+      },
+    ],
+    name: 'getStalemate',
+    outputs: [
+      {
+        components: [
+          {
+            internalType: 'string',
+            name: 'name',
+            type: 'string',
+          },
+          {
+            internalType: 'string',
+            name: 'description',
+            type: 'string',
+          },
+          {
+            internalType: 'address',
+            name: 'author',
+            type: 'address',
+          },
+          {
+            internalType: 'uint256',
+            name: 'id',
             type: 'uint256',
           },
           {
             internalType: 'uint256',
-            name: 'votesAgainst',
+            name: 'creationTime',
             type: 'uint256',
+          },
+          {
+            internalType: 'uint256',
+            name: 'votingDelay',
+            type: 'uint256',
+          },
+          {
+            internalType: 'uint256',
+            name: 'votingPeriod',
+            type: 'uint256',
+          },
+          {
+            internalType: 'uint32',
+            name: 'votesFor',
+            type: 'uint32',
+          },
+          {
+            internalType: 'uint32',
+            name: 'votesAgainst',
+            type: 'uint32',
+          },
+          {
+            internalType: 'uint16',
+            name: 'minVotingTokenReq',
+            type: 'uint16',
           },
           {
             internalType: 'enum LibGovernance.State',
@@ -1490,14 +1638,19 @@ export const GOVERNANCE_FACET_ABI = [
             type: 'uint256',
           },
           {
-            internalType: 'uint256',
+            internalType: 'uint32',
             name: 'votesFor',
-            type: 'uint256',
+            type: 'uint32',
           },
           {
-            internalType: 'uint256',
+            internalType: 'uint32',
             name: 'votesAgainst',
-            type: 'uint256',
+            type: 'uint32',
+          },
+          {
+            internalType: 'uint16',
+            name: 'minVotingTokenReq',
+            type: 'uint16',
           },
           {
             internalType: 'enum LibGovernance.State',
@@ -1519,11 +1672,6 @@ export const GOVERNANCE_FACET_ABI = [
         internalType: 'address',
         name: '_token',
         type: 'address',
-      },
-      {
-        internalType: 'uint256',
-        name: 'min',
-        type: 'uint256',
       },
     ],
     name: 'intializeGovernance',
@@ -1553,6 +1701,11 @@ export const GOVERNANCE_FACET_ABI = [
         name: '_votingDuration',
         type: 'uint256',
       },
+      {
+        internalType: 'uint16',
+        name: '_minVotingTokenReq',
+        type: 'uint16',
+      },
     ],
     name: 'newProposal',
     outputs: [],
@@ -1568,19 +1721,6 @@ export const GOVERNANCE_FACET_ABI = [
       },
     ],
     name: 'removeDelegate',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'uint256',
-        name: 'min',
-        type: 'uint256',
-      },
-    ],
-    name: 'setMinimumTokenRequiremnent',
     outputs: [],
     stateMutability: 'nonpayable',
     type: 'function',
@@ -1670,14 +1810,19 @@ export const GOVERNANCE_FACET_ABI = [
             type: 'uint256',
           },
           {
-            internalType: 'uint256',
+            internalType: 'uint32',
             name: 'votesFor',
-            type: 'uint256',
+            type: 'uint32',
           },
           {
-            internalType: 'uint256',
+            internalType: 'uint32',
             name: 'votesAgainst',
-            type: 'uint256',
+            type: 'uint32',
+          },
+          {
+            internalType: 'uint16',
+            name: 'minVotingTokenReq',
+            type: 'uint16',
           },
           {
             internalType: 'enum LibGovernance.State',
@@ -1751,6 +1896,359 @@ export const GOVERNANCE_FACET_ABI = [
       },
     ],
     name: 'voteForAsDelegate',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+];
+
+export const HACKATHON_FACET_ABI = [
+  {
+    inputs: [],
+    name: 'HackathonNotFound',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'InvalidCountInput',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'WrongStartAndCountInput',
+    type: 'error',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: 'hackID',
+        type: 'uint256',
+      },
+    ],
+    name: 'endHackathon',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: 'hackID',
+        type: 'uint256',
+      },
+      {
+        internalType: 'uint256',
+        name: '_amount',
+        type: 'uint256',
+      },
+    ],
+    name: 'fundHackathon',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: 'hackID',
+        type: 'uint256',
+      },
+    ],
+    name: 'getHackathon',
+    outputs: [
+      {
+        components: [
+          {
+            internalType: 'uint256',
+            name: 'id',
+            type: 'uint256',
+          },
+          {
+            internalType: 'address',
+            name: 'hackathonAddress',
+            type: 'address',
+          },
+          {
+            internalType: 'address',
+            name: 'author',
+            type: 'address',
+          },
+          {
+            internalType: 'string',
+            name: 'name',
+            type: 'string',
+          },
+          {
+            internalType: 'string',
+            name: 'description',
+            type: 'string',
+          },
+          {
+            internalType: 'uint256',
+            name: 'startDate',
+            type: 'uint256',
+          },
+          {
+            internalType: 'uint256',
+            name: 'endDate',
+            type: 'uint256',
+          },
+          {
+            internalType: 'uint16',
+            name: 'maxNumAdmittable',
+            type: 'uint16',
+          },
+          {
+            internalType: 'uint16',
+            name: 'numOfStudent',
+            type: 'uint16',
+          },
+          {
+            internalType: 'address',
+            name: 'winner',
+            type: 'address',
+          },
+          {
+            internalType: 'address',
+            name: 'firstRunnerUp',
+            type: 'address',
+          },
+          {
+            internalType: 'address',
+            name: 'secondRunnerUp',
+            type: 'address',
+          },
+          {
+            internalType: 'uint8',
+            name: 'winnerPercentage',
+            type: 'uint8',
+          },
+          {
+            internalType: 'uint8',
+            name: 'firstRunnerUpPercentage',
+            type: 'uint8',
+          },
+          {
+            internalType: 'uint8',
+            name: 'secondRunnerUpPercentage',
+            type: 'uint8',
+          },
+          {
+            internalType: 'uint256',
+            name: 'funding',
+            type: 'uint256',
+          },
+          {
+            internalType: 'uint16',
+            name: 'minScoreTokenRequired',
+            type: 'uint16',
+          },
+          {
+            internalType: 'enum LibHackFund.State',
+            name: 'state',
+            type: 'uint8',
+          },
+        ],
+        internalType: 'struct LibHackFund.Hack',
+        name: '',
+        type: 'tuple',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: 'hackID',
+        type: 'uint256',
+      },
+      {
+        internalType: 'address',
+        name: '_acceptedCurrency',
+        type: 'address',
+      },
+      {
+        internalType: 'address',
+        name: '_scoretoken',
+        type: 'address',
+      },
+    ],
+    name: 'initializeHackathon',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: 'hackID',
+        type: 'uint256',
+      },
+      {
+        internalType: 'address',
+        name: 'participant',
+        type: 'address',
+      },
+    ],
+    name: 'isParticipant',
+    outputs: [
+      {
+        internalType: 'bool',
+        name: '',
+        type: 'bool',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'string',
+        name: '_name',
+        type: 'string',
+      },
+      {
+        internalType: 'string',
+        name: '_description',
+        type: 'string',
+      },
+      {
+        internalType: 'uint256',
+        name: '_startDate',
+        type: 'uint256',
+      },
+      {
+        internalType: 'uint256',
+        name: '_endDate',
+        type: 'uint256',
+      },
+      {
+        internalType: 'uint16',
+        name: '_maxNumAdmittable',
+        type: 'uint16',
+      },
+      {
+        internalType: 'uint8',
+        name: '_winnerPercentage',
+        type: 'uint8',
+      },
+      {
+        internalType: 'uint8',
+        name: '_firstRunnerUpPercentage',
+        type: 'uint8',
+      },
+      {
+        internalType: 'uint8',
+        name: '_secondRunnerUpPercentage',
+        type: 'uint8',
+      },
+      {
+        internalType: 'uint16',
+        name: '_minScoreTokenRequiurement',
+        type: 'uint16',
+      },
+    ],
+    name: 'newHackathon',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'numberofHackathons',
+    outputs: [
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: 'hackID',
+        type: 'uint256',
+      },
+    ],
+    name: 'prizeWithdrawal',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: 'hackID',
+        type: 'uint256',
+      },
+    ],
+    name: 'refundScoreTokens',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: 'hackID',
+        type: 'uint256',
+      },
+    ],
+    name: 'register',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: 'hackID',
+        type: 'uint256',
+      },
+      {
+        internalType: 'address',
+        name: '_winner',
+        type: 'address',
+      },
+      {
+        internalType: 'address',
+        name: '_firstRunnerUp',
+        type: 'address',
+      },
+      {
+        internalType: 'address',
+        name: '_secondRunnerUp',
+        type: 'address',
+      },
+    ],
+    name: 'setPrizeWinners',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: 'hackID',
+        type: 'uint256',
+      },
+    ],
+    name: 'startHackathon',
     outputs: [],
     stateMutability: 'nonpayable',
     type: 'function',

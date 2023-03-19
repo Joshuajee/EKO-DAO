@@ -3,7 +3,7 @@ import { IsString, IsNotEmpty, IsNumber } from 'class-validator';
 
 export class ImprovementProposalDto {
   @ApiProperty({
-    description: "ImprovementProposal's Name",
+    description: "Improvement proposal's Name",
     example: 'Name',
   })
   @IsString()
@@ -11,7 +11,7 @@ export class ImprovementProposalDto {
   name: string;
 
   @ApiProperty({
-    description: "ImprovementProposal's description",
+    description: "Improvement proposal's description",
     example: 'Description',
   })
   @IsString()
@@ -19,16 +19,24 @@ export class ImprovementProposalDto {
   description: string;
 
   @ApiProperty({
-    description: "ImprovementProposal's delay",
+    description: "Improvement proposal's delay",
     example: 604800, // 1 week in seconds
   })
   @IsNumber()
   delay: number;
 
   @ApiProperty({
-    description: "ImprovementProposal's voting duration",
+    description: "Improvement proposal's voting duration",
     example: 604800, // 1 week in seconds
   })
   @IsNumber()
   votingDuration: number;
+
+  @ApiProperty({
+    description:
+      'Minimum voting tokens required to vote on improvement proposal',
+    example: 20,
+  })
+  @IsNumber()
+  minVotingTokenRequired: number;
 }
