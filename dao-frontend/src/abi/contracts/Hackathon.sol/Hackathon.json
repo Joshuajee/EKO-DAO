@@ -521,6 +521,111 @@
     "type": "function"
   },
   {
+    "inputs": [],
+    "name": "getHackathonStatus",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "uint256",
+            "name": "id",
+            "type": "uint256"
+          },
+          {
+            "internalType": "address",
+            "name": "hackathonAddress",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "author",
+            "type": "address"
+          },
+          {
+            "internalType": "string",
+            "name": "name",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "description",
+            "type": "string"
+          },
+          {
+            "internalType": "uint256",
+            "name": "startDate",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "endDate",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint16",
+            "name": "maxNumAdmittable",
+            "type": "uint16"
+          },
+          {
+            "internalType": "uint16",
+            "name": "numOfStudent",
+            "type": "uint16"
+          },
+          {
+            "internalType": "address",
+            "name": "winner",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "firstRunnerUp",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "secondRunnerUp",
+            "type": "address"
+          },
+          {
+            "internalType": "uint8",
+            "name": "winnerPercentage",
+            "type": "uint8"
+          },
+          {
+            "internalType": "uint8",
+            "name": "firstRunnerUpPercentage",
+            "type": "uint8"
+          },
+          {
+            "internalType": "uint8",
+            "name": "secondRunnerUpPercentage",
+            "type": "uint8"
+          },
+          {
+            "internalType": "uint256",
+            "name": "funding",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "minScoreTokenRequired",
+            "type": "uint256"
+          },
+          {
+            "internalType": "enum LibHackFund.State",
+            "name": "state",
+            "type": "uint8"
+          }
+        ],
+        "internalType": "struct LibHackFund.Hack",
+        "name": "",
+        "type": "tuple"
+      }
+    ],
+    "stateMutability": "pure",
+    "type": "function"
+  },
+  {
     "inputs": [
       {
         "internalType": "address",

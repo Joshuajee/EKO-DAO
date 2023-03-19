@@ -74,11 +74,11 @@ library LibHackFund {
 
 
     function getMapping() internal pure returns(HackathonMapping storage hackmapping) {
-         bytes32 position = HACKATHON_MAPPING;
+        bytes32 position = HACKATHON_MAPPING;
 
-         assembly {
-             hackmapping.slot := position
-         }
+        assembly {
+            hackmapping.slot := position
+        }
     }
 
     // Hackathon Facet
@@ -132,6 +132,13 @@ contract HackathonBase {
     modifier existingHackathon(uint hackID) {
         if (hackID == 0) revert LibHackFund.HackathonNotFound();
         if (hackID > LibHackFund.getHackathonTracker().hackathonCount) revert LibHackFund.HackathonNotFound();
+        _;
+    } 
+
+    modifier isPercent(uint8 winner, uint8 first, uint8 second) {
+        if (winner + first + second != 100) revert("Percentage sum greater than 100");
+        if (winner < first) revert("First runner up cannot be rewarded more than winner");
+        if (first < second) revert("Second runner up cannot be rewarded more than First");
         _;
     } 
 
