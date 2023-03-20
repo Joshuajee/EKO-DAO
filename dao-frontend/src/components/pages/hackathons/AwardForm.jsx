@@ -1,12 +1,14 @@
 import { useState, useEffect } from "react";
 import Input from "@/components/ui/form/Input"
 import { useContractWrite } from "wagmi";
-import hackathonABI from "@/abi/contracts/Hackathon.sol/Hackathon.json";
 import { isAddress } from "ethers/lib/utils.js";
 import { toast } from "react-toastify";
 import LoadingButton from "@/components/ui/form/LoadingButton";
+import HackathonFacetABI from '@/abi/contracts/facets/HackathonFacet.sol/HackathonFacet.json';
+import { contractAddress } from "@/libs/utils";
 
-const AwardForm = ({contract, close}) => {
+
+const AwardForm = ({id, contract, close}) => {
 
     const [winner, setWinner] = useState(null);
     const [second, setSecond] = useState(null);
@@ -14,10 +16,10 @@ const AwardForm = ({contract, close}) => {
 
     const award = useContractWrite({
         mode: 'recklesslyUnprepared',
-        address: contract,
-        abi: hackathonABI,
+        address: contractAddress,
+        abi: HackathonFacetABI,
         functionName: 'setPrizeWinners',
-        args: [winner, second, third],
+        args: [id, winner, second, third],
     })
 
     useEffect(() => {
@@ -29,7 +31,6 @@ const AwardForm = ({contract, close}) => {
         if (award.isError) toast.error(award?.error?.reason)
     
     }, [award?.isSuccess, award?.isError, award?.error, close])
-
 
     const disabled = !isAddress(winner) || !isAddress(second) || !isAddress(third)
     

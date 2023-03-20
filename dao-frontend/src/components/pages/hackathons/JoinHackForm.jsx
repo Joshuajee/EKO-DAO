@@ -1,7 +1,7 @@
 import ApprovalBtn from "@/components/ui/form/ApprovalBtn";
 import Balance from "@/components/ui/form/Balance";
 import LoadingButton from "@/components/ui/form/LoadingButton";
-import { convertToEther, dollarFormat, EKOTOKEN } from "@/libs/utils";
+import { convertToEther, convertToWEI, dollarFormat, EKOTOKEN } from "@/libs/utils";
 import { useRouter } from "next/router";
 import { useState, useEffect } from "react"
 import { toast } from "react-toastify";
@@ -28,7 +28,7 @@ const JoinHackathon = ({hackathon, close}) => {
     })
 
     useEffect(() => {
-        setAmount(Number(convertToEther(minScoreTokenRequired )).toString())
+        setAmount(Number(convertToEther(minScoreTokenRequired)).toString())
     }, [minScoreTokenRequired]);
 
     useEffect(() => {
@@ -67,7 +67,7 @@ const JoinHackathon = ({hackathon, close}) => {
             </div>
 
             <ApprovalBtn token={EKOTOKEN} symbol="EKO" contract={hackathonAddress} amount={amount} allowance={allowance} setAllowance={setAllowance} />
-            
+ 
         </div>
     )
 }

@@ -14,8 +14,8 @@ contract HackathonFacet is HackathonBase {
     function newHackathon (
         string memory _name,
         string memory _description, 
-        uint _startDate,
-        uint _endDate, 
+        uint _delay,
+        uint _duration, 
         uint16 _maxNumAdmittable, 
         uint8 _winnerPercentage, 
         uint8 _firstRunnerUpPercentage, 
@@ -24,13 +24,14 @@ contract HackathonFacet is HackathonBase {
     )   isPercent(_winnerPercentage, _firstRunnerUpPercentage, _secondRunnerUpPercentage) external {
         address _author = msg.sender;
         LibHackFund.getHackathonTracker().hackathonCount++;
-        LibHackFund.getHackathonTracker().Hackathons[LibHackFund.getHackathonTracker().hackathonCount] = new Hackathon(
-            LibHackFund.getHackathonTracker().hackathonCount,
+        uint count = LibHackFund.getHackathonTracker().hackathonCount;
+        LibHackFund.getHackathonTracker().Hackathons[count] = new Hackathon(
+            count,
             _author,
             _name,
             _description,
-            _startDate,
-            _endDate,
+            _delay,
+            _duration,
             _maxNumAdmittable,
             _winnerPercentage,
             _firstRunnerUpPercentage,
@@ -44,18 +45,10 @@ contract HackathonFacet is HackathonBase {
         uint hackID,
         address _acceptedCurrency,
         address _scoretoken
-      ) external existingHackathon(hackID) {
+    ) external existingHackathon(hackID) {
         Hackathon(LibHackFund.getHackathonTracker().Hackathons[hackID]).initializeHackathon(_acceptedCurrency, _scoretoken);
-      }
-
-    function register(uint hackID) existingHackathon(hackID) external {
-        Hackathon(LibHackFund.getHackathonTracker().Hackathons[hackID]).register(msg.sender);
     }
 
-
-    function fundHackathon(uint hackID, uint256 _amount) existingHackathon(hackID) external{
-        Hackathon(LibHackFund.getHackathonTracker().Hackathons[hackID]).fundHackathon(_amount, msg.sender);
-    }
 
     function startHackathon(uint hackID) existingHackathon(hackID) external{
         Hackathon(LibHackFund.getHackathonTracker().Hackathons[hackID]).startHackathon();
@@ -70,16 +63,8 @@ contract HackathonFacet is HackathonBase {
         address _winner,
         address _firstRunnerUp,
         address _secondRunnerUp
-      )existingHackathon(hackID) external {
+    )existingHackathon(hackID) external {
         Hackathon(LibHackFund.getHackathonTracker().Hackathons[hackID]).setPrizeWinners(_winner, _firstRunnerUp, _secondRunnerUp);
-      }
-
-    function refundScoreTokens(uint hackID) existingHackathon(hackID) external{
-        Hackathon(LibHackFund.getHackathonTracker().Hackathons[hackID]).refundScoreTokens(msg.sender);
-    }
-
-    function prizeWithdrawal(uint hackID) existingHackathon(hackID) external {
-        Hackathon(LibHackFund.getHackathonTracker().Hackathons[hackID]).prizeWithdrawal(msg.sender);
     }
 
 }
