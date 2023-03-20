@@ -5,13 +5,13 @@ const initGovt = async (address) => {
 
     const govt = await ethers.getContractAt("GovernanceFacet", address);
   
-    await govt.intializeGovernance("0xd0F6816983cdDD67ec49d607D6B33f1f988dD244");
+    await govt.intializeGovernance("0xe1d073C740fE2b3c5951aa09EAa2F34717e1599C");
 
     console.log("Done!")
   }
   
   if (require.main === module) {
-    initGovt("0x82833f86e18c7D22Ea2540F9315465b57d278861")
+    initGovt("0xa53cC18Ec048113D0d7bb494d126C6Ef802296F7")
       .then(() => {
         process.exit(0)
       })
