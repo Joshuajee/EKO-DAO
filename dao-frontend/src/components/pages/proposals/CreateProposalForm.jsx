@@ -18,16 +18,19 @@ const CreateProposalForm = ({close}) => {
     const [delay, setDelay] = useState(delays[0]?.value);
     const [duration, setDuration] = useState(durationLists[0]?.value);
 
+    const [minToken, setMinToken] = useState();
+
     // Errors 
     const [nameError, setNameError] = useState(false);
     const [descriptionError, setDescriptionError] = useState(false);
+    const [minTokenError, setMinTokenError] = useState(false);
 
     const create = useContractWrite({
         mode: 'recklesslyUnprepared',
         address: contractAddress,
         abi: ProposalFacetABI,
         functionName: 'newProposal',
-        args: [name, description, delay, duration, 10],
+        args: [name, description, delay, duration, minToken],
     })
 
     const submit = (e) => {
@@ -51,6 +54,11 @@ const CreateProposalForm = ({close}) => {
         else setDescriptionError(false)
     }, [description])
 
+    // Min Token
+    useEffect(() => {
+        if (wordsCount(description) <= 10 || wordsCount(description) >= 50 ) setDescriptionError(true)
+        else setDescriptionError(false)
+    }, [description])
 
     useEffect(() => {
 
@@ -79,6 +87,8 @@ const CreateProposalForm = ({close}) => {
                 <Select label={"Voting Duration"} id={"duration"} lists={durationLists} onChange={setDuration} />
 
             </div>
+
+            <Input value={minToken} onChange={setMinToken} id="min-eko" label={"Minimum Eko Token requirement"} placeholder="e.g 2000" error={minTokenError} helperText={"Should be greater than zero"}  />
 
             <LoadingButton loading={create?.isLoading} disabled={isDisabled()} > Create Proposal</LoadingButton>
 
