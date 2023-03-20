@@ -3,9 +3,10 @@
 pragma solidity ^0.8.17;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 import {LibHackFund} from "./libraries/LibHackFund.sol";
 
-contract Hackathon{
+contract Hackathon is Ownable{
    
 
    IERC20 Ekostable;
@@ -111,8 +112,8 @@ contract Hackathon{
       address _author,
       string memory _name,
       string memory _description, 
-      uint _startDate,
-      uint _endDate, 
+      uint _delay,
+      uint _duration, 
       uint16 _maxNumAdmittable, 
       uint8 _winnerPercentage, 
       uint8 _firstRunnerUpPercentage, 
@@ -128,20 +129,17 @@ contract Hackathon{
 
       (_winnerPercentage < _firstRunnerUpPercentage) || (_firstRunnerUpPercentage < _secondRunnerUpPercentage)) revert PercentageError();
 
-      if (_startDate == 0 || _endDate == 0 || _maxNumAdmittable ==0 ) revert ZeroInput();
+      if (_delay == 0 || _duration == 0 || _maxNumAdmittable ==0 ) revert ZeroInput();
 
       if (_author == address(0)) revert AddressZero();
-
-      if (_startDate <= block.timestamp || _startDate >= _endDate) revert InvalidDate();
-     
    
       hack.id = _id;
       hack.hackathonAddress = address(this);
       hack.author = _author;
       hack.name = _name;
       hack.description = _description;
-      hack.startDate = _startDate;
-      hack.endDate = _endDate;
+      hack.startDate = block.timestamp + _delay;
+      hack.endDate = block.timestamp + _delay + _duration;
       hack.maxNumAdmittable = _maxNumAdmittable;
       hack.numOfStudent = 0;
       hack.winner = address(0);
@@ -160,7 +158,7 @@ contract Hackathon{
    function initializeHackathon(
       address _acceptedCurrency,
       address _scoretoken
-      ) addressValidation(_acceptedCurrency) addressValidation(_scoretoken) external {
+      ) onlyOwner addressValidation(_acceptedCurrency) addressValidation(_scoretoken) external {
          LibHackFund.Hack storage hack = LibHackFund.getHack();
          if (init) revert AlreadyInitialized();
          init = true;
@@ -188,9 +186,15 @@ contract Hackathon{
       return hack;
    }
 
-   function getHackathonStatus() external pure returns(LibHackFund.Hack memory) { 
+   function getHackathonStatus() external view returns(bool, bool, bool) { 
+      LibHackFund.HackathonMapping storage map = LibHackFund.getMapping();
       LibHackFund.Hack storage hack = LibHackFund.getHack();
-      return hack;
+
+      bool winner = map.winnerWithdrawn[hack.id];
+      bool first = map.firstRunnerUpWithdrawn[hack.id];
+      bool second = map.secondRunnerUpWithdrawn[hack.id]; 
+
+      return (winner, first, second);
    }
 
    function isParticipant(address participant) addressValidation(participant) external view returns (bool) {
@@ -211,7 +215,7 @@ contract Hackathon{
    }
 
 
-   function startHackathon() external {
+   function startHackathon() onlyOwner  external {
       LibHackFund.Hack storage hack = LibHackFund.getHack();
       if (hack.state == LibHackFund.State.Ended) revert HackathonEnded();
       if (hack.startDate > block.timestamp) revert StartDateNotReached();
@@ -219,8 +223,7 @@ contract Hackathon{
       emit hackathonStarted(hack.state);
    }
 
-
-   function endHackathon() external {
+   function endHackathon() onlyOwner external {
       LibHackFund.Hack storage hack = LibHackFund.getHack();
       if (hack.endDate > block.timestamp) revert HackathonOngoing();
       hack.state = LibHackFund.State.Ended;
@@ -231,7 +234,7 @@ contract Hackathon{
       address _winner,
       address _firstRunnerUp,
       address _secondRunnerUp
-      ) external {
+      ) onlyOwner external {
          LibHackFund.Hack storage hack = LibHackFund.getHack();
          LibHackFund.HackathonMapping storage hackathonmapping = LibHackFund.getMapping();
          if (hack.state != LibHackFund.State.Ended) revert HackathonOngoing();

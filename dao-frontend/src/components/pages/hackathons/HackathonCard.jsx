@@ -24,7 +24,7 @@ const HackathonCard = ({hackathon, expanded}) => {
 
     const { 
         hackathonAddress, name, description, 
-        state, startDate, endDate, 
+        state, startDate, endDate, id,
         funding, minScoreTokenRequired } = hackathon
 
     const prizePool = Number(funding.toString())
@@ -130,9 +130,9 @@ const HackathonCard = ({hackathon, expanded}) => {
 
             </div>
 
-            <HackActions hackStatus={hackStatus} status={state} contract={hackathonAddress} isRigistered={isRigistered?.data} expanded={expanded} />
+            <HackActions id={id} hackStatus={hackStatus} status={state} contract={hackathonAddress} isRigistered={isRigistered?.data} expanded={expanded} />
 
-            { expanded &&  <PrizeHack expanded={expanded} hackathon={hackathon} prizePool={prizePool}  /> }
+            { expanded &&  <PrizeHack expanded={expanded} hackathon={hackathon} prizePool={prizePool} id={id}  /> }
 
             <ModalWrapper open={openFund} handleClose={handleFundClose} title="Donation Form">
                 <DonationHackForm hackathon={hackathon} close={handleFundClose} />

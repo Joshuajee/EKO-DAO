@@ -11,7 +11,7 @@ const initGovt = async (address) => {
   }
   
   if (require.main === module) {
-    initGovt("0xa53cC18Ec048113D0d7bb494d126C6Ef802296F7")
+    initGovt("0x365EC244985C184d9BA6C5Ae9EBDB7B1440914ee")
       .then(() => {
         process.exit(0)
       })
