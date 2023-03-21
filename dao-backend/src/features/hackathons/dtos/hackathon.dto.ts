@@ -20,22 +20,18 @@ export class HackathonDto {
   description: string;
 
   @ApiProperty({
-    description: `Hackathon's start date, Examples of accepted format: ISO Date '2022-03-25'
-    (The International Standard ISO 8601 YYYY-MM-DD or the extended format YYYY-MM-DDTHH:mm:ss.sssZ),
-    Short Date	'03/25/2022', Long Date	'Mar 25 2022' or '25 Mar 2022'`,
-    example: '07/01/2023',
+    description: "Hackathon's delay",
+    example: 604800, // 1 week in seconds
   })
-  @IsDate()
-  @Type(() => Date)
-  startDate: Date;
+  @IsNumber()
+  delay: number;
 
   @ApiProperty({
-    description: "Hackathon's end date",
-    example: '10/30/2023',
+    description: "Hackathon's duration",
+    example: 604800, // 1 week in seconds
   })
-  @IsDate()
-  @Type(() => Date)
-  endDate: Date;
+  @IsNumber()
+  duration: number;
 
   @ApiProperty({
     description: "Hackathon's maximum participants admitted",

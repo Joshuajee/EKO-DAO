@@ -42,10 +42,11 @@ export class CohortsService {
       const row = await queryRunner.manager.save(cohort);
       const CohortFactoryFacet = this.getCohortFactoryFacet();
       const id: number = row.id;
-      const startDate: number = Math.floor(
-        cohortDto.startDate.getTime() / 1000,
-      );
-      const endDate: number = Math.floor(cohortDto.endDate.getTime() / 1000);
+      //const startDate: number = Math.floor(cohortDto.startDate.getTime() / 1000);
+      //const endDate: number = Math.floor(cohortDto.endDate.getTime() / 1000);
+      //For test purposes, TO DELETE
+      const startDate: number = Math.floor(new Date().getTime() / 1000) + 300; // 5 mins in seconds
+      const endDate: number = startDate + 300; // 5 mins in seconds
       const commitment: string = this.web3Helper.toWei(
         cohortDto.commitment.toString(),
       );
@@ -120,7 +121,7 @@ export class CohortsService {
     try {
       await this.web3Helper.callContract(
         encodedData,
-        address,
+        this.configService.diamondAddress,
         this.configService.superAdminAddress,
         this.configService.superAdminPrivateKey,
       );

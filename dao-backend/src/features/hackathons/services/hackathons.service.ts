@@ -20,10 +20,6 @@ export class HackathonsService {
   async create(hackathonDto: HackathonDto): Promise<void> {
     try {
       const HackathonFacet = this.getHackathonFacet();
-      const startDate: number = Math.floor(
-        hackathonDto.startDate.getTime() / 1000,
-      );
-      const endDate: number = Math.floor(hackathonDto.endDate.getTime() / 1000);
       const minScoreTokenRequired: string = this.web3Helper.toWei(
         hackathonDto.minScoreTokenRequired.toString(),
       );
@@ -31,8 +27,8 @@ export class HackathonsService {
         .newHackathon(
           hackathonDto.name,
           hackathonDto.description,
-          startDate,
-          endDate,
+          hackathonDto.delay,
+          hackathonDto.duration,
           hackathonDto.maxParticipants,
           hackathonDto.winnerPercentage,
           hackathonDto.firstRunnerUpPercentage,

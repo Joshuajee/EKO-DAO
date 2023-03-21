@@ -91,6 +91,11 @@ export const ADMIN_FACET_ABI = [
 
 export const COHORT_FACTORY_FACET_ABI = [
   {
+    inputs: [],
+    name: 'Unauthorized',
+    type: 'error',
+  },
+  {
     inputs: [
       {
         internalType: 'uint256',
@@ -291,6 +296,24 @@ export const COHORT_FACET_ABI = [
       },
     ],
     name: 'initCohort',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'address',
+        name: '_cohort',
+        type: 'address',
+      },
+      {
+        internalType: 'enum Cohort.Status',
+        name: '_status',
+        type: 'uint8',
+      },
+    ],
+    name: 'updateStatus',
     outputs: [],
     stateMutability: 'nonpayable',
     type: 'function',
@@ -1616,24 +1639,6 @@ export const HACKATHON_FACET_ABI = [
         type: 'uint256',
       },
       {
-        internalType: 'uint256',
-        name: '_amount',
-        type: 'uint256',
-      },
-    ],
-    name: 'fundHackathon',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'uint256',
-        name: 'hackID',
-        type: 'uint256',
-      },
-      {
         internalType: 'address',
         name: '_acceptedCurrency',
         type: 'address',
@@ -1663,12 +1668,12 @@ export const HACKATHON_FACET_ABI = [
       },
       {
         internalType: 'uint256',
-        name: '_startDate',
+        name: '_delay',
         type: 'uint256',
       },
       {
         internalType: 'uint256',
-        name: '_endDate',
+        name: '_duration',
         type: 'uint256',
       },
       {
@@ -1698,45 +1703,6 @@ export const HACKATHON_FACET_ABI = [
       },
     ],
     name: 'newHackathon',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'uint256',
-        name: 'hackID',
-        type: 'uint256',
-      },
-    ],
-    name: 'prizeWithdrawal',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'uint256',
-        name: 'hackID',
-        type: 'uint256',
-      },
-    ],
-    name: 'refundScoreTokens',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'uint256',
-        name: 'hackID',
-        type: 'uint256',
-      },
-    ],
-    name: 'register',
     outputs: [],
     stateMutability: 'nonpayable',
     type: 'function',
