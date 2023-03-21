@@ -133,6 +133,11 @@ export class CohortsController {
     status: HttpStatus.UNAUTHORIZED,
     description: 'Not authorized, when access token is mising or invalid',
   })
+  @ApiResponse({
+    status: HttpStatus.CONFLICT,
+    description:
+      'Conflict, when cohort is not in the expected state (backword transition, cohort has not started or ended yet)',
+  })
   @ApiBearerAuth('access-token')
   @UseGuards(AuthGuard('jwt'))
   @Patch('/update-status/:address')

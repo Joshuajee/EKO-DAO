@@ -14,7 +14,7 @@ export class ImprovementProposalsService {
   async create(improvementProposalDto: ImprovementProposalDto): Promise<void> {
     try {
       const ImprovementProposalFacet = this.getImprovementProposalFacet();
-      const minVotingTokenRequired = this.web3Helper.toWei(
+      const minVotingTokenRequired: string = this.web3Helper.toWei(
         improvementProposalDto.minVotingTokenRequired.toString(),
       );
       const encodedData: string = ImprovementProposalFacet.methods

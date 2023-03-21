@@ -20,9 +20,25 @@ export class HackathonsService {
   async create(hackathonDto: HackathonDto): Promise<void> {
     try {
       const HackathonFacet = this.getHackathonFacet();
-      // const target = this.web3Helper.toWei(crowdfundingDto.target.toString());
+      const startDate: number = Math.floor(
+        hackathonDto.startDate.getTime() / 1000,
+      );
+      const endDate: number = Math.floor(hackathonDto.endDate.getTime() / 1000);
+      const minScoreTokenRequired: string = this.web3Helper.toWei(
+        hackathonDto.minScoreTokenRequired.toString(),
+      );
       const encodedData: string = HackathonFacet.methods
-        .newHackathon()
+        .newHackathon(
+          hackathonDto.name,
+          hackathonDto.description,
+          startDate,
+          endDate,
+          hackathonDto.maxParticipants,
+          hackathonDto.winnerPercentage,
+          hackathonDto.firstRunnerUpPercentage,
+          hackathonDto.secondRunnerUpPercentage,
+          minScoreTokenRequired,
+        )
         .encodeABI();
       await this.web3Helper.callContract(
         encodedData,
@@ -39,7 +55,11 @@ export class HackathonsService {
   async init(id: number, initHackathonDto: InitHackathonDto): Promise<void> {
     const HackathonFacet = this.getHackathonFacet();
     const encodedData: string = HackathonFacet.methods
-      .initializeHackathon()
+      .initializeHackathon(
+        id,
+        initHackathonDto.stableCoin,
+        initHackathonDto.scoreToken,
+      )
       .encodeABI();
     try {
       await this.web3Helper.callContract(

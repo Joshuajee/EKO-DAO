@@ -6,14 +6,16 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import {
-  COHORT_ABI,
   COHORT_FACET_ABI,
   COHORT_FACTORY_FACET_ABI,
 } from 'src/commons/constants/abis';
-import { COHORT_ALREADY_INITIALIZED } from 'src/commons/constants/messages';
+import {
+  COHORT_ALREADY_INITIALIZED,
+  COHORT_NOT_FOUND,
+} from 'src/commons/constants/messages';
 import { Web3Helper } from 'src/commons/helpers/web3-helper';
 import { ConfigurationService } from 'src/config/configuration.service';
-import { Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { CohortDto } from '../dtos/cohort.dto';
 import { InitCohortDto } from '../dtos/init-cohort.dto';
 import { UpdateCohortStatusDto } from '../dtos/update-cohort-status.dto';
@@ -22,6 +24,7 @@ import { Cohort } from '../entities/cohorts.entity';
 @Injectable()
 export class CohortsService {
   constructor(
+    private readonly dataSource: DataSource,
     @InjectRepository(Cohort)
     private readonly cohortsRepository: Repository<Cohort>,
     private readonly configService: ConfigurationService,
@@ -29,41 +32,51 @@ export class CohortsService {
   ) {}
 
   async create(cohortDto: CohortDto): Promise<{ [key: string]: any }> {
-    let row;
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
     try {
       const cohort: Cohort = await this.cohortsRepository.create({
         description: cohortDto.exhaustiveDescription,
       });
-      row = await this.cohortsRepository.save(cohort);
+      const row = await queryRunner.manager.save(cohort);
+      const CohortFactoryFacet = this.getCohortFactoryFacet();
+      const id: number = row.id;
+      const startDate: number = Math.floor(
+        cohortDto.startDate.getTime() / 1000,
+      );
+      const endDate: number = Math.floor(cohortDto.endDate.getTime() / 1000);
+      const commitment: string = this.web3Helper.toWei(
+        cohortDto.commitment.toString(),
+      );
+      const encodedData: string = CohortFactoryFacet.methods
+        .newCohort(
+          id,
+          cohortDto.name,
+          startDate,
+          endDate,
+          cohortDto.size,
+          commitment,
+          cohortDto.briefDescription,
+        )
+        .encodeABI();
+      await this.web3Helper.callContract(
+        encodedData,
+        this.configService.diamondAddress,
+        this.configService.superAdminAddress,
+        this.configService.superAdminPrivateKey,
+      );
+      const CohortFacet = this.getCohortFacet();
+      const result = await CohortFacet.methods.cohort(id).call();
+      await queryRunner.commitTransaction();
+      return { id: id, cohort: result.contractAddress };
     } catch (error) {
       console.error(error);
+      await queryRunner.rollbackTransaction();
       throw new BadRequestException();
+    } finally {
+      await queryRunner.release();
     }
-    const CohortFactoryFacet = this.getCohortFactoryFacet();
-    const id = row.id;
-    const startDate = Math.floor(cohortDto.startDate.getTime() / 1000);
-    const endDate = Math.floor(cohortDto.endDate.getTime() / 1000);
-    const commitment = this.web3Helper.toWei(cohortDto.commitment.toString());
-    const encodedData: string = CohortFactoryFacet.methods
-      .newCohort(
-        id,
-        cohortDto.name,
-        startDate,
-        endDate,
-        cohortDto.size,
-        commitment,
-        cohortDto.briefDescription,
-      )
-      .encodeABI();
-    await this.web3Helper.callContract(
-      encodedData,
-      this.configService.diamondAddress,
-      this.configService.superAdminAddress,
-      this.configService.superAdminPrivateKey,
-    );
-    const CohortFacet = this.getCohortFacet();
-    const result = await CohortFacet.methods.cohort(id).call();
-    return { id: id, cohort: result.contractAddress };
   }
 
   async getById(id: number): Promise<Cohort> {
@@ -74,7 +87,7 @@ export class CohortsService {
       return cohort;
     } catch (error) {
       console.error(error);
-      throw new NotFoundException(`Cohort ${id} not found`);
+      throw new NotFoundException(COHORT_NOT_FOUND);
     }
   }
 
@@ -100,9 +113,9 @@ export class CohortsService {
     address: string,
     updateCohortStatusDto: UpdateCohortStatusDto,
   ): Promise<void> {
-    const Cohort = this.getCohort(address);
-    const encodedData: string = Cohort.methods
-      .updateStatus(updateCohortStatusDto.status)
+    const CohortFacet = this.getCohortFacet();
+    const encodedData: string = CohortFacet.methods
+      .updateStatus(address, updateCohortStatusDto.status)
       .encodeABI();
     try {
       await this.web3Helper.callContract(
@@ -129,9 +142,5 @@ export class CohortsService {
       COHORT_FACET_ABI,
       this.configService.diamondAddress,
     );
-  }
-
-  getCohort(address: string) {
-    return this.web3Helper.getContractInstance(COHORT_ABI, address);
   }
 }

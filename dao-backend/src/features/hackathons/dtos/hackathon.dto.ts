@@ -45,25 +45,25 @@ export class HackathonDto {
   maxParticipants: number;
 
   @ApiProperty({
-    description: "Hackathon's commitment fees",
-    example: 3,
+    description: "Hackathon's winner percentage",
+    example: 50,
   })
   @IsNumber()
   winnerPercentage: number;
 
   @ApiProperty({
-    description: "Hackathon's ???? ",
-    example: 10,
+    description: "Hackathon's first runner up percentage",
+    example: 30,
   })
   @IsNumber()
-  firstWinnerPercentage: number;
+  firstRunnerUpPercentage: number;
 
   @ApiProperty({
-    description: "Hackathon's ???? ",
-    example: 10,
+    description: "Hackathon's second runner up percentage",
+    example: 20,
   })
   @IsNumber()
-  secondWinnerPercentage: number;
+  secondRunnerUpPercentage: number;
 
   @ApiProperty({
     description: 'Minimum score tokens required to participate in a hackathon',

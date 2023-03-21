@@ -7,12 +7,16 @@ import { LibCohort, Cohort } from "../libraries/LibCohort.sol";
 
 contract CohortFacet {
 
-  function initCohort(
+function initCohort(
     address _cohort,
     address _stableCoin,
     address _ekoNft
   ) external {
     return LibCohort.initCohort(_cohort, _stableCoin, _ekoNft);
+  }
+
+ function updateStatus(address _cohort, Cohort.Status _status) external {
+    return LibCohort.updateStatus(_cohort,_status);
   }
 
   function cohort(

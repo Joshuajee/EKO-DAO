@@ -14,8 +14,10 @@ export class CrowdfundingsService {
   async create(crowdfundingDto: CrowdfundingDto) {
     try {
       const CrowdfundingFacet = this.getCrowdfundingFacet();
-      const target = this.web3Helper.toWei(crowdfundingDto.target.toString());
-      const minDonation = this.web3Helper.toWei(
+      const target: string = this.web3Helper.toWei(
+        crowdfundingDto.target.toString(),
+      );
+      const minDonation: string = this.web3Helper.toWei(
         crowdfundingDto.minDonation.toString(),
       );
       const encodedData: string = CrowdfundingFacet.methods

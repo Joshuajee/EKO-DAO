@@ -22,7 +22,7 @@
       uint votingPeriod; // the time eligible voters would be able to vote on a proposal
       uint32 votesFor; // the votes in favour of a proposal
       uint32 votesAgainst; // the votes against a particular proposal
-      uint16 minVotingTokenReq; // min amount of voting tokens required to vote 
+      uint minVotingTokenReq; // min amount of voting tokens required to vote 
       State state;
     }
 

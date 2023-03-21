@@ -17,11 +17,10 @@ async function bootstrap() {
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true,
   });
-
-  //if(appConfig.env === 'dev'){
-  const swagger = app.get(SwaggerService);
-  swagger.init(app);
-  //}
+  if (appConfig.swaggerEnabled) {
+    const swagger = app.get(SwaggerService);
+    swagger.init(app);
+  }
   await app.listen(appConfig.port);
   const web3Helper: Web3Helper = app.get(Web3Helper);
   web3Helper.instantiateWeb3(appConfig.providerUrl);

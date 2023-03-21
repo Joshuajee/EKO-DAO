@@ -119,9 +119,9 @@
             "type": "uint32"
           },
           {
-            "internalType": "uint16",
+            "internalType": "uint256",
             "name": "minVotingTokenReq",
-            "type": "uint16"
+            "type": "uint256"
           },
           {
             "internalType": "enum LibGovernance.State",
