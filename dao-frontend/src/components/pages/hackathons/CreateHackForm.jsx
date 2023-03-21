@@ -51,7 +51,7 @@ const CreateHackForm = ({close}) => {
     }
 
     const isDisabled = () => {
-        return nameError || descriptionError
+        return nameError || descriptionError || firstError || minTokenError
     }
 
     // Verify Name
@@ -60,11 +60,31 @@ const CreateHackForm = ({close}) => {
         else setNameError(false)
     }, [name])
 
-    // Description
+    // Verify Description
     useEffect(() => {
         if (wordsCount(description) <= 10 || wordsCount(description) >= 50 ) setDescriptionError(true)
         else setDescriptionError(false)
     }, [description])
+
+    // Verify MinToken
+    useEffect(() => {
+        if (Number(minToken) <= 0) setMinTokenError(true)
+        else setMinTokenError(false)
+    }, [minToken])
+
+    // Verify Winner Percent
+    useEffect(() => {
+        if (Number(first) + Number(second) + Number(third) !== 100) {
+            setFirstError(true)
+            setSecondError(true)
+            setThirdError(true)
+        } else {
+            setFirstError(false)
+            setSecondError(false)
+            setThirdError(false)
+        }
+    }, [first, second, third])
+
 
     useEffect(() => {
 

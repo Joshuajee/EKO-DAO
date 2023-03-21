@@ -267,32 +267,30 @@ contract Hackathon is Ownable{
    function prizeWithdrawal(address _prizeWinner) addressValidation(_prizeWinner) external {
       LibHackFund.Hack storage hack = LibHackFund.getHack();
       LibHackFund.HackathonMapping storage hackathonmapping = LibHackFund.getMapping();
+      uint _amount = hack.funding;
       if (hackathonmapping.isWinner[hack.id][_prizeWinner]) {
-         if(hackathonmapping.winnerWithdrawn[hack.id]) revert AlreadyWithdrawn();
-         uint _amount = hack.funding;
+         if(hackathonmapping.winnerWithdrawn[hack.id]) revert ("Already Withdrawn");
          uint amount = (hack.winnerPercentage * _amount) / 100;
          hackathonmapping.winnerWithdrawn[hack.id] = true;
          bool success = Ekostable.transfer(_prizeWinner, amount);
-         if(!success) revert UnsuccessfulTransfer();
+         if(!success) revert ("Transfer Error, could not claim prize");
          emit prizeWithdrawn(_prizeWinner, amount);
-      }else if (hackathonmapping.isFirstRunnerUp[hack.id][_prizeWinner]){
-         if(hackathonmapping.firstRunnerUpWithdrawn[hack.id]) revert AlreadyWithdrawn();
-         uint _amount = hack.funding;
+      }  else if (hackathonmapping.isFirstRunnerUp[hack.id][_prizeWinner]){
+         if(hackathonmapping.firstRunnerUpWithdrawn[hack.id]) revert ("Already Withdrawn");
          uint amount = (hack.firstRunnerUpPercentage * _amount) / 100;
          hackathonmapping.firstRunnerUpWithdrawn[hack.id] = true;
          bool success = Ekostable.transfer(_prizeWinner, amount);
-         if(!success) revert UnsuccessfulTransfer();
+         if(!success) revert ("Transfer Error, could not claim prize");
          emit prizeWithdrawn(_prizeWinner, amount);
-      }else if (hackathonmapping.isSecondRunnerUp[hack.id][_prizeWinner]){
-         if(hackathonmapping.secondRunnerUpWithdrawn[hack.id]) revert AlreadyWithdrawn();
-         uint _amount = hack.funding;
+      }  else if (hackathonmapping.isSecondRunnerUp[hack.id][_prizeWinner]){
+         if(hackathonmapping.secondRunnerUpWithdrawn[hack.id]) revert ("Already Withdrawn");
          uint amount = (hack.secondRunnerUpPercentage * _amount) / 100;
          hackathonmapping.secondRunnerUpWithdrawn[hack.id] = true;
          bool success = Ekostable.transfer(_prizeWinner, amount);
-         if(!success) revert UnsuccessfulTransfer();
+         if(!success) revert ("Transfer Error, could not claim prize");
          emit prizeWithdrawn(_prizeWinner, amount);
-      }else{
-         revert NotPrizeWinner();
+      }  else  {
+         revert ("Your have not claim to this prize");
       }
    }
     
