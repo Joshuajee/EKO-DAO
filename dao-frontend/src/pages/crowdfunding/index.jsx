@@ -47,7 +47,6 @@ export default function Crowdfunding() {
     setIsLoading(crowdFunds?.isLoading)
   }, [crowdFunds?.data, crowdFunds?.isError, crowdFunds?.isSuccess, crowdFunds?.isLoading]);
 
-
   const isSuccessful = isSuccess && crowdFunds?.data?.length > 0
 
   return (

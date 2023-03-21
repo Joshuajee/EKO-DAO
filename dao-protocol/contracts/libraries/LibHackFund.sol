@@ -136,7 +136,7 @@ contract HackathonBase {
     } 
 
     modifier isPercent(uint8 winner, uint8 first, uint8 second) {
-        if (winner + first + second != 100) revert("Percentage sum greater than 100");
+        if (winner + first + second != 100) revert("Percentage snot equal to 100");
         if (winner < first) revert("First runner up cannot be rewarded more than winner");
         if (first < second) revert("Second runner up cannot be rewarded more than First");
         _;
