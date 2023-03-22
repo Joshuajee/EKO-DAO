@@ -4,6 +4,7 @@ import {
   Get,
   HttpStatus,
   Param,
+  Patch,
   Post,
   UseGuards,
 } from '@nestjs/common';
@@ -17,7 +18,7 @@ import {
 } from '@nestjs/swagger';
 import { CohortDto } from '../dtos/cohort.dto';
 import { InitCohortDto } from '../dtos/init-cohort.dto';
-import { UpdateStatusDto } from '../dtos/update-status.dto';
+import { UpdateCohortStatusDto } from '../dtos/update-cohort-status.dto';
 import { Cohort } from '../entities/cohorts.entity';
 import { CohortsService } from '../services/cohorts.service';
 
@@ -97,6 +98,10 @@ export class CohortsController {
     status: HttpStatus.UNAUTHORIZED,
     description: 'Not authorized, when access token is mising or invalid',
   })
+  @ApiResponse({
+    status: HttpStatus.CONFLICT,
+    description: 'Conflict, when cohort has already been initialized',
+  })
   @ApiBearerAuth('access-token')
   @UseGuards(AuthGuard('jwt'))
   @Post('/init/:address')
@@ -128,13 +133,18 @@ export class CohortsController {
     status: HttpStatus.UNAUTHORIZED,
     description: 'Not authorized, when access token is mising or invalid',
   })
+  @ApiResponse({
+    status: HttpStatus.CONFLICT,
+    description:
+      'Conflict, when cohort is not in the expected state (backword transition, cohort has not started or ended yet)',
+  })
   @ApiBearerAuth('access-token')
   @UseGuards(AuthGuard('jwt'))
-  @Post('/update-status/:address')
+  @Patch('/update-status/:address')
   updateStatus(
     @Param('address') address: string,
-    @Body() updateStatusDto: UpdateStatusDto,
+    @Body() updateCohortStatusDto: UpdateCohortStatusDto,
   ): Promise<void> {
-    return this.cohortsService.updateStatus(address, updateStatusDto);
+    return this.cohortsService.updateStatus(address, updateCohortStatusDto);
   }
 }

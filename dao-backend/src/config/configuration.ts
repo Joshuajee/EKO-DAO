@@ -6,6 +6,9 @@ export default () => ({
     port: parseInt(process.env.PORT, 10) || 3000,
     version: process.env.APP_VERSION,
     allowedOrigins: process.env.ALLOWED_ORIGIN,
+    jwtSecret: process.env.JWT_SECRET,
+    jwtLife: process.env.JWT_LIFE,
+    swaggerEnabled: process.env.SWAGGER_ENABLED,
   },
 
   db: {

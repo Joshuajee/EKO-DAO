@@ -26,9 +26,9 @@ contract Cohort is Ownable {
   enum Status {
   NOT_INITILIZED,
   INITIALIZED,
+  CLOSED,
   STARTED,
-  ENDED,
-  CLOSED
+  ENDED
   }
 
   CohortDetails public cohort;
@@ -55,6 +55,11 @@ contract Cohort is Ownable {
       revert("Completion certificate does not belong to the sender");
     _;
   }
+
+  modifier onlyInitilized(){
+    if(cohort.status < Status.INITIALIZED) revert ('Must initilize cohort first');
+    _;
+}
 
   constructor(
     uint _id,
@@ -107,12 +112,12 @@ contract Cohort is Ownable {
     return students[_student];
   }
 
-  function updateStatus(Status _status) public onlyOwner{
-    if(cohort.status > _status){
+  function updateStatus(Status _status) public onlyOwner onlyInitilized{
+     if(cohort.status > _status){
       revert('No backwards transitions');
     }
-    if(_status ==  Status.CLOSED && cohort.status != Status.INITIALIZED){
-      revert ('Can only close initilized cohorts');
+    if(cohort.status == _status){
+      revert('Cohort already has the same status');
     }
     if(_status ==  Status.STARTED && block.timestamp <= cohort.startDate){
       revert ('Start date not reached yet');

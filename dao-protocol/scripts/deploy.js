@@ -70,7 +70,12 @@ async function deployDiamond(test = false) {
   const EkoNFT = await ethers.getContractFactory("EkoNFT");
   const ekoNft = await EkoNFT.deploy();
   await ekoNft.deployed();
-  console.log(`EkoNFT deployed: ${ekoNft.address}`);*/
+  console.log(`EkoNFT deployed: ${ekoNft.address}`);
+
+  const EkoScore = await ethers.getContractFactory("EkoScoreToken");
+  const ekoScore = await EkoScore.deploy();
+  await ekoScore.deployed();
+  console.log(`EkoScore deployed: ${ekoScore.address}`);*/
 
   // returning the address of the diamond
   return diamond.address;

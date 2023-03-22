@@ -1,5 +1,5 @@
 export enum StatusEnum {
-  STARTED = 2,
-  ENDED = 3,
-  CLOSED = 4,
+  CLOSED = 2,
+  STARTED = 3,
+  ENDED = 4,
 }
