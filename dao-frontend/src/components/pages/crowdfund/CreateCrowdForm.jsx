@@ -1,7 +1,7 @@
 import Input from "@/components/ui/form/Input"
-import { useState, useEffect, useLayoutEffect } from "react"
+import { useState, useEffect, useContext } from "react"
 import wordsCount from 'words-count';
-import { contractAddress, convertToWEI, getDate, USDC } from "@/libs/utils"
+import { contractAddress, convertToWEI, USDC } from "@/libs/utils"
 import { useContractWrite } from "wagmi";
 import crowdFundFacetABI from '../../../abi/contracts/facets/CrowdFundFacet.sol/CrowdFundFacet.json';
 import { toast } from "react-toastify";
@@ -9,9 +9,15 @@ import LoadingButton from "@/components/ui/form/LoadingButton";
 import Textarea from "@/components/ui/form/Textarea";
 import Select from "@/components/ui/form/Select";
 import { durationLists } from "@/libs/constants";
+import { AuthContext } from "@/context/AuthContext";
+import AuthRequest from "@/libs/requests";
 
 
 const CreateCrowdForm = ({close}) => {
+
+    const { isAdminLoggedIn } = useContext(AuthContext);
+
+    const [loading, setLoading] = useState(false)
 
     const [name, setName] = useState("");
 
@@ -37,9 +43,36 @@ const CreateCrowdForm = ({close}) => {
         args: [name, description, convertToWEI(target), convertToWEI(min), USDC, duration],
     })
 
+    const httpCreate = async () => {
+
+        setLoading(true)
+
+        try {
+            const request = new AuthRequest("/crowdfundings")
+            
+            const response = await request.post({
+                topic: name,
+                description,
+                target: convertToWEIo(target),
+                minDonation: convertToWEI(min),
+                stableCoin: USDC,
+                period: duration
+            })
+
+            toast.success("Funding Created Successfully")
+            close()
+            console.log(response)
+
+        } catch (e) {
+            console.error(e)
+        }
+
+        setLoading(false)
+    }
+
     const submit = (e) => {
         e.preventDefault()
-        create?.write()
+        isAdminLoggedIn ? httpCreate() : create?.write()
     }
 
     const isDisabled = () => {
@@ -101,7 +134,7 @@ const CreateCrowdForm = ({close}) => {
 
             </div>
 
-            <LoadingButton loading={create?.isLoading} disabled={isDisabled()} > Create Funding</LoadingButton>
+            <LoadingButton loading={isAdminLoggedIn ? loading : create?.isLoading} disabled={isDisabled()} > Create Funding</LoadingButton>
 
         </form>
     )

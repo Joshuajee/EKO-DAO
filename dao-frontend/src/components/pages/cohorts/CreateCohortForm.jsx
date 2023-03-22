@@ -89,8 +89,8 @@ const CreateCohortForm = ({close}) => {
                 exhaustiveDescription: "Why this training is important?, Training structure, Meet the team, Why should you apply for this training"
             })
 
-            // toast.success("Cohort Created Successfully")
-            // close()
+            toast.success("Cohort Created Successfully")
+            close()
             console.log(response)
 
         } catch (e) {
@@ -159,9 +159,9 @@ const CreateCohortForm = ({close}) => {
 
             <div className="grid grid-cols-2 gap-4">
 
-                <Input type="date" label={"Start Date"} value={startDate} onChange={setStartDate} />
+                <Input type="datetime-local" label={"Start Date"} value={startDate} onChange={setStartDate} />
                 
-                <Input type="date" label={"End Date"} min={startDate} value={endDate} onChange={setEndDate} />
+                <Input type="datetime-local" label={"End Date"} min={startDate} value={endDate} onChange={setEndDate} />
 
                 <Input type="number" label={"Student Size"} value={student} onChange={setStudent} error={studentError} helperText={"Student Size should be greater than zero and less than 120"} />
                 

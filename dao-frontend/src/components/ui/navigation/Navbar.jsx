@@ -11,7 +11,7 @@ const Navbar = () => {
 
     const [open, setOpen] = useState(false);
 
-    const { isAdminLoggedIn } = useContext(AuthContext);
+    const { isAdmin } = useContext(AuthContext);
 
     const scrollPosition = useScroll()
 
@@ -28,7 +28,7 @@ const Navbar = () => {
                         navigation.map((nav, index) => <Link className="mr-2 lg:mr-5 hover:text-gray-900" key={index} href={nav.href}>{nav.name}</Link>)
                     }
                     {
-                        isAdminLoggedIn && <Link className="mr-2 lg:mr-5 hover:text-gray-900" href={"/admin"}>{"Admin"}</Link>
+                        isAdmin&& <Link className="mr-2 lg:mr-5 hover:text-gray-900" href={"/admin"}>{"Admin"}</Link>
                     }
                 </nav>
 

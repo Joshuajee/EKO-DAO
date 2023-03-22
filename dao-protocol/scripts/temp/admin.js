@@ -5,13 +5,13 @@ const setAdmin = async (address) => {
 
     const govt = await ethers.getContractAt("AdminFacet", address);
 
-    await govt.setAdmin("0xd0F6816983cdDD67ec49d607D6B33f1f988dD244", 2);
+    await govt.setAdmin("0x6EE728B52D7787d8eB311257CC41A1Cc4279F58b", 2);
 
     console.log("Done!")
 }
 
 if (require.main === module) {
-    setAdmin("0x82833f86e18c7D22Ea2540F9315465b57d278861")
+    setAdmin("0x5Fe56b63EcC5721C60bF709eB906039ED178E6C2")
         .then(() => {
             process.exit(0)
         })

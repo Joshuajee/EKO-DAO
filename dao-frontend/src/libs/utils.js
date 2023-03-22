@@ -100,3 +100,8 @@ export const winnerDetails = (hackathon, address, prizePool) => {
     return !isAddressZero(winner) || !isAddressZero(firstRunnerUp) || !isAddress(secondRunnerUp)
 
 }
+
+export const logout = () => {
+    localStorage.removeItem("auth-token")
+    localStorage.removeItem("auth-time")
+}
