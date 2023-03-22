@@ -1,14 +1,55 @@
-import { useState } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import Layout from '@/components/ui/Layout'
 import Input from '@/components/ui/form/Input'
 import LoadingButton from '@/components/ui/form/LoadingButton'
+import { useAccount } from 'wagmi';
+import axios from 'axios';
+import { API_SERVER } from '@/libs/utils';
+import { useRouter } from 'next/router';
+import { links } from '@/libs/routes';
+import { toast } from 'react-toastify';
 
 
 
 export default function AdminLogin() {
 
+    const account = useAccount()
+    const router = useRouter()
+
+    const [isLoading, setIsloading] = useState()
     const [address, setAddress] = useState();
     const [password, setPassword] = useState();
+
+    const login = useCallback(async() => {
+
+        setIsloading(true)
+
+        try {
+            const res = await axios.post(`${API_SERVER}/admins/login`, {
+                walletAddress: address,
+                password
+            })
+    
+            localStorage.setItem("auth-token", res?.data?.access_token)
+            localStorage.setItem("auth-time", Number(new Date()))
+
+            setTimeout(() => {
+                router.push("/admin")
+            }, 3000)
+
+            toast.success("Login successful, Redirecting...")
+
+        } catch (e) {
+            console.error(e)
+        }
+
+        setIsloading(false)
+
+    }, [address, password, router])
+
+    useEffect(() => {
+        setAddress(account.address)
+    }, [account?.address]);
 
     return (
         <Layout>
@@ -21,12 +62,12 @@ export default function AdminLogin() {
 
                     <Input name="wallet-address" label={"Enter your Address"} value={address} placeholder={"Your ethereum wallet address"} onChange={setAddress} />
 
-                    <Input label={"Enter your password"} type={"password"} value={password} placeholder={"Your ethereum wallet address"} onChange={setPassword} />
+                    <Input label={"Enter your password"} type={"password"} value={password} placeholder={"Your password"} onChange={setPassword} />
 
                     <LoadingButton 
-                        //loading={mint?.isLoading} 
+                        loading={isLoading} 
                         //disabled={isDisabled()}   
-                        //onClick={mint?.write}
+                        onClick={login}
                         >
                             Login
                     </LoadingButton>

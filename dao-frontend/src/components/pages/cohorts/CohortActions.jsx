@@ -10,6 +10,7 @@ import ModalWrapper from "@/components/ui/ModalWrapper";
 import Input from "@/components/ui/form/Input";
 import Balance from "@/components/ui/form/Balance";
 import ApprovalBtn from "@/components/ui/form/ApprovalBtn";
+import AuthRequest from "@/libs/requests";
 
 
 const CohortActions = ({status, contract, commitment, isStudent}) => {
@@ -17,6 +18,8 @@ const CohortActions = ({status, contract, commitment, isStudent}) => {
     const { address } = useAccount()
 
     const { isAdmin, isAdminLoggedIn } = useContext(AuthContext);
+
+    const [initLoading, setInitLoading] = useState(false)
 
     const [open, setOpen] = useState(false);
     const [id, setId] = useState()
@@ -74,10 +77,10 @@ const CohortActions = ({status, contract, commitment, isStudent}) => {
         }
 
         if (initCohort.isSuccess) 
-            return toast.error(initCohort?.error?.reason)
+            return toast.success("Initailize successfully")
 
         if (endCohort.isSuccess) 
-            return toast.error(endCohort?.error?.reason)
+            return toast.success("Cohort has ended")
 
         if (refund.isError) 
             return toast.error(refund?.error?.reason)
@@ -94,15 +97,38 @@ const CohortActions = ({status, contract, commitment, isStudent}) => {
             endCohort?.error, refund.isError, refund?.error
     ]);
 
-    conso
-
-
     useEffect(() => {
         if (Number(id) <= 0) setIdError(true)
         else setIdError(false)
 
         setAmount(balance?.toString() || 0)
     }, [id, balance])
+
+
+    const initCohortHttp = async () => {
+
+
+        setInitLoading(true)
+
+        try {
+
+            const request = new AuthRequest(`/cohorts/init/${contract}`)
+            
+            const response = await request.post({
+                stableCoin: USDC,
+                ekoNft: EKONFTCERT
+            })
+
+            toast.success("Cohort Created Successfully")
+  
+            console.log(response)
+
+        } catch (e) {
+            console.error(e)
+        }
+
+        setInitLoading(false)
+    }
 
 
     return (
@@ -127,8 +153,8 @@ const CohortActions = ({status, contract, commitment, isStudent}) => {
                 <div className="flex justify-center">
                     <div className="w-60">
                         <LoadingButton
-                            onClick={initCohort?.write}
-                            color="yellow" loading={initCohort?.isLoading}> 
+                            onClick={isAdminLoggedIn ?  initCohortHttp : initCohort?.write}
+                            color="yellow" loading={isAdminLoggedIn ? initLoading : initCohort?.isLoading}> 
                             Initialize Cohort
                         </LoadingButton>
                     </div>
