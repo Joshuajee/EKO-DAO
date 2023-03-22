@@ -106,7 +106,7 @@ contract GovernanceFacet {
     string calldata _description,
     uint _delay,
     uint _votingDuration,
-    uint16 _minVotingTokenReq
+    uint _minVotingTokenReq
     ) external noEmptiness(_name) noEmptiness(_description) notZero(_votingDuration){
     LibGovernance.getProposalTracker().Proposal_Tracker += 1;
     uint Proposal_ID = LibGovernance.getProposalTracker().Proposal_Tracker;

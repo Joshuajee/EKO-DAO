@@ -24,6 +24,17 @@ export class ConfigurationService {
   get allowedOrigins(): any {
     return this.configService.get<any>('app.allowedOrigins');
   }
+  get jwtSecret(): string {
+    return this.configService.get<string>('app.jwtSecret');
+  }
+  get jwtLife(): string {
+    return this.configService.get<string>('app.jwtLife');
+  }
+  get swaggerEnabled(): boolean {
+    return this.configService.get<string>('app.swaggerEnabled') === 'true'
+      ? true
+      : false;
+  }
   get dbtype(): string {
     return this.configService.get<string>('db.type');
   }

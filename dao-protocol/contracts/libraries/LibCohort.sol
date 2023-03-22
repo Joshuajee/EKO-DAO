@@ -22,6 +22,8 @@ event NewCohort(Cohort.CohortDetails cohort);
     }
   }
 
+error Unauthorized();
+
   function newCohort(
     uint _id,
     string memory _name,
@@ -32,7 +34,7 @@ event NewCohort(Cohort.CohortDetails cohort);
     string memory _description
   ) internal {
     if (!LibAdmin.isAdmin(msg.sender))
-      revert("Unauthorized access. Caller is not an admin");
+      revert Unauthorized();
 
     Cohorts storage cohorts = diamondStorage();
     Cohort cohort = new Cohort(
@@ -58,6 +60,13 @@ event NewCohort(Cohort.CohortDetails cohort);
       revert("Unauthorized access. Caller is not an admin");
     Cohort cohort = Cohort(_cohort);
     cohort.init(_stableCoin, _ekoNft);
+  }
+
+  function updateStatus(address _cohort, Cohort.Status _status) internal {
+    if (!LibAdmin.isAdmin(msg.sender))
+      revert("Unauthorized access. Caller is not an admin");
+    Cohort cohort = Cohort(_cohort);
+    cohort.updateStatus(_status);
   }
 
   function getCohort(uint _id) internal view returns (Cohort.CohortDetails memory) {

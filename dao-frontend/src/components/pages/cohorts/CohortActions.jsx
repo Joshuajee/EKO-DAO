@@ -1,4 +1,4 @@
-import { contractAddress, convertToEther, dollarFormat, EKONFT, USDC } from "@/libs/utils"
+import { contractAddress, convertToEther, EKONFTCERT, USDC } from "@/libs/utils"
 import { memo, useState, useEffect, useContext } from "react"
 import { useAccount, useContractRead, useContractWrite } from "wagmi"
 import { toast } from "react-toastify";
@@ -8,15 +8,38 @@ import CohortFacetABI from '@/abi/contracts/facets/CohortFacet.sol/CohortFacet.j
 import LoadingButton from "@/components/ui/form/LoadingButton";
 import ModalWrapper from "@/components/ui/ModalWrapper";
 import Input from "@/components/ui/form/Input";
+import Balance from "@/components/ui/form/Balance";
+import ApprovalBtn from "@/components/ui/form/ApprovalBtn";
+
 
 const CohortActions = ({status, contract, commitment, isStudent}) => {
+
+    const { address } = useAccount()
 
     const { isAdmin, isAdminLoggedIn } = useContext(AuthContext);
 
     const [open, setOpen] = useState(false);
     const [id, setId] = useState()
 
+    const [amount, setAmount] = useState(0);
+    const [allowance, setAllowance] = useState(null);
+    const [balance, setBalance] = useState(null);
+
     const [idError, setIdError] = useState(null)
+
+    const { data } = useContractRead({
+        address: contract,
+        abi: CohortABI,
+        functionName: 'ekoStableAddress',
+        enabled: isStudent
+    })
+
+    const getBalance = useContractRead({
+        address: contract,
+        abi: CohortABI,
+        functionName: 'ekoStableAddress',
+        enabled: isStudent
+    })
 
     const refund = useContractWrite({
         address: contract,
@@ -36,7 +59,7 @@ const CohortActions = ({status, contract, commitment, isStudent}) => {
         address: contractAddress,
         abi: CohortFacetABI,
         functionName: 'initCohort',
-        args: [contract, USDC, EKONFT],
+        args: [contract, USDC, EKONFTCERT],
     })
 
     const handleClose = () => {
@@ -44,6 +67,17 @@ const CohortActions = ({status, contract, commitment, isStudent}) => {
     }
 
     useEffect(() => {
+
+        if (refund.isSuccess) {
+            setOpen(false)
+            return toast.success("Refund is successful")
+        }
+
+        if (initCohort.isSuccess) 
+            return toast.error(initCohort?.error?.reason)
+
+        if (endCohort.isSuccess) 
+            return toast.error(endCohort?.error?.reason)
 
         if (refund.isError) 
             return toast.error(refund?.error?.reason)
@@ -54,14 +88,22 @@ const CohortActions = ({status, contract, commitment, isStudent}) => {
         if (endCohort.isError) 
             return toast.error(endCohort?.error?.reason)
 
-    }, [initCohort.isError, initCohort?.error, endCohort?.isError, endCohort?.error, refund.isError, refund?.error]);
+    },  [
+            initCohort.isSuccess, endCohort?.isSuccess, refund.isSuccess,
+            initCohort.isError, initCohort?.error, endCohort?.isError, 
+            endCohort?.error, refund.isError, refund?.error
+    ]);
+
+    conso
 
 
     useEffect(() => {
         if (Number(id) <= 0) setIdError(true)
         else setIdError(false)
 
-    }, [id])
+        setAmount(balance?.toString() || 0)
+    }, [id, balance])
+
 
     return (
         <div className="block py-4 w-full">
@@ -93,7 +135,7 @@ const CohortActions = ({status, contract, commitment, isStudent}) => {
                 </div>
             }
 
-            { (isAdmin && status != 0) &&
+            {/* { (isAdmin && status != 0) &&
                 <div className="flex justify-center">
                     <div className="w-60">
                         <LoadingButton
@@ -103,16 +145,30 @@ const CohortActions = ({status, contract, commitment, isStudent}) => {
                         </LoadingButton>
                     </div>
                 </div>
-            }
+            } */}
 
             <ModalWrapper title={"Claim Commitment"} open={open} handleClose={handleClose}>
 
+                <Balance 
+                    address={address} contract={contract} token={data}
+                    allowance={allowance} balance={balance} symbol="EKO-USDC"
+                    setAllowance={setAllowance} setBalance={setBalance} />
+
                 <div className="flex flex-col justify-between">
+
                     <Input 
                         type="number" label={"Certificated ID"} 
-                        value={id} onChange={setId} 
+                        value={id} onChange={setId} placeholder="Enter Valid NFT Certificate ID"
                         error={idError} helperText={`Enter Valid NFT Certificate ID`} />
+                    
                     <LoadingButton disabled={idError} loading={refund?.isLoading} onClick={refund?.write}> Claim Commitment Fee </LoadingButton>
+                
+                    <ApprovalBtn
+                        disabled={amount < allowance || idError} 
+                        contract={contract} amount={convertToEther(amount)} 
+                        token={data} allowance={allowance} 
+                        setAllowance={setAllowance} symbol="EKO-USDC"/>
+
                 </div>
 
             </ModalWrapper>

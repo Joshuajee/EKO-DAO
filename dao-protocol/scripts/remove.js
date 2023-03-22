@@ -3,28 +3,27 @@
 const {getSelectors, FacetCutAction } = require('./libraries/diamond.js')
   
 
-async function removeFacet() {
+async function removeFacet(facetName) {
+
+    console.log("Starting...")
 
     // const accounts = await ethers.getSigners();
-    const diamondAddress = "0xC8854E5CeD88a073A1400CB2c7f6A4F488d44175"
+    const diamondAddress = "0x82833f86e18c7D22Ea2540F9315465b57d278861"
 
     const diamondCutFacet = await ethers.getContractAt('DiamondCutFacet', diamondAddress)
     const diamondLoupeFacet = await ethers.getContractAt('DiamondLoupeFacet', diamondAddress)
 
-    const Facet = await ethers.getContractFactory('GovernanceFacet')
-    const facet = await Facet.deploy()
-
-    console.log("address", facet.address)
+    const facet = await ethers.getContractAt(facetName, diamondAddress)
 
     const selectors = getSelectors(facet)
 
     const tx = await diamondCutFacet.diamondCut(
         [{
-            facetAddress: facet.address,
+            facetAddress: "0xC52bc65C15DBc403f0339E40ffa8C023080239D9",
             action: FacetCutAction.Remove,
             functionSelectors: selectors
         }],
-        ethers.constants.AddressZero, '0x', { gasLimit: 100_000_000 }
+       "0xC52bc65C15DBc403f0339E40ffa8C023080239D9", '0x', { gasLimit: 1000000000000000 }
     )
 
     const receipt = await tx.wait()
@@ -44,7 +43,7 @@ async function removeFacet() {
 // We recommend this pattern to be able to use async/await everywhere
 // and properly handle errors.
 if (require.main === module) {
-  removeFacet()
+  removeFacet("HackathonFacet")
     .then(() => process.exit(0))
     .catch((error) => {
       console.error(error);

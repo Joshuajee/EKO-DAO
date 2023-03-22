@@ -18,8 +18,8 @@ const HackathonStatus = ({hackathon, expanded, prizePool}) => {
                 </div>
 
                 <div className="flex flex-col md:flex-row justify-between font-medium">
-                    <p>Start Date: {date.format(new Date(Number(startDate)), 'ddd, MMM DD YYYY')} </p> 
-                    <p>End Date: {date.format(new Date(Number(endDate)), 'ddd, MMM DD YYYY')} </p> 
+                    <p>Start Date: {date.format(new Date(Number(startDate) * 1000), 'ddd, MMM DD YYYY')} </p> 
+                    <p>End Date: {date.format(new Date(Number(endDate) * 1000), 'ddd, MMM DD YYYY')} </p> 
                     {/* <div className="flex font-medium">
                         <p className="mr-2">Time Left: </p> <Countdown date={Number(endDate.toString()) * 1000} />
                     </div> */}

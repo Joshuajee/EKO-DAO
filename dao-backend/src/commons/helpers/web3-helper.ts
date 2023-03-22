@@ -29,6 +29,10 @@ export class Web3Helper {
     };
   }
 
+  toWei(value: string): string {
+    return this.web3.utils.toWei(value);
+  }
+
   getContractInstance(contractAbi: any, contractAddress: string) {
     try {
       return new this.web3.eth.Contract(contractAbi, contractAddress);

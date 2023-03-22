@@ -10,12 +10,12 @@ import ModalWrapper from "@/components/ui/ModalWrapper"
 import DonationHackForm from "./DonationHackForm"
 import Badge from "@/components/ui/Badge"
 import JoinHackathon from "./JoinHackForm"
-import { convertToEther } from "@/libs/utils"
 import PrizeHack from "./PrizeHack"
+import { toast } from "react-toastify"
 
 const HackathonCard = ({hackathon, expanded}) => {
 
-    const { address } = useAccount()
+    const { address, isConnected } = useAccount()
 
     const [hackStatus, setHackStatus] = useState()
     const [openFund, setOpenFund] = useState(false);
@@ -24,10 +24,10 @@ const HackathonCard = ({hackathon, expanded}) => {
 
     const { 
         hackathonAddress, name, description, 
-        state, startDate, endDate, 
+        state, startDate, endDate, id,
         funding, minScoreTokenRequired } = hackathon
 
-    const prizePool = Number(convertToEther(funding.toString()))
+    const prizePool = Number(funding.toString())
 
     const router = useRouter()
 
@@ -39,8 +39,18 @@ const HackathonCard = ({hackathon, expanded}) => {
         args: [address]
     })
 
+    const handleFundClick = () => {
+        if (!isConnected) return toast.error("Please Connect")
+        setOpenFund(true)
+    }
+
     const handleFundClose = () => {
         setOpenFund(false)
+    }
+
+    const handleJoinClick = () => {
+        if (!isConnected) return toast.error("Please Connect")
+        setOpenJoin(true)
     }
 
     const handleJoinClose = () => {
@@ -48,30 +58,31 @@ const HackathonCard = ({hackathon, expanded}) => {
     }
 
     useEffect(() => {
-        setCurrentTime(Number(new Date()))
+        setCurrentTime(Number(new Date()) / 1000)
         const interval = setInterval(() => {
-            setCurrentTime(Number(new Date()))
+            setCurrentTime(Number(new Date() / 1000))
         }, 1000)
         return clearInterval(interval)
     }, [])
 
-
     useEffect(() => {
         switch (state) {
             case 1:
+                if (startDate > currentTime)
+                    setHackStatus({color: "blue", status: "Registration is open", state: 1})
                 if (endDate > currentTime)
-                    setHackStatus({color: "green", status: "Hackathon in session"})
+                    setHackStatus({color: "green", status: "Hackathon in session", state: 2})
                 if (endDate < currentTime)
-                    setHackStatus({color: "yellow", status: "Hackathon has ended"})
+                    setHackStatus({color: "yellow", status: "Hackathon has ended", state: 3})
                 break
             case 2:
-                setHackStatus({color: "green", status: "Successful"})
+                setHackStatus({color: "green", status: "Hackathon in session", state: 2})
                 break
             case 3:
-                setHackStatus({color: "gray", status: "Executed"})
+                setHackStatus({color: "yellow", status: "Hackathon has ended", state: 3})
                 break
             default:
-                setHackStatus({color: "gray", status: "Enrollment not started"})
+                setHackStatus({color: "gray", status: "Registration not started", state: 0})
         }
     }, [state, startDate, endDate, currentTime]);
 
@@ -96,30 +107,32 @@ const HackathonCard = ({hackathon, expanded}) => {
 
                 { !expanded ? <button onClick={() => router.push(`${links.hackathons}/${hackathonAddress}`)} className="text-gray-600">View Details </button> : <div> </div> }
 
-                <div>
+                {  hackStatus?.state < 3 &&           
+                    <div>
 
-                    <button
-                        onClick={() => setOpenFund(true)}
-                        className="mr-2 bg-green-600 hover:bg-green-700 rounded-lg px-8 py-2 text-white">
-                        Donate
-                    </button>
+                        <button
+                            onClick={handleFundClick}
+                            className="mr-2 bg-green-600 hover:bg-green-700 rounded-lg px-8 py-2 text-white">
+                            Donate
+                        </button>
 
-                    {   
-                        !isRigistered?.data &&
-                            <button
-                                onClick={() => setOpenJoin(true)}
-                                className="bg-yellow-600 hover:bg-yellow-700 rounded-lg px-8 py-2 text-white">
-                                Join
-                            </button>
-                    }
+                        {   
+                            !isRigistered?.data &&
+                                <button
+                                    onClick={handleJoinClick}
+                                    className="bg-yellow-600 hover:bg-yellow-700 rounded-lg px-8 py-2 text-white">
+                                    Join
+                                </button>
+                        }
 
-                </div>
+                    </div>
+                }
 
             </div>
 
-            <HackActions status={state} contract={hackathonAddress} isRigistered={isRigistered?.data} expanded={expanded} />
+            <HackActions id={id} hackStatus={hackStatus} status={state} contract={hackathonAddress} isRigistered={isRigistered?.data} expanded={expanded} />
 
-            <PrizeHack expanded={expanded} hackathon={hackathon} prizePool={prizePool}  />
+            { expanded &&  <PrizeHack expanded={expanded} hackathon={hackathon} prizePool={prizePool} id={id}  /> }
 
             <ModalWrapper open={openFund} handleClose={handleFundClose} title="Donation Form">
                 <DonationHackForm hackathon={hackathon} close={handleFundClose} />

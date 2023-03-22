@@ -1,15 +1,15 @@
 import Input from "@/components/ui/form/Input"
 import { useState, useEffect } from "react"
 import wordsCount from 'words-count';
-import { contractAddress, convertToWEI, getDate, USDC } from "@/libs/utils"
+import { contractAddress, convertToWEI, dateToTimeStamp, getDate, USDC } from "@/libs/utils"
 import { useContractWrite } from "wagmi";
 import { toast } from "react-toastify";
 import LoadingButton from "@/components/ui/form/LoadingButton";
 import Textarea from "@/components/ui/form/Textarea";
 import HackathonFacetABI from '@/abi/contracts/facets/HackathonFacet.sol/HackathonFacet.json';
+import Select from "@/components/ui/form/Select";
+import { durationLists } from "@/libs/constants";
 
-
-const currentDate = getDate()
 const maxNumAdmittable = 50000
 
 const CreateHackForm = ({close}) => {
@@ -17,14 +17,8 @@ const CreateHackForm = ({close}) => {
     const [name, setName] = useState("");
     const [description, setDescription] = useState("");
 
-    const [target, setTarget] = useState(null);
-    const [min, setMin] = useState(null);
-
-    const [startDate, setStartDate] = useState(currentDate);
-    const [endDate, setEndDate] = useState(null);
-
-    const [student, setStudent] = useState("");
-    const [commitment, setCommitment] = useState("");
+    const [delay, setDelay] = useState(durationLists[0].value);
+    const [duration, setDuration] = useState(durationLists[0].value);
 
     const [first, setFirst] = useState(50)
     const [second, setSecond] = useState(30)
@@ -34,9 +28,6 @@ const CreateHackForm = ({close}) => {
     // Errors 
     const [nameError, setNameError] = useState(false);
     const [descriptionError, setDescriptionError] = useState(false);
-
-    const [startDateError, setStartDateError] = useState(false);
-    const [endDateError, setEndDateError] = useState(false);
 
     const [firstError, setFirstError] = useState(50)
     const [secondError, setSecondError] = useState(30)
@@ -49,9 +40,8 @@ const CreateHackForm = ({close}) => {
         abi: HackathonFacetABI,
         functionName: 'newHackathon',
         args: [
-            name, description, Number(new Date(startDate)), 
-            Number(new Date(endDate)), maxNumAdmittable, first,
-            second, third, convertToWEI(minToken)
+            name, description, delay, duration, maxNumAdmittable, 
+            first, second, third, convertToWEI(minToken)
         ],
     })
 
@@ -99,9 +89,9 @@ const CreateHackForm = ({close}) => {
             
             <div className="grid grid-cols-2 gap-4">
 
-                <Input type="date" label={"Start Date"} value={startDate} onChange={setStartDate} />
+                <Select id="delay" label={"Registration Period"} onChange={setDelay} lists={durationLists} />
 
-                <Input type="date" label={"End Date"} min={startDate} value={endDate} onChange={setEndDate} />
+                <Select id="duration" label={"Hackathon Duration"} onChange={setDuration} lists={durationLists} />
 
                 <Input type="number" label={"Winner %"} value={first} onChange={setFirst} error={firstError} helperText={"Should be less than 100 and greater than the rest"} />
 

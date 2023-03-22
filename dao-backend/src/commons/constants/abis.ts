@@ -91,6 +91,11 @@ export const ADMIN_FACET_ABI = [
 
 export const COHORT_FACTORY_FACET_ABI = [
   {
+    inputs: [],
+    name: 'Unauthorized',
+    type: 'error',
+  },
+  {
     inputs: [
       {
         internalType: 'uint256',
@@ -295,308 +300,13 @@ export const COHORT_FACET_ABI = [
     stateMutability: 'nonpayable',
     type: 'function',
   },
-];
-
-export const COHORT_ABI = [
-  {
-    inputs: [
-      {
-        internalType: 'uint256',
-        name: '_id',
-        type: 'uint256',
-      },
-      {
-        internalType: 'string',
-        name: '_name',
-        type: 'string',
-      },
-      {
-        internalType: 'uint256',
-        name: '_startDate',
-        type: 'uint256',
-      },
-      {
-        internalType: 'uint256',
-        name: '_endDate',
-        type: 'uint256',
-      },
-      {
-        internalType: 'uint8',
-        name: '_size',
-        type: 'uint8',
-      },
-      {
-        internalType: 'uint256',
-        name: '_commitment',
-        type: 'uint256',
-      },
-      {
-        internalType: 'string',
-        name: '_description',
-        type: 'string',
-      },
-    ],
-    stateMutability: 'nonpayable',
-    type: 'constructor',
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: true,
-        internalType: 'address',
-        name: 'previousOwner',
-        type: 'address',
-      },
-      {
-        indexed: true,
-        internalType: 'address',
-        name: 'newOwner',
-        type: 'address',
-      },
-    ],
-    name: 'OwnershipTransferred',
-    type: 'event',
-  },
-  {
-    inputs: [],
-    name: 'cohort',
-    outputs: [
-      {
-        internalType: 'uint256',
-        name: 'id',
-        type: 'uint256',
-      },
-      {
-        internalType: 'string',
-        name: 'name',
-        type: 'string',
-      },
-      {
-        internalType: 'uint256',
-        name: 'startDate',
-        type: 'uint256',
-      },
-      {
-        internalType: 'uint256',
-        name: 'endDate',
-        type: 'uint256',
-      },
-      {
-        internalType: 'uint8',
-        name: 'size',
-        type: 'uint8',
-      },
-      {
-        internalType: 'uint256',
-        name: 'commitment',
-        type: 'uint256',
-      },
-      {
-        internalType: 'string',
-        name: 'description',
-        type: 'string',
-      },
-      {
-        internalType: 'enum Cohort.Status',
-        name: 'status',
-        type: 'uint8',
-      },
-      {
-        internalType: 'uint256',
-        name: 'studentsCount',
-        type: 'uint256',
-      },
-      {
-        internalType: 'address',
-        name: 'contractAddress',
-        type: 'address',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [],
-    name: 'ekoStableAddress',
-    outputs: [
-      {
-        internalType: 'address',
-        name: '',
-        type: 'address',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'uint256',
-        name: 'amount',
-        type: 'uint256',
-      },
-    ],
-    name: 'enroll',
-    outputs: [],
-    stateMutability: 'payable',
-    type: 'function',
-  },
-  {
-    inputs: [],
-    name: 'getCohort',
-    outputs: [
-      {
-        components: [
-          {
-            internalType: 'uint256',
-            name: 'id',
-            type: 'uint256',
-          },
-          {
-            internalType: 'string',
-            name: 'name',
-            type: 'string',
-          },
-          {
-            internalType: 'uint256',
-            name: 'startDate',
-            type: 'uint256',
-          },
-          {
-            internalType: 'uint256',
-            name: 'endDate',
-            type: 'uint256',
-          },
-          {
-            internalType: 'uint8',
-            name: 'size',
-            type: 'uint8',
-          },
-          {
-            internalType: 'uint256',
-            name: 'commitment',
-            type: 'uint256',
-          },
-          {
-            internalType: 'string',
-            name: 'description',
-            type: 'string',
-          },
-          {
-            internalType: 'enum Cohort.Status',
-            name: 'status',
-            type: 'uint8',
-          },
-          {
-            internalType: 'uint256',
-            name: 'studentsCount',
-            type: 'uint256',
-          },
-          {
-            internalType: 'address',
-            name: 'contractAddress',
-            type: 'address',
-          },
-        ],
-        internalType: 'struct Cohort.CohortDetails',
-        name: '',
-        type: 'tuple',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
   {
     inputs: [
       {
         internalType: 'address',
-        name: '_stableCoin',
+        name: '_cohort',
         type: 'address',
       },
-      {
-        internalType: 'address',
-        name: '_ekoNft',
-        type: 'address',
-      },
-    ],
-    name: 'init',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'address',
-        name: '_student',
-        type: 'address',
-      },
-    ],
-    name: 'isStudent',
-    outputs: [
-      {
-        internalType: 'bool',
-        name: '',
-        type: 'bool',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [],
-    name: 'owner',
-    outputs: [
-      {
-        internalType: 'address',
-        name: '',
-        type: 'address',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'uint256',
-        name: 'amount',
-        type: 'uint256',
-      },
-      {
-        internalType: 'uint256',
-        name: '_certificateId',
-        type: 'uint256',
-      },
-    ],
-    name: 'refund',
-    outputs: [],
-    stateMutability: 'payable',
-    type: 'function',
-  },
-  {
-    inputs: [],
-    name: 'renounceOwnership',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'address',
-        name: 'newOwner',
-        type: 'address',
-      },
-    ],
-    name: 'transferOwnership',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
-    inputs: [
       {
         internalType: 'enum Cohort.Status',
         name: '_status',
@@ -1040,6 +750,66 @@ export const CROWDFUNDING_FACET_ABI = [
 
 export const GOVERNANCE_FACET_ABI = [
   {
+    inputs: [],
+    name: 'AlreadyInitialized',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'AlreadyVoted',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'CallerNotDelegate',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'EmptyInput',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'InsufficientBalance',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'InvalidAddress',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'InvalidCountInput',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'InvalidProposal',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'StartLessThanCount',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'VotingNotStarted',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'VotingPeriodOver',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'ZeroInput',
+    type: 'error',
+  },
+  {
     inputs: [
       {
         internalType: 'uint256',
@@ -1160,13 +930,18 @@ export const GOVERNANCE_FACET_ABI = [
             type: 'uint256',
           },
           {
-            internalType: 'uint256',
+            internalType: 'uint32',
             name: 'votesFor',
-            type: 'uint256',
+            type: 'uint32',
+          },
+          {
+            internalType: 'uint32',
+            name: 'votesAgainst',
+            type: 'uint32',
           },
           {
             internalType: 'uint256',
-            name: 'votesAgainst',
+            name: 'minVotingTokenReq',
             type: 'uint256',
           },
           {
@@ -1178,19 +953,6 @@ export const GOVERNANCE_FACET_ABI = [
         internalType: 'struct LibGovernance.Proposal[]',
         name: '',
         type: 'tuple[]',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [],
-    name: 'getMinimumTokenRequirement',
-    outputs: [
-      {
-        internalType: 'uint256',
-        name: '',
-        type: 'uint256',
       },
     ],
     stateMutability: 'view',
@@ -1249,13 +1011,18 @@ export const GOVERNANCE_FACET_ABI = [
             type: 'uint256',
           },
           {
-            internalType: 'uint256',
+            internalType: 'uint32',
             name: 'votesFor',
-            type: 'uint256',
+            type: 'uint32',
+          },
+          {
+            internalType: 'uint32',
+            name: 'votesAgainst',
+            type: 'uint32',
           },
           {
             internalType: 'uint256',
-            name: 'votesAgainst',
+            name: 'minVotingTokenReq',
             type: 'uint256',
           },
           {
@@ -1338,13 +1105,18 @@ export const GOVERNANCE_FACET_ABI = [
             type: 'uint256',
           },
           {
-            internalType: 'uint256',
+            internalType: 'uint32',
             name: 'votesFor',
-            type: 'uint256',
+            type: 'uint32',
+          },
+          {
+            internalType: 'uint32',
+            name: 'votesAgainst',
+            type: 'uint32',
           },
           {
             internalType: 'uint256',
-            name: 'votesAgainst',
+            name: 'minVotingTokenReq',
             type: 'uint256',
           },
           {
@@ -1414,13 +1186,99 @@ export const GOVERNANCE_FACET_ABI = [
             type: 'uint256',
           },
           {
-            internalType: 'uint256',
+            internalType: 'uint32',
             name: 'votesFor',
+            type: 'uint32',
+          },
+          {
+            internalType: 'uint32',
+            name: 'votesAgainst',
+            type: 'uint32',
+          },
+          {
+            internalType: 'uint256',
+            name: 'minVotingTokenReq',
+            type: 'uint256',
+          },
+          {
+            internalType: 'enum LibGovernance.State',
+            name: 'state',
+            type: 'uint8',
+          },
+        ],
+        internalType: 'struct LibGovernance.Proposal[]',
+        name: '',
+        type: 'tuple[]',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: 'start',
+        type: 'uint256',
+      },
+      {
+        internalType: 'uint256',
+        name: 'count',
+        type: 'uint256',
+      },
+    ],
+    name: 'getStalemate',
+    outputs: [
+      {
+        components: [
+          {
+            internalType: 'string',
+            name: 'name',
+            type: 'string',
+          },
+          {
+            internalType: 'string',
+            name: 'description',
+            type: 'string',
+          },
+          {
+            internalType: 'address',
+            name: 'author',
+            type: 'address',
+          },
+          {
+            internalType: 'uint256',
+            name: 'id',
             type: 'uint256',
           },
           {
             internalType: 'uint256',
+            name: 'creationTime',
+            type: 'uint256',
+          },
+          {
+            internalType: 'uint256',
+            name: 'votingDelay',
+            type: 'uint256',
+          },
+          {
+            internalType: 'uint256',
+            name: 'votingPeriod',
+            type: 'uint256',
+          },
+          {
+            internalType: 'uint32',
+            name: 'votesFor',
+            type: 'uint32',
+          },
+          {
+            internalType: 'uint32',
             name: 'votesAgainst',
+            type: 'uint32',
+          },
+          {
+            internalType: 'uint256',
+            name: 'minVotingTokenReq',
             type: 'uint256',
           },
           {
@@ -1490,13 +1348,18 @@ export const GOVERNANCE_FACET_ABI = [
             type: 'uint256',
           },
           {
-            internalType: 'uint256',
+            internalType: 'uint32',
             name: 'votesFor',
-            type: 'uint256',
+            type: 'uint32',
+          },
+          {
+            internalType: 'uint32',
+            name: 'votesAgainst',
+            type: 'uint32',
           },
           {
             internalType: 'uint256',
-            name: 'votesAgainst',
+            name: 'minVotingTokenReq',
             type: 'uint256',
           },
           {
@@ -1519,11 +1382,6 @@ export const GOVERNANCE_FACET_ABI = [
         internalType: 'address',
         name: '_token',
         type: 'address',
-      },
-      {
-        internalType: 'uint256',
-        name: 'min',
-        type: 'uint256',
       },
     ],
     name: 'intializeGovernance',
@@ -1553,6 +1411,11 @@ export const GOVERNANCE_FACET_ABI = [
         name: '_votingDuration',
         type: 'uint256',
       },
+      {
+        internalType: 'uint256',
+        name: '_minVotingTokenReq',
+        type: 'uint256',
+      },
     ],
     name: 'newProposal',
     outputs: [],
@@ -1568,19 +1431,6 @@ export const GOVERNANCE_FACET_ABI = [
       },
     ],
     name: 'removeDelegate',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'uint256',
-        name: 'min',
-        type: 'uint256',
-      },
-    ],
-    name: 'setMinimumTokenRequiremnent',
     outputs: [],
     stateMutability: 'nonpayable',
     type: 'function',
@@ -1670,13 +1520,18 @@ export const GOVERNANCE_FACET_ABI = [
             type: 'uint256',
           },
           {
-            internalType: 'uint256',
+            internalType: 'uint32',
             name: 'votesFor',
-            type: 'uint256',
+            type: 'uint32',
+          },
+          {
+            internalType: 'uint32',
+            name: 'votesAgainst',
+            type: 'uint32',
           },
           {
             internalType: 'uint256',
-            name: 'votesAgainst',
+            name: 'minVotingTokenReq',
             type: 'uint256',
           },
           {
@@ -1751,6 +1606,144 @@ export const GOVERNANCE_FACET_ABI = [
       },
     ],
     name: 'voteForAsDelegate',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+];
+
+export const HACKATHON_FACET_ABI = [
+  {
+    inputs: [],
+    name: 'HackathonNotFound',
+    type: 'error',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: 'hackID',
+        type: 'uint256',
+      },
+    ],
+    name: 'endHackathon',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: 'hackID',
+        type: 'uint256',
+      },
+      {
+        internalType: 'address',
+        name: '_acceptedCurrency',
+        type: 'address',
+      },
+      {
+        internalType: 'address',
+        name: '_scoretoken',
+        type: 'address',
+      },
+    ],
+    name: 'initializeHackathon',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'string',
+        name: '_name',
+        type: 'string',
+      },
+      {
+        internalType: 'string',
+        name: '_description',
+        type: 'string',
+      },
+      {
+        internalType: 'uint256',
+        name: '_delay',
+        type: 'uint256',
+      },
+      {
+        internalType: 'uint256',
+        name: '_duration',
+        type: 'uint256',
+      },
+      {
+        internalType: 'uint16',
+        name: '_maxNumAdmittable',
+        type: 'uint16',
+      },
+      {
+        internalType: 'uint8',
+        name: '_winnerPercentage',
+        type: 'uint8',
+      },
+      {
+        internalType: 'uint8',
+        name: '_firstRunnerUpPercentage',
+        type: 'uint8',
+      },
+      {
+        internalType: 'uint8',
+        name: '_secondRunnerUpPercentage',
+        type: 'uint8',
+      },
+      {
+        internalType: 'uint256',
+        name: '_minScoreTokenRequiurement',
+        type: 'uint256',
+      },
+    ],
+    name: 'newHackathon',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: 'hackID',
+        type: 'uint256',
+      },
+      {
+        internalType: 'address',
+        name: '_winner',
+        type: 'address',
+      },
+      {
+        internalType: 'address',
+        name: '_firstRunnerUp',
+        type: 'address',
+      },
+      {
+        internalType: 'address',
+        name: '_secondRunnerUp',
+        type: 'address',
+      },
+    ],
+    name: 'setPrizeWinners',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: 'hackID',
+        type: 'uint256',
+      },
+    ],
+    name: 'startHackathon',
     outputs: [],
     stateMutability: 'nonpayable',
     type: 'function',

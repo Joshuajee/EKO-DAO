@@ -20,7 +20,6 @@ export default function Hackathons() {
     watch: true
   })
 
-
   return (
     <Layout>
 

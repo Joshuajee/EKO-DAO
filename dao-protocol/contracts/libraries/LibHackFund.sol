@@ -1,22 +1,24 @@
-//SPDX-License-Identifier: Unlicense
+// SPDX-License-Identifier: MIT
 
-pragma solidity 0.8.17;
+pragma solidity ^0.8.17;
 
-
-
-import "../Hackathon.sol";
-
-// track state of hackathon
-enum State{
-    Uninitialized,
-    Admitting,
-    Ongoing,
-    Ended
-}
-
+import {Hackathon} from "../Hackathon.sol";
 
 
 library LibHackFund {
+    
+    // custom errors
+    error HackathonNotFound();
+    error WrongStartAndCountInput();
+    error InvalidCountInput();
+
+    // track state of hackathon
+    enum State{
+        Uninitialized,
+        Admitting,
+        Ongoing,
+        Ended
+    }
 
     bytes32 constant HACKFUND_STORAGE_POSITION = keccak256("diamond.standard.hackfund.storage");
 
@@ -39,9 +41,9 @@ library LibHackFund {
         address winner;
         address firstRunnerUp;
         address secondRunnerUp;
-        uint winnerPercentage;
-        uint firstRunnerUpPercentage;
-        uint secondRunnerUpPercentage;
+        uint8 winnerPercentage;
+        uint8 firstRunnerUpPercentage;
+        uint8 secondRunnerUpPercentage;
         uint funding;
         uint minScoreTokenRequired;
         State state;
@@ -72,11 +74,11 @@ library LibHackFund {
 
 
     function getMapping() internal pure returns(HackathonMapping storage hackmapping) {
-         bytes32 position = HACKATHON_MAPPING;
+        bytes32 position = HACKATHON_MAPPING;
 
-         assembly {
-             hackmapping.slot := position
-         }
+        assembly {
+            hackmapping.slot := position
+        }
     }
 
     // Hackathon Facet
@@ -96,4 +98,48 @@ library LibHackFund {
         }
     }
 
+    //  function to return hackathons within a specific range
+    // function _getHackathons(
+    //     uint start,
+    //     uint8 count
+    //     ) /*existingHackathon(start)*/  internal view returns (Hack[] memory) {
+    //         // if (count > 50 || count < 0) revert InvalidCountInput();
+    //         // if (start < count) revert WrongStartAndCountInput();
+
+    //          HackathonsTracker storage hackTracker = getHackathonTracker() ;
+            
+             
+    //         Hack[] memory Hackathons = new Hack[](count);
+
+    //         uint count1;
+    //         for (uint i = start; i > (start - count); i--){
+
+    //             Hackathons[count1] = hackTracker.Hackathons[i].getHackathon();
+    //             count1++;
+    //             continue;
+    //         }
+
+    //         return Hackathons;
+    // }
+
+
 }  
+
+
+
+contract HackathonBase {
+
+    modifier existingHackathon(uint hackID) {
+        if (hackID == 0) revert LibHackFund.HackathonNotFound();
+        if (hackID > LibHackFund.getHackathonTracker().hackathonCount) revert LibHackFund.HackathonNotFound();
+        _;
+    } 
+
+    modifier isPercent(uint8 winner, uint8 first, uint8 second) {
+        if (winner + first + second != 100) revert("Percentage snot equal to 100");
+        if (winner < first) revert("First runner up cannot be rewarded more than winner");
+        if (first < second) revert("Second runner up cannot be rewarded more than First");
+        _;
+    } 
+
+}

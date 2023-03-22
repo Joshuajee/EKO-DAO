@@ -135,6 +135,10 @@ export class AdminsController {
     description: 'Admin info successfully updated',
   })
   @ApiResponse({
+    status: HttpStatus.BAD_REQUEST,
+    description: 'Bad request, when request parameters are missing or invalid',
+  })
+  @ApiResponse({
     status: HttpStatus.UNAUTHORIZED,
     description: 'Not authorized, when access token is mising or invalid',
   })
@@ -194,6 +198,6 @@ export class AdminsController {
   })
   @Post('/login')
   login(@Body() loginDto: LoginDto): { [key: string]: any } {
-    return this.authService.login(loginDto.walletAddress);
+    return this.authService.login(loginDto);
   }
 }

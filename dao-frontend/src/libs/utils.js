@@ -1,4 +1,5 @@
 import { ethers } from "ethers"
+import { isAddress } from "ethers/lib/utils.js"
 
 export const dollarFormat = (amount) => {
     return new Intl.NumberFormat('en-US', {
@@ -12,6 +13,8 @@ export const contractAddress = process.env.NEXT_PUBLIC_CONTRACT
 export const USDC = process.env.NEXT_PUBLIC_USDC
 
 export const EKONFT = process.env.NEXT_PUBLIC_EKONFT
+
+export const EKONFTCERT = process.env.NEXT_PUBLIC_EKONFTCERT
 
 export const EKOTOKEN = process.env.NEXT_PUBLIC_EKOTOKEN
 
@@ -63,6 +66,37 @@ export const convertToWEI = (amount) => {
     return Number(amount) <= 0 ? 0 : ethers.utils.parseUnits(String(amount), 'ether')
 }
 
-export const decodeByte32 = (byte32) => {
-    return ethers.utils.parseBytes32String(byte32)
+
+export const dateToTimeStamp = (date) => {
+    return new Date(date).getTime() / 1000
+}
+
+export const isAddressZero = (address) => {
+    if (address === "0x0000000000000000000000000000000000000000") return true
+    return false
+}
+
+export const winnerDetails = (hackathon, address, prizePool) => {
+
+    const { 
+        winner, firstRunnerUp, secondRunnerUp,
+        winnerPercentage, firstRunnerUpPercentage, 
+        secondRunnerUpPercentage, 
+    } = hackathon
+
+    let prize = prizePool / 100
+
+    if (winner == address) {
+        prize *= winnerPercentage 
+        return { status: 0, prize}
+    } else if (firstRunnerUp == address) {
+        prize *= firstRunnerUpPercentage
+        return { status: 1, prize}
+    } else if (secondRunnerUp == address) {
+        prize *= secondRunnerUpPercentage
+        return { status: 2, prize}
+    }
+
+    return !isAddressZero(winner) || !isAddressZero(firstRunnerUp) || !isAddress(secondRunnerUp)
+
 }

@@ -6,7 +6,7 @@ import { toast } from "react-toastify";
 import ApprovalBtn from "@/components/ui/form/ApprovalBtn";
 import Balance from "@/components/ui/form/Balance";
 import hackathonABI from "@/abi/contracts/Hackathon.sol/Hackathon.json";
-import { convertToEther, convertToWEI } from "@/libs/utils";
+import { convertToWEI } from "@/libs/utils";
 
 
 const DonationHackForm = ({hackathon, close}) => {
@@ -21,13 +21,22 @@ const DonationHackForm = ({hackathon, close}) => {
 
     const { address } = useAccount()
 
+    // const donation = useContractWrite({
+    //     mode: 'recklesslyUnprepared',
+    //     address: hackathonAddress,
+    //     abi: hackathonABI,
+    //     functionName: 'fundHackathon',
+    //     args: [convertToWEI(amount), address],
+    // })
+
     const donation = useContractWrite({
         mode: 'recklesslyUnprepared',
         address: hackathonAddress,
         abi: hackathonABI,
         functionName: 'fundHackathon',
-        args: [convertToWEI(amount)],
+        args: [(amount), address],
     })
+
 
     const submit = (e) => {
         e.preventDefault()

@@ -3,15 +3,15 @@
 
 const mintNFT = async (address) => {
 
-    const ekoNFT = await ethers.getContractAt("EkoNFT", address);
+    const ekoNFT = await ethers.getContractAt("EkoNFTCert", address);
 
-    const tokenId = await ekoNFT.safeMint("0x5103BC779fdd4799Cfd5efC6ee827F7B1D57789B");
+    const tokenId = await ekoNFT.safeMint("0x5103BC779fdd4799Cfd5efC6ee827F7B1D57789B", "CERT");
 
-    console.log("Done!", tokenId)
+    console.log("Done!")
 }
 
 if (require.main === module) {
-    mintNFT("0x3bB009bC5289D75394Bb06ecA7cAf537281E363D")
+    mintNFT("0x9BDa4DCc9F9785611ccba2593309635B6e6f3Dd1")
         .then(() => {
             process.exit(0)
         })

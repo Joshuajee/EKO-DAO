@@ -1,53 +1,86 @@
-//SPDX-License-Identifier: Unlicense
+// SPDX-License-Identifier: MIT
 
-pragma solidity 0.8.17;
+pragma solidity ^0.8.17;
 
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
+import {LibHackFund} from "./libraries/LibHackFund.sol";
 
-import "./libraries/LibHackFund.sol";
-
-interface IERC20{
-   function transfer(address to, uint amount) external  returns (bool);   
-   function balanceOf(address account) external view returns (uint);
-   function symbol() external view returns (string memory);
-   function decimals() external view returns (uint8);
-   function transferFrom(address from, address to, uint amount) external returns (bool);
-}
-
-contract Hackathon{
+contract Hackathon is Ownable{
    
 
    IERC20 Ekostable;
    IERC20 Scoretoken;
-   LibHackFund.Hack hack;
-   LibHackFund.HackathonMapping hackathonmapping;
-   LibHackFund.HackathonsTracker hackTracker;
-   bool public init = false;
+   bool init;
 
+   // Events
+   event newHackathon(
+      LibHackFund.Hack hack
+   );
+
+   event hackathonInitialized(
+      address _acceptedCurrency,
+      address _scoretoken,
+      LibHackFund.State hackathonState
+   );
+
+   event hackathonRegistration(
+      address indexed participant
+   );
+
+   event hackathonFunded(
+      address indexed funder,
+      uint indexed amount
+   );
+
+   event hackathonStarted(
+      LibHackFund.State hackathonState
+   );
+
+   event hackathonEnded(
+      LibHackFund.State hackathonState
+   );
+
+   event hackathonPrizeWinners(
+      address winner,
+      address firstRunnerUp,
+      address secondRunnerUp
+   );
    
+   event prizeWithdrawn(
+      address prizeWinner,
+      uint amountWithdrawn
+   );
 
-      //  Modifier to check requirements for registration
+   event scoreTokenRefund(
+      address indexed participant
+   ); 
+
+   //  Modifier to check requirements for registration
    modifier registrationRequirements(){
-      if (hack.state != State.Admitting) revert NotAddmitting();
+      LibHackFund.Hack storage hack = LibHackFund.getHack();
+      LibHackFund.HackathonMapping storage hackathonmapping = LibHackFund.getMapping();
+      if (hack.state != LibHackFund.State.Admitting) revert NotAddmitting();
       if (hackathonmapping.registered[hack.id][msg.sender]) revert AlreadyRegistered();
       if (hack.numOfStudent == hack.maxNumAdmittable) revert MaxStudentNumber();
       _;
    }
 
-
+   // A modifier that is used to ensure that a user can not input an empty strin
    function _noEmptiness(string memory str) private pure {
       if (bytes(str).length == 0) revert EmptyInput();
    }
 
-   // A modifier that is used to ensure that a user can not input an empty string
    modifier noEmptiness(string memory str) {
       _noEmptiness(str);
       _;
    }
 
+   // modifier to protect against address zero
    function _addressValidation(address adr) private pure {
       if (adr == address(0)) revert AddressZero();
    }
-   // modifier to protect against address zero
+
    modifier addressValidation(address adr) {
       _addressValidation(adr);
       _;
@@ -67,12 +100,10 @@ contract Hackathon{
    error HackathonEnded();
    error HackathonOngoing();
    error AlreadyWithdrawn();
-   error NotWinner();
-   error NotFirstRunnerUp();
-   error NotSecondRunnerUp();
-   error HackathonNotFound();
+   error NotPrizeWinner();
    error NotParticipant();
    error AlreadyInitialized();
+   error StartDateNotReached();
 
 
 
@@ -81,14 +112,16 @@ contract Hackathon{
       address _author,
       string memory _name,
       string memory _description, 
-      uint _startDate,
-      uint _endDate, 
+      uint _delay,
+      uint _duration, 
       uint16 _maxNumAdmittable, 
-      uint _winnerPercentage, 
-      uint _firstRunnerUpPercentage, 
-      uint _secondRunnerUpPercentage,
+      uint8 _winnerPercentage, 
+      uint8 _firstRunnerUpPercentage, 
+      uint8 _secondRunnerUpPercentage,
       uint _minScoreTokenRequiurement
       ) noEmptiness(_name) noEmptiness(_description) {
+
+      LibHackFund.Hack storage hack = LibHackFund.getHack();
       
       if (_id == 0) revert ZeroInput();
      
@@ -96,20 +129,17 @@ contract Hackathon{
 
       (_winnerPercentage < _firstRunnerUpPercentage) || (_firstRunnerUpPercentage < _secondRunnerUpPercentage)) revert PercentageError();
 
-      if (_startDate == 0 || _endDate == 0 || _maxNumAdmittable ==0 ) revert ZeroInput();
+      if (_delay == 0 || _duration == 0 || _maxNumAdmittable ==0 ) revert ZeroInput();
 
       if (_author == address(0)) revert AddressZero();
-
-      if (_startDate <= block.timestamp || _startDate >= _endDate) revert InvalidDate();
-     
    
       hack.id = _id;
       hack.hackathonAddress = address(this);
       hack.author = _author;
       hack.name = _name;
       hack.description = _description;
-      hack.startDate = _startDate;
-      hack.endDate = _endDate;
+      hack.startDate = block.timestamp + _delay;
+      hack.endDate = block.timestamp + _delay + _duration;
       hack.maxNumAdmittable = _maxNumAdmittable;
       hack.numOfStudent = 0;
       hack.winner = address(0);
@@ -120,132 +150,150 @@ contract Hackathon{
       hack.secondRunnerUpPercentage = _secondRunnerUpPercentage;
       hack.funding = 0;
       hack.minScoreTokenRequired = _minScoreTokenRequiurement;
-      hack.state = State.Uninitialized;
+      hack.state = LibHackFund.State.Uninitialized;
+      emit newHackathon(hack);
    }
 
 
    function initializeHackathon(
-      IERC20 _acceptedCurrency,
-      IERC20 _scoretoken
-      ) /*addressValidation(_acceptedCurrency) addressValidation(_scoretoken)*/ external {
+      address _acceptedCurrency,
+      address _scoretoken
+      ) onlyOwner addressValidation(_acceptedCurrency) addressValidation(_scoretoken) external {
+         LibHackFund.Hack storage hack = LibHackFund.getHack();
          if (init) revert AlreadyInitialized();
          init = true;
-         Ekostable = _acceptedCurrency;
-         Scoretoken = _scoretoken;
-         hack.state = State.Admitting;
+         Ekostable = IERC20(_acceptedCurrency) ;
+         Scoretoken = IERC20(_scoretoken);
+         hack.state = LibHackFund.State.Admitting;
+         emit hackathonInitialized(_acceptedCurrency, _scoretoken, hack.state);
    }
 
    
-   function register() registrationRequirements()  external {
+   function register(address _participant) registrationRequirements() addressValidation(_participant)  external {
+      LibHackFund.Hack storage hack = LibHackFund.getHack();
+      LibHackFund.HackathonMapping storage hackathonmapping = LibHackFund.getMapping();
       uint amount = hack.minScoreTokenRequired;
-      bool successful = Scoretoken.transferFrom(msg.sender, address(this), amount);
-      if(!successful) revert UnsuccessfulTransfer();
-      hackathonmapping.registered[hack.id][msg.sender] = true;
+      bool success = Scoretoken.transferFrom(_participant ,address(this), amount);
+      if(!success) revert UnsuccessfulTransfer();
+      hackathonmapping.registered[hack.id][_participant] = true;
       hack.numOfStudent += 1;
+      emit hackathonRegistration(_participant);
    }
 
 
-   function getHackathon() external view returns(LibHackFund.Hack memory) { 
+   function getHackathon() external pure returns(LibHackFund.Hack memory) { 
+      LibHackFund.Hack storage hack = LibHackFund.getHack();
       return hack;
    }
 
-   function getAcceptedCurrencyAndScoreToken() external view returns (IERC20, IERC20) {
-      return (Ekostable, Scoretoken);
+   function getHackathonStatus() external view returns(bool, bool, bool) { 
+      LibHackFund.HackathonMapping storage map = LibHackFund.getMapping();
+      LibHackFund.Hack storage hack = LibHackFund.getHack();
+
+      bool winner = map.winnerWithdrawn[hack.id];
+      bool first = map.firstRunnerUpWithdrawn[hack.id];
+      bool second = map.secondRunnerUpWithdrawn[hack.id]; 
+
+      return (winner, first, second);
    }
 
-
-
-   function isParticipant(address participant) external view returns (bool) {
+   function isParticipant(address participant) addressValidation(participant) external view returns (bool) {
+      LibHackFund.Hack storage hack = LibHackFund.getHack();
+      LibHackFund.HackathonMapping storage hackathonmapping = LibHackFund.getMapping();
       return hackathonmapping.registered[hack.id][participant]; 
    }
 
 
-   function fundHackathon(uint _amount) external {
-      if (hack.state == State.Ended) revert HackathonEnded();
+   function fundHackathon(uint _amount, address _funder) addressValidation(_funder) external {
+      LibHackFund.Hack storage hack = LibHackFund.getHack();
+      if (hack.state == LibHackFund.State.Ended) revert HackathonEnded();
       uint amount = _amount; 
-      bool successful = Ekostable.transferFrom(msg.sender, address(this), amount);
-      if(!successful) revert UnsuccessfulTransfer();
+      bool success = Ekostable.transferFrom(_funder, address(this), amount);
+      if(!success) revert UnsuccessfulTransfer();
       hack.funding += _amount;
+      emit hackathonFunded(_funder, _amount);
    }
 
 
-   function startHackathon() external {
-      if (hack.state == State.Ended) revert HackathonEnded();
-      hack.state = State.Ongoing;
+   function startHackathon() onlyOwner  external {
+      LibHackFund.Hack storage hack = LibHackFund.getHack();
+      if (hack.state == LibHackFund.State.Ended) revert HackathonEnded();
+      if (hack.startDate > block.timestamp) revert StartDateNotReached();
+      hack.state = LibHackFund.State.Ongoing;
+      emit hackathonStarted(hack.state);
    }
 
-
-   function endHackathon() external {
+   function endHackathon() onlyOwner external {
+      LibHackFund.Hack storage hack = LibHackFund.getHack();
       if (hack.endDate > block.timestamp) revert HackathonOngoing();
-      hack.state = State.Ended;
+      hack.state = LibHackFund.State.Ended;
+      emit hackathonEnded(hack.state);
    }
 
-   function setWinner(address _winner) addressValidation(_winner) external {
-      if (hack.state != State.Ended) revert HackathonOngoing();
-      if(hackathonmapping.winnerWithdrawn[hack.id]) revert AlreadyWithdrawn();
-      hack.winner = _winner;
-      hackathonmapping.isWinner[hack.id][_winner] = true;
-   }
+   function setPrizeWinners(
+      address _winner,
+      address _firstRunnerUp,
+      address _secondRunnerUp
+      ) onlyOwner external {
+         LibHackFund.Hack storage hack = LibHackFund.getHack();
+         LibHackFund.HackathonMapping storage hackathonmapping = LibHackFund.getMapping();
+         if (hack.state != LibHackFund.State.Ended) revert HackathonOngoing();
+         if(hackathonmapping.winnerWithdrawn[hack.id]) revert AlreadyWithdrawn();
+         if(hackathonmapping.firstRunnerUpWithdrawn[hack.id]) revert AlreadyWithdrawn();
+         if(hackathonmapping.secondRunnerUpWithdrawn[hack.id]) revert AlreadyWithdrawn(); 
+         hack.winner = _winner;
+         hackathonmapping.isWinner[hack.id][_winner] = true;
+         hack.firstRunnerUp = _firstRunnerUp;
+         hackathonmapping.isWinner[hack.id][_firstRunnerUp] = true;
+         hack.secondRunnerUp = _secondRunnerUp;
+         hackathonmapping.isWinner[hack.id][_secondRunnerUp] = true;
+         emit hackathonPrizeWinners(_winner, _firstRunnerUp, _secondRunnerUp);
+      }
 
-
-   function setFirstRunnerUp(address _firstRunnerUp) addressValidation(_firstRunnerUp) external {
-      if (hack.state != State.Ended) revert HackathonOngoing();
-      if(hackathonmapping.firstRunnerUpWithdrawn[hack.id]) revert AlreadyWithdrawn();       
-      hack.firstRunnerUp = _firstRunnerUp;
-      hackathonmapping.isWinner[hack.id][_firstRunnerUp] = true;
-   }
-
-
-   function setSecondRunnerUp(address _secondRunnerUp) addressValidation(_secondRunnerUp) external {
-      if (hack.state != State.Ended) revert HackathonOngoing();
-      if(hackathonmapping.secondRunnerUpWithdrawn[hack.id]) revert AlreadyWithdrawn();       
-      hack.secondRunnerUp = _secondRunnerUp;
-      hackathonmapping.isWinner[hack.id][_secondRunnerUp] = true;
-   } 
-
-
-   function refundScoreTokens() external {
-      if (hack.state != State.Ended) revert HackathonOngoing();
-      if(hackathonmapping.scoreTokenRefund[hack.id][msg.sender]) revert AlreadyWithdrawn();
-      if (hackathonmapping.registered[hack.id][msg.sender]) revert NotParticipant();
-
-      hackathonmapping.scoreTokenRefund[hack.id][msg.sender] = true;
+   function refundScoreTokens(address _participant) addressValidation(_participant) external {
+      LibHackFund.Hack storage hack = LibHackFund.getHack();
+      LibHackFund.HackathonMapping storage hackathonmapping = LibHackFund.getMapping();
+      if (hack.state != LibHackFund.State.Ended) revert HackathonOngoing();
+      if(hackathonmapping.scoreTokenRefund[hack.id][_participant]) revert AlreadyWithdrawn();
+      if (hackathonmapping.registered[hack.id][_participant]) revert NotParticipant();
+      hackathonmapping.scoreTokenRefund[hack.id][_participant] = true;
       uint amount = hack.minScoreTokenRequired;
-      bool successful = Scoretoken.transferFrom(address(this), msg.sender, amount);
-      if(!successful) revert UnsuccessfulTransfer();
-   }
-
-   function winnerWithdrawal() external {
-      if(!hackathonmapping.isWinner[hack.id][msg.sender]) revert NotWinner();
-      if(hackathonmapping.winnerWithdrawn[hack.id]) revert AlreadyWithdrawn();
-      uint _amount = hack.funding;
-      uint amount = (hack.winnerPercentage/100) * _amount;
-      hackathonmapping.winnerWithdrawn[hack.id] = true;
-      bool success = Ekostable.transferFrom(address(this), msg.sender, amount);
+      bool success = Scoretoken.transfer(_participant, amount);
       if(!success) revert UnsuccessfulTransfer();
+      emit scoreTokenRefund(_participant);
    }
 
 
-   function firstRunnerUpWithdrawal() external {
-      if(!hackathonmapping.isFirstRunnerUp[hack.id][msg.sender]) revert NotFirstRunnerUp();
-      if(hackathonmapping.firstRunnerUpWithdrawn[hack.id]) revert AlreadyWithdrawn();
-      uint _amount = hack.funding;
-      uint amount = (hack.firstRunnerUpPercentage/100) * _amount;
-      hackathonmapping.firstRunnerUpWithdrawn[hack.id] = true;
-      bool success = Ekostable.transferFrom(address(this), msg.sender, amount);
-      if(!success) revert UnsuccessfulTransfer();
-   }
-
-
-   function secondRunnerUpWithdrawal() external {
-      if(!hackathonmapping.isSecondRunnerUp[hack.id][msg.sender]) revert NotSecondRunnerUp();
-      if(hackathonmapping.secondRunnerUpWithdrawn[hack.id]) revert AlreadyWithdrawn();
-      uint _amount = hack.funding;
-      uint amount = (hack.secondRunnerUpPercentage/100) * _amount;
-      hackathonmapping.secondRunnerUpWithdrawn[hack.id] = true;
-      bool success = Ekostable.transferFrom(address(this), msg.sender, amount);
-      if(!success) revert UnsuccessfulTransfer();
+   function prizeWithdrawal(address _prizeWinner) addressValidation(_prizeWinner) external {
+      LibHackFund.Hack storage hack = LibHackFund.getHack();
+      LibHackFund.HackathonMapping storage hackathonmapping = LibHackFund.getMapping();
+      if (hackathonmapping.isWinner[hack.id][_prizeWinner]) {
+         if(hackathonmapping.winnerWithdrawn[hack.id]) revert AlreadyWithdrawn();
+         uint _amount = hack.funding;
+         uint amount = (hack.winnerPercentage * _amount) / 100;
+         hackathonmapping.winnerWithdrawn[hack.id] = true;
+         bool success = Ekostable.transfer(_prizeWinner, amount);
+         if(!success) revert UnsuccessfulTransfer();
+         emit prizeWithdrawn(_prizeWinner, amount);
+      }else if (hackathonmapping.isFirstRunnerUp[hack.id][_prizeWinner]){
+         if(hackathonmapping.firstRunnerUpWithdrawn[hack.id]) revert AlreadyWithdrawn();
+         uint _amount = hack.funding;
+         uint amount = (hack.firstRunnerUpPercentage * _amount) / 100;
+         hackathonmapping.firstRunnerUpWithdrawn[hack.id] = true;
+         bool success = Ekostable.transfer(_prizeWinner, amount);
+         if(!success) revert UnsuccessfulTransfer();
+         emit prizeWithdrawn(_prizeWinner, amount);
+      }else if (hackathonmapping.isSecondRunnerUp[hack.id][_prizeWinner]){
+         if(hackathonmapping.secondRunnerUpWithdrawn[hack.id]) revert AlreadyWithdrawn();
+         uint _amount = hack.funding;
+         uint amount = (hack.secondRunnerUpPercentage * _amount) / 100;
+         hackathonmapping.secondRunnerUpWithdrawn[hack.id] = true;
+         bool success = Ekostable.transfer(_prizeWinner, amount);
+         if(!success) revert UnsuccessfulTransfer();
+         emit prizeWithdrawn(_prizeWinner, amount);
+      }else{
+         revert NotPrizeWinner();
+      }
    }
     
-
 }
