@@ -47,21 +47,19 @@ const CreateProposalForm = ({close}) => {
 
         setLoading(true)
         
-
         try {
             const request = new AuthRequest("/improvement-proposals")
             
-            const response = await request.post({
-                name: "Name",
-                description: "Description",
-                delay: 604800,
-                votingDuration: 604800,
-                minVotingTokenRequired: 20
+            await request.post({
+                name,
+                description,
+                delay,
+                votingDuration: Number(duration),
+                minVotingTokenRequired: Number(minToken)
             })
 
             toast.success("Proposal Created Successfully")
-            //close()
-            console.log(response)
+            close()
 
         } catch (e) {
             console.error(e)

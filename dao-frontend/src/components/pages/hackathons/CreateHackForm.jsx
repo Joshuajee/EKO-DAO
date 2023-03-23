@@ -1,7 +1,7 @@
 import Input from "@/components/ui/form/Input"
-import { useState, useEffect } from "react"
+import { useState, useEffect, useContext } from "react"
 import wordsCount from 'words-count';
-import { contractAddress, convertToWEI, dateToTimeStamp, getDate, USDC } from "@/libs/utils"
+import { contractAddress, convertToWEI } from "@/libs/utils"
 import { useContractWrite } from "wagmi";
 import { toast } from "react-toastify";
 import LoadingButton from "@/components/ui/form/LoadingButton";
@@ -9,10 +9,16 @@ import Textarea from "@/components/ui/form/Textarea";
 import HackathonFacetABI from '@/abi/contracts/facets/HackathonFacet.sol/HackathonFacet.json';
 import Select from "@/components/ui/form/Select";
 import { durationLists } from "@/libs/constants";
+import { AuthContext } from "@/context/AuthContext";
+import AuthRequest from "@/libs/requests";
 
 const maxNumAdmittable = 50000
 
 const CreateHackForm = ({close}) => {
+
+    const { isAdminLoggedIn } = useContext(AuthContext);
+
+    const [loading, setLoading] = useState(false)
 
     const [name, setName] = useState("");
     const [description, setDescription] = useState("");
@@ -45,9 +51,38 @@ const CreateHackForm = ({close}) => {
         ],
     })
 
+    const httpCreate = async () => {
+
+        setLoading(true)
+        
+        try {
+            const request = new AuthRequest("/hackathons")
+            
+            await request.post({
+                name,
+                description,
+                delay: Number(delay),
+                duration: Number(duration),
+                maxParticipants: maxNumAdmittable,
+                winnerPercentage: Number(first),
+                firstRunnerUpPercentage: Number(second),
+                secondRunnerUpPercentage: Number(third),
+                minScoreTokenRequired: Number(minToken)
+            })
+
+            toast.success("Hackathon Created Successfully")
+            close()
+
+        } catch (e) {
+            console.error(e)
+        }
+
+        setLoading(false)
+    }
+
     const submit = (e) => {
         e.preventDefault()
-        create?.write()
+        isAdminLoggedIn ? httpCreate() : create?.write()
     }
 
     const isDisabled = () => {
@@ -123,7 +158,7 @@ const CreateHackForm = ({close}) => {
 
             </div>
 
-            <LoadingButton loading={create?.isLoading} disabled={isDisabled()} > Create Hackathon</LoadingButton>
+            <LoadingButton loading={isAdminLoggedIn ? loading : create?.isLoading} disabled={isDisabled()} > Create Hackathon</LoadingButton>
 
         </form>
     )

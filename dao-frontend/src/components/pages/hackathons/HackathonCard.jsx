@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react"
+import { useState, useEffect, useContext } from "react"
 import { links } from "@/libs/routes"
 import { useRouter } from "next/router"
 import { AiOutlineClockCircle } from "react-icons/ai"
@@ -12,6 +12,7 @@ import Badge from "@/components/ui/Badge"
 import JoinHackathon from "./JoinHackForm"
 import PrizeHack from "./PrizeHack"
 import { toast } from "react-toastify"
+import AuthRequest from "@/libs/requests"
 
 const HackathonCard = ({hackathon, expanded}) => {
 
