@@ -23,8 +23,8 @@ class AuthRequest {
 
             return res
         } catch (e) {
-            toast.error(e?.res?.data)
-            return e
+
+            throw new Error('An error occurred');
         }
     }
 
