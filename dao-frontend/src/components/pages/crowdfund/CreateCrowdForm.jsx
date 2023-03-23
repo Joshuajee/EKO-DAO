@@ -47,20 +47,30 @@ const CreateCrowdForm = ({close}) => {
 
         setLoading(true)
 
+        console.log({
+            topic: name,
+            description,
+            target: Number(target),
+            minDonation: Number(min),
+            stableCoin: USDC,
+            period: Number(duration)
+        })
+        
+
         try {
             const request = new AuthRequest("/crowdfundings")
             
             const response = await request.post({
                 topic: name,
                 description,
-                target: convertToWEIo(target),
-                minDonation: convertToWEI(min),
+                target,
+                minDonation: min,
                 stableCoin: USDC,
                 period: duration
             })
 
             toast.success("Funding Created Successfully")
-            close()
+            //close()
             console.log(response)
 
         } catch (e) {
