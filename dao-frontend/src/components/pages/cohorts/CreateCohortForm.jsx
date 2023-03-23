@@ -25,12 +25,8 @@ const CreateCohortForm = ({close}) => {
     const [id] = useState(Number(new Date()));
     const [name, setName] = useState("");
 
-    // const [startDate, setStartDate] = useState(currentDate);
-    // const [endDate, setEndDate] = useState(null);
-
-
-    const [startDate, setStartDate] = useState(Number((new Date()) / 1000) + 1000);
-    const [endDate, setEndDate] = useState(startDate + 720);
+    const [startDate, setStartDate] = useState(currentDate);
+    const [endDate, setEndDate] = useState(null);
 
     const [student, setStudent] = useState("");
     const [commitment, setCommitment] = useState("");
@@ -55,16 +51,6 @@ const CreateCohortForm = ({close}) => {
         functionName: 'newCohort',
         args: [id, name, dateToTimeStamp(startDate), dateToTimeStamp(endDate), student, convertToWEI(commitment), description],
     })
-
-    // const create = useContractWrite({
-    //     mode: 'recklesslyUnprepared',
-    //     address: contractAddress,
-    //     abi: cohortFacetABI,
-    //     functionName: 'newCohort',
-    //     args: [id, name, Math.round(startDate), Math.round(endDate), student, convertToWEI(commitment), description],
-    // })
-
-    // console.log({ startDate, endDate })
 
     const submit = async(e) => {
         e.preventDefault()

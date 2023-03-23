@@ -4,7 +4,7 @@ import adminFacetABI from "@/abi/contracts/facets/AdminFacet.sol/AdminFacet.json
 import { API_SERVER, contractAddress, logout } from "@/libs/utils";
 import axios from "axios";
 
-const HOUR = 3600
+const HOUR = 3500
 
 export const AuthContext = createContext();
 
@@ -42,7 +42,6 @@ export const AuthProvider = ({children}) => {
             }
         } else {
             setIsAdminLoginIn(false)
-            setIsAdmin(false)
         }
     }, [data, address]);
 
