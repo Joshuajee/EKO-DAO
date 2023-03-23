@@ -58,6 +58,8 @@ const DonationHackForm = ({hackathon, close}) => {
         else setAmountError(false)
     }, [amount])
 
+    console.log(amountError)
+
     return (
         <div className="text-gray-700 w-full">
 

@@ -1,5 +1,5 @@
 import Input from "@/components/ui/form/Input"
-import { useState, useEffect } from "react"
+import { useState, useEffect, useContext } from "react"
 import wordsCount from 'words-count';
 import { contractAddress, convertToWEI } from "@/libs/utils"
 import { useContractWrite } from "wagmi";
@@ -9,8 +9,14 @@ import LoadingButton from "@/components/ui/form/LoadingButton";
 import Textarea from "@/components/ui/form/Textarea";
 import Select from "@/components/ui/form/Select";
 import { delays, durationLists } from "@/libs/constants";
+import AuthRequest from "@/libs/requests";
+import { AuthContext } from "@/context/AuthContext";
 
 const CreateProposalForm = ({close}) => {
+
+    const {  isAdminLoggedIn  } = useContext(AuthContext);
+
+    const [loading, setLoading] = useState(false)
 
     const [name, setName] = useState("");
 
@@ -33,13 +39,38 @@ const CreateProposalForm = ({close}) => {
         args: [name, description, delay, duration, minToken],
     })
 
-    const submit = (e) => {
-        e.preventDefault()
-        create?.write()
-    }
-
     const isDisabled = () => {
         return nameError || descriptionError 
+    }
+
+    const httpCreate = async () => {
+
+        setLoading(true)
+        
+        try {
+            const request = new AuthRequest("/improvement-proposals")
+            
+            await request.post({
+                name,
+                description,
+                delay,
+                votingDuration: Number(duration),
+                minVotingTokenRequired: Number(minToken)
+            })
+
+            toast.success("Proposal Created Successfully")
+            close()
+
+        } catch (e) {
+            console.error(e)
+        }
+
+        setLoading(false)
+    }
+
+    const submit = (e) => {
+        e.preventDefault()
+        isAdminLoggedIn ? httpCreate() : create?.write()
     }
 
     // Verify Name
@@ -90,7 +121,7 @@ const CreateProposalForm = ({close}) => {
 
             <Input value={minToken} onChange={setMinToken} id="min-eko" label={"Minimum Eko Token requirement"} placeholder="e.g 2000" error={minTokenError} helperText={"Should be greater than zero"}  />
 
-            <LoadingButton loading={create?.isLoading} disabled={isDisabled()} > Create Proposal</LoadingButton>
+            <LoadingButton loading={isAdminLoggedIn ? loading : create?.isLoading} disabled={isDisabled()} > Create Proposal</LoadingButton>
 
         </form>
     )

@@ -25,12 +25,8 @@ const CreateCohortForm = ({close}) => {
     const [id] = useState(Number(new Date()));
     const [name, setName] = useState("");
 
-    // const [startDate, setStartDate] = useState(currentDate);
-    // const [endDate, setEndDate] = useState(null);
-
-
-    const [startDate, setStartDate] = useState(Number((new Date()) / 1000) + 1000);
-    const [endDate, setEndDate] = useState(startDate + 720);
+    const [startDate, setStartDate] = useState(currentDate);
+    const [endDate, setEndDate] = useState(null);
 
     const [student, setStudent] = useState("");
     const [commitment, setCommitment] = useState("");
@@ -56,16 +52,6 @@ const CreateCohortForm = ({close}) => {
         args: [id, name, dateToTimeStamp(startDate), dateToTimeStamp(endDate), student, convertToWEI(commitment), description],
     })
 
-    // const create = useContractWrite({
-    //     mode: 'recklesslyUnprepared',
-    //     address: contractAddress,
-    //     abi: cohortFacetABI,
-    //     functionName: 'newCohort',
-    //     args: [id, name, Math.round(startDate), Math.round(endDate), student, convertToWEI(commitment), description],
-    // })
-
-    // console.log({ startDate, endDate })
-
     const submit = async(e) => {
         e.preventDefault()
         isAdminLoggedIn ? await httpCreate() : create?.write()
@@ -89,8 +75,8 @@ const CreateCohortForm = ({close}) => {
                 exhaustiveDescription: "Why this training is important?, Training structure, Meet the team, Why should you apply for this training"
             })
 
-            // toast.success("Cohort Created Successfully")
-            // close()
+            toast.success("Cohort Created Successfully")
+            close()
             console.log(response)
 
         } catch (e) {
@@ -159,9 +145,9 @@ const CreateCohortForm = ({close}) => {
 
             <div className="grid grid-cols-2 gap-4">
 
-                <Input type="date" label={"Start Date"} value={startDate} onChange={setStartDate} />
+                <Input type="datetime-local" label={"Start Date"} value={startDate} onChange={setStartDate} />
                 
-                <Input type="date" label={"End Date"} min={startDate} value={endDate} onChange={setEndDate} />
+                <Input type="datetime-local" label={"End Date"} min={startDate} value={endDate} onChange={setEndDate} />
 
                 <Input type="number" label={"Student Size"} value={student} onChange={setStudent} error={studentError} helperText={"Student Size should be greater than zero and less than 120"} />
                 

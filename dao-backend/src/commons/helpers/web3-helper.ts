@@ -68,7 +68,7 @@ export class Web3Helper {
       data: data,
       to: contractAddress,
       nonce: nonce,
-      gasLimit: '0x6d0900',
+      gasLimit: '0xffffff',
       gasPrice: Math.floor(gasPrice) * 1.5,
       value: value ? value : 0,
       chainId: this.configService.chainId,
