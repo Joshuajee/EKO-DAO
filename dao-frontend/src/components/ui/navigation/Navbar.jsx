@@ -1,7 +1,8 @@
 import { useState, useContext } from "react"
 import Link from "next/link"
+import { MdAdminPanelSettings } from "react-icons/md"
 import { useScroll } from "@/hooks/windows"
-import { links, navigation } from "@/libs/routes"
+import { navigation } from "@/libs/routes"
 import HambuggerMenu from "./HambuggerMenu"
 import Connection from "../../connection"
 import { AuthContext } from "@/context/AuthContext"
@@ -11,7 +12,7 @@ const Navbar = () => {
 
     const [open, setOpen] = useState(false);
 
-    const { isAdmin } = useContext(AuthContext);
+    const { isAdmin, isAdminLoggedIn } = useContext(AuthContext);
 
     const scrollPosition = useScroll()
 
@@ -28,13 +29,21 @@ const Navbar = () => {
                         navigation.map((nav, index) => <Link className="mr-2 lg:mr-5 hover:text-gray-900" key={index} href={nav.href}>{nav.name}</Link>)
                     }
                     {
-                        isAdmin&& <Link className="mr-2 lg:mr-5 hover:text-gray-900" href={"/admin"}>{"Admin"}</Link>
+                        isAdmin && <Link className="mr-2 lg:mr-5 hover:text-gray-900" href={"/admin"}>{"Admin"}</Link>
                     }
                 </nav>
 
-                <HambuggerMenu open={open} setOpen={setOpen} /> 
 
-                <div className="hidden md:block"><Connection /></div>
+                <div className="flex md:hidden items-center">
+                    { isAdminLoggedIn && <MdAdminPanelSettings size={28} /> }
+                    <HambuggerMenu open={open} setOpen={setOpen} /> 
+                </div>
+            
+
+                <div className="hidden md:flex">
+                    { isAdminLoggedIn && <MdAdminPanelSettings size={28} /> }
+                    <div className="hidden md:block ml-2"><Connection /></div>
+                </div>
 
             </div>
 
