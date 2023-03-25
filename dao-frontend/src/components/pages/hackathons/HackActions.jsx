@@ -1,14 +1,15 @@
-import { contractAddress, convertToEther, dollarFormat, EKOTOKEN, USDC } from "@/libs/utils";
-import { memo, useEffect, useContext } from "react";
-import { useAccount, useContractRead, useContractWrite } from "wagmi";
-import ProjectABI from '@/abi/contracts/CrowdFundProject.sol/Project.json';
+import { contractAddress, EKOTOKEN, USDC } from "@/libs/utils";
+import { memo, useEffect, useContext, useState } from "react";
+import { useAccount, useContractWrite } from "wagmi";
 import { toast } from "react-toastify";
 import { AuthContext } from "@/context/AuthContext";
 import LoadingButton from "@/components/ui/form/LoadingButton";
-import HackathonABI from "@/abi/contracts/Hackathon.sol/Hackathon.json";
 import HackathonFacetABI from '@/abi/contracts/facets/HackathonFacet.sol/HackathonFacet.json';
+import AuthRequest from "@/libs/requests";
 
 const HackActions = ({id, status, contract, isRigistered}) => {
+
+    const [initLoading, setInitLoading] = useState(false);
 
     const { address } = useAccount()
 
@@ -27,6 +28,30 @@ const HackActions = ({id, status, contract, isRigistered}) => {
         functionName: 'initializeHackathon',
         args: [id, USDC, EKOTOKEN]
     })
+
+    const initHackHttp = async () => {
+
+        setInitLoading(true)
+
+        try {
+
+            const request = new AuthRequest(`/hackathons/init/${id}`)
+            
+            const response = await request.post({
+                stableCoin: USDC,
+                scoreToken: EKOTOKEN
+            })
+
+            toast.success("Hackathon Initialize Successfully")
+  
+            console.log(response)
+
+        } catch (e) {
+            console.error(e)
+        }
+
+        setInitLoading(false)
+    }
     
     useEffect(() => {
         if (initHack.isError) 
@@ -59,8 +84,8 @@ const HackActions = ({id, status, contract, isRigistered}) => {
                     <div className="flex justify-center">
                         <div className="w-60">
                             <LoadingButton
-                                onClick={initHack?.write}
-                                color="blue" loading={initHack?.isLoading}> 
+                                onClick={isAdminLoggedIn ? initHackHttp : initHack?.write}
+                                color="blue" loading={isAdminLoggedIn ? initLoading : initHack?.isLoading}> 
                                 Init Hackathon
                             </LoadingButton>
                         </div>
