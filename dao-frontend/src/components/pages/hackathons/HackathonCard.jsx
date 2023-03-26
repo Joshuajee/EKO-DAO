@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react"
+import { useState, useEffect, useContext } from "react"
 import { links } from "@/libs/routes"
 import { useRouter } from "next/router"
 import { AiOutlineClockCircle } from "react-icons/ai"
@@ -12,6 +12,7 @@ import Badge from "@/components/ui/Badge"
 import JoinHackathon from "./JoinHackForm"
 import PrizeHack from "./PrizeHack"
 import { toast } from "react-toastify"
+import AuthRequest from "@/libs/requests"
 
 const HackathonCard = ({hackathon, expanded}) => {
 
@@ -130,9 +131,9 @@ const HackathonCard = ({hackathon, expanded}) => {
 
             </div>
 
-            <HackActions id={id} hackStatus={hackStatus} status={state} contract={hackathonAddress} isRigistered={isRigistered?.data} expanded={expanded} />
+            {   expanded  &&  <HackActions id={id} hackStatus={hackStatus} status={state} contract={hackathonAddress} isRigistered={isRigistered?.data} expanded={expanded} /> }
 
-            { expanded &&  <PrizeHack expanded={expanded} hackathon={hackathon} prizePool={prizePool} id={id}  /> }
+            {   expanded  &&  <PrizeHack expanded={expanded} hackathon={hackathon} prizePool={prizePool} id={id}  /> }
 
             <ModalWrapper open={openFund} handleClose={handleFundClose} title="Donation Form">
                 <DonationHackForm hackathon={hackathon} close={handleFundClose} />

@@ -60,18 +60,17 @@ const CreateCrowdForm = ({close}) => {
         try {
             const request = new AuthRequest("/crowdfundings")
             
-            const response = await request.post({
+            await request.post({
                 topic: name,
                 description,
-                target,
-                minDonation: min,
+                target: Number(target),
+                minDonation: Number(min),
                 stableCoin: USDC,
-                period: duration
+                period: Number(duration)
             })
 
             toast.success("Funding Created Successfully")
-            //close()
-            console.log(response)
+            close()
 
         } catch (e) {
             console.error(e)
