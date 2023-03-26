@@ -1,8 +1,7 @@
 import { createContext, useState, useEffect, useCallback } from "react";
 import { useAccount, useContractRead } from "wagmi";
 import adminFacetABI from "@/abi/contracts/facets/AdminFacet.sol/AdminFacet.json"
-import { API_SERVER, contractAddress, logout } from "@/libs/utils";
-import axios from "axios";
+import { contractAddress, logout } from "@/libs/utils";
 
 const HOUR = 3500
 
@@ -48,7 +47,7 @@ export const AuthProvider = ({children}) => {
 
 
     return(
-        <AuthContext.Provider value={{isAdmin, isAdminLoggedIn}}>
+        <AuthContext.Provider value={{isAdmin, isAdminLoggedIn, setIsAdminLoginIn}}>
             {children}
         </AuthContext.Provider>
     )

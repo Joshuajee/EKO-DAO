@@ -20,6 +20,8 @@ const CohortCard = ({cohort, contract, expanded}) => {
         startDate, endDate, description, contractAddress
     } = cohort
 
+    console.log("=== ", cohort?.startDate?.toString(), cohort?.startDate?.toString())
+
     const { isConnected, address } = useAccount()
     const [cohortStatus, setCohortStatus] = useState()
     const [startTime, setStartTime] = useState(0)
@@ -52,10 +54,10 @@ const CohortCard = ({cohort, contract, expanded}) => {
             case 1:
                 if (startTime < currentTime)
                     setCohortStatus({color: "blue", status: "Enrollment is open", state: 1})
-                if (deadline > currentTime)
+                else if (deadline > currentTime)
                     setCohortStatus({color: "green", status: "Cohort in session", state: 2})
                 if (deadline < currentTime)
-                    setCohortStatus({color: "yellow", status: "Cohort has ended"})
+                    setCohortStatus({color: "yellow", status: "Cohort has ended", state: 3})
                 break
             case 2:
                 setCohortStatus({color: "green", status: "Successful"})
@@ -100,7 +102,7 @@ const CohortCard = ({cohort, contract, expanded}) => {
 
                 { !expanded ? <button onClick={() => router.push(`${links.cohorts}/${contractAddress}`)} className="text-gray-600">View Details </button> : <div> </div> }
 
-                { (expanded && !data && cohortStatus?.state === 1) && <button onClick={handleClick} className="bg-blue-600 hover:bg-blue-800 rounded-lg px-8 py-2 text-white"> Enroll </button> }
+                { (expanded && !data && cohortStatus?.state === 1 ) && <button onClick={handleClick} className="bg-blue-600 hover:bg-blue-800 rounded-lg px-8 py-2 text-white"> Enroll </button> }
 
             </div>
 
@@ -108,7 +110,7 @@ const CohortCard = ({cohort, contract, expanded}) => {
                 <EnrollmentForm cohort={cohort} contract={contract} close={handleClose} />
             </ModalWrapper>
 
-            { expanded && <CohortActions status={status} contract={contract} isStudent={data} commitment={commitment.toString()} /> }
+            { expanded && <CohortActions state={cohortStatus?.state} status={status} contract={contract} isStudent={data} commitment={commitment.toString()} /> }
             
         </div>
     )
