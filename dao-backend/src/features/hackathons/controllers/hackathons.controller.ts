@@ -14,6 +14,7 @@ import {
   ApiBearerAuth,
   ApiParam,
 } from '@nestjs/swagger';
+import { HackathonWinnersDto } from '../dtos/hackathon-winners.dto';
 import { HackathonDto } from '../dtos/hackathon.dto';
 import { InitHackathonDto } from '../dtos/init-hackathon.dto';
 import { HackathonsService } from '../services/hackathons.service';
@@ -134,5 +135,36 @@ export class HackathonsController {
   @Post('/end/:id')
   end(@Param('id') id: number): Promise<void> {
     return this.hackathonsService.end(id);
+  }
+
+  @ApiOperation({
+    summary: 'Add Ekolance hackathon winners',
+  })
+  @ApiParam({
+    description: 'Ekolance hackathon id',
+    name: 'id',
+    required: true,
+    type: 'number',
+  })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Winners successfully added',
+  })
+  @ApiResponse({
+    status: HttpStatus.BAD_REQUEST,
+    description: 'Bad request, when request parameters are missing or invalid',
+  })
+  @ApiResponse({
+    status: HttpStatus.UNAUTHORIZED,
+    description: 'Not authorized, when access token is mising or invalid',
+  })
+  @ApiBearerAuth('access-token')
+  @UseGuards(AuthGuard('jwt'))
+  @Post('/winners/:id')
+  updateStatus(
+    @Param('id') id: number,
+    @Body() hackathonWinnersDto: HackathonWinnersDto,
+  ): Promise<void> {
+    return this.hackathonsService.addWinners(id, hackathonWinnersDto);
   }
 }

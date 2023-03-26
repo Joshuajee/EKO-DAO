@@ -27,7 +27,6 @@ contract Cohort is Ownable {
   NOT_INITILIZED,
   INITIALIZED,
   CLOSED,
-  STARTED,
   ENDED
   }
 
@@ -92,7 +91,7 @@ contract Cohort is Ownable {
 
   function enroll(
     uint256 amount
-  ) public payable enrollmentRequirementsFulfilled(amount) {
+  ) public enrollmentRequirementsFulfilled(amount) {
     stableCoin.transferFrom(msg.sender, address(this), amount);
     students[msg.sender] = true;
     cohort.studentsCount++;
@@ -102,7 +101,7 @@ contract Cohort is Ownable {
   function refund(
     uint256 amount,
     uint256 _certificateId
-  ) public payable refundRequirementsFulfilled(amount, _certificateId) {
+  ) public refundRequirementsFulfilled(amount, _certificateId) {
     ekoStable.transferFrom(msg.sender, address(this), amount);
     ekoStable.burn(amount);
     stableCoin.transfer(msg.sender, amount);
@@ -118,9 +117,6 @@ contract Cohort is Ownable {
     }
     if(cohort.status == _status){
       revert('Cohort already has the same status');
-    }
-    if(_status ==  Status.STARTED && block.timestamp <= cohort.startDate){
-      revert ('Start date not reached yet');
     }
     if(_status ==  Status.ENDED && block.timestamp <= cohort.endDate){
       revert ('End date not reached yet');

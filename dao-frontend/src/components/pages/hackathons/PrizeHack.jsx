@@ -4,16 +4,19 @@ import { contractAddress, dollarFormat, isAddressZero, winnerDetails } from "@/l
 import ModalWrapper from "@/components/ui/ModalWrapper";
 import AwardForm from "./AwardForm";
 import LoadingButtonSM from "@/components/ui/form/LoadingButtonSM";
-import hackathonABI from "@/abi/contracts/Hackathon.sol/Hackathon.json";
 import { useAccount, useContractRead, useContractWrite } from "wagmi";
 import { AuthContext } from "@/context/AuthContext";
 import LoadingButton from "@/components/ui/form/LoadingButton";
 import HackathonABI from '@/abi/contracts/Hackathon.sol/Hackathon.json';
 import HackathonFacetABI from '@/abi/contracts/facets/HackathonFacet.sol/HackathonFacet.json';
+import AuthRequest from "@/libs/requests";
 
 const PrizeHack = ({hackathon, prizePool}) => {
 
-    const { isAdmin } = useContext(AuthContext);
+
+    const [endHackLoading, setEndHackLoading] = useState(false);
+
+    const { isAdmin, isAdminLoggedIn } = useContext(AuthContext);
     const { address } = useAccount()
     const [prizeStatus, setPrizeStatus] = useState(null)
     const [showPrize, setShowPrize] = useState(null)
@@ -55,6 +58,25 @@ const PrizeHack = ({hackathon, prizePool}) => {
         abi: HackathonABI,
         functionName: 'getHackathonStatus',
     })
+
+    const endHackHttp = async () => {
+
+        setEndHackLoading(true)
+
+        try {
+
+            const request = new AuthRequest(`/hackathons/end/${id}`)
+            
+            await request.post({})
+
+            toast.success("Hackathon Ended Successfully")
+
+        } catch (e) {
+            console.error(e)
+        }
+
+        setEndHackLoading(false)
+    }
 
     useEffect(() => {
         if (endHack.isSuccess) {
@@ -106,9 +128,9 @@ const PrizeHack = ({hackathon, prizePool}) => {
     const endHackathon = (
         <div>
             <LoadingButtonSM
-                loading={endHack.isLoading}
-                onClick={endHack?.write}>
-                End Game
+                loading={isAdminLoggedIn ?  endHackLoading : endHack.isLoading}
+                onClick={isAdminLoggedIn ? endHackHttp : endHack?.write}>
+                End Hackathon
             </LoadingButtonSM>
         </div>
     )
