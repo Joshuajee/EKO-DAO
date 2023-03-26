@@ -7,6 +7,7 @@ import { HACKATHON_FACET_ABI } from 'src/commons/constants/abis';
 import { HACKATHON_ALREADY_INITIALIZED } from 'src/commons/constants/messages';
 import { Web3Helper } from 'src/commons/helpers/web3-helper';
 import { ConfigurationService } from 'src/config/configuration.service';
+import { HackathonWinnersDto } from '../dtos/hackathon-winners.dto';
 import { HackathonDto } from '../dtos/hackathon.dto';
 import { InitHackathonDto } from '../dtos/init-hackathon.dto';
 
@@ -93,6 +94,29 @@ export class HackathonsService {
       const HackathonFacet = this.getHackathonFacet();
       const encodedData: string = HackathonFacet.methods
         .endHackathon(id)
+        .encodeABI();
+      await this.web3Helper.callContract(
+        encodedData,
+        this.configService.diamondAddress,
+        this.configService.superAdminAddress,
+        this.configService.superAdminPrivateKey,
+      );
+    } catch (error) {
+      console.error(error);
+      throw new BadRequestException();
+    }
+  }
+
+  async addWinners(id: number, hackathonWinnersDto: HackathonWinnersDto) {
+    try {
+      const HackathonFacet = this.getHackathonFacet();
+      const encodedData: string = HackathonFacet.methods
+        .setPrizeWinners(
+          id,
+          hackathonWinnersDto.winner,
+          hackathonWinnersDto.firstRunnerUp,
+          hackathonWinnersDto.secondRunnerUp,
+        )
         .encodeABI();
       await this.web3Helper.callContract(
         encodedData,

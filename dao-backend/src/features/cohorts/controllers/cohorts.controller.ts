@@ -4,7 +4,6 @@ import {
   Get,
   HttpStatus,
   Param,
-  Patch,
   Post,
   UseGuards,
 } from '@nestjs/common';
@@ -140,7 +139,7 @@ export class CohortsController {
   })
   @ApiBearerAuth('access-token')
   @UseGuards(AuthGuard('jwt'))
-  @Patch('/update-status/:address')
+  @Post('/update-status/:address')
   updateStatus(
     @Param('address') address: string,
     @Body() updateCohortStatusDto: UpdateCohortStatusDto,

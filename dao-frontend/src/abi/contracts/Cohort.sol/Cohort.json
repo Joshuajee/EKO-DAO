@@ -140,7 +140,7 @@
     ],
     "name": "enroll",
     "outputs": [],
-    "stateMutability": "payable",
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
@@ -273,7 +273,7 @@
     ],
     "name": "refund",
     "outputs": [],
-    "stateMutability": "payable",
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   {

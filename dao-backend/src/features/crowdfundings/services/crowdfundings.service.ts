@@ -11,7 +11,7 @@ export class CrowdfundingsService {
     private readonly web3Helper: Web3Helper,
   ) {}
 
-  async create(crowdfundingDto: CrowdfundingDto) {
+  async create(crowdfundingDto: CrowdfundingDto): Promise<void> {
     try {
       const CrowdfundingFacet = this.getCrowdfundingFacet();
       const target: string = this.web3Helper.toWei(
@@ -29,6 +29,24 @@ export class CrowdfundingsService {
           crowdfundingDto.stableCoin,
           crowdfundingDto.period,
         )
+        .encodeABI();
+      await this.web3Helper.callContract(
+        encodedData,
+        this.configService.diamondAddress,
+        this.configService.superAdminAddress,
+        this.configService.superAdminPrivateKey,
+      );
+    } catch (error) {
+      console.error(error);
+      throw new BadRequestException();
+    }
+  }
+
+  async withdraw(id: number): Promise<void> {
+    try {
+      const CrowdfundingFacet = this.getCrowdfundingFacet();
+      const encodedData: string = CrowdfundingFacet.methods
+        .adminWithdraw(id)
         .encodeABI();
       await this.web3Helper.callContract(
         encodedData,
