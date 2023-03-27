@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import Input from "@/components/ui/form/Input"
 import { useContractWrite } from "wagmi";
 import { isAddress } from "ethers/lib/utils.js";
@@ -6,9 +6,15 @@ import { toast } from "react-toastify";
 import LoadingButton from "@/components/ui/form/LoadingButton";
 import HackathonFacetABI from '@/abi/contracts/facets/HackathonFacet.sol/HackathonFacet.json';
 import { contractAddress } from "@/libs/utils";
+import AuthRequest from "@/libs/requests";
+import { AuthContext } from "@/context/AuthContext";
 
 
 const AwardForm = ({id, contract, close}) => {
+
+    const { isAdminLoggedIn } = useContext(AuthContext);
+
+    const [loading, setLoading] = useState(false)
 
     const [winner, setWinner] = useState(null);
     const [second, setSecond] = useState(null);
@@ -21,6 +27,31 @@ const AwardForm = ({id, contract, close}) => {
         functionName: 'setPrizeWinners',
         args: [id, winner, second, third],
     })
+
+    const awardPrizeHttp = async () => {
+
+        setLoading(true)
+
+        try {
+
+            const request = new AuthRequest(`/hackathons/winners/${id}`)
+            
+            await request.post({
+                winner,
+                firstRunnerUp: second,
+                secondRunnerUp: third
+            })
+
+            toast.success("Awarded Successfully")
+
+            close()
+
+        } catch (e) {
+            console.error(e)
+        }
+
+        setLoading(false)
+    }
 
     useEffect(() => {
         if (award.isSuccess) {
@@ -56,8 +87,8 @@ const AwardForm = ({id, contract, close}) => {
             <LoadingButton
                 color="red"
                 disabled={disabled}
-                onClick={award?.write}
-                loading={award?.isLoading}>
+                onClick={isAdminLoggedIn ? awardPrizeHttp : award?.write}
+                loading={isAdminLoggedIn ? loading : award?.isLoading}>
                 Award
             </LoadingButton>
 

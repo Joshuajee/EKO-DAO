@@ -16,7 +16,7 @@ export default function AdminLogin() {
     const account = useAccount()
     const router = useRouter()
 
-    const  { setAdminLoggedIn } = useContext(AuthContext);
+    const  { setIsAdminLoggedIn } = useContext(AuthContext);
 
     const [isLoading, setIsloading] = useState()
     const [address, setAddress] = useState();
@@ -35,7 +35,9 @@ export default function AdminLogin() {
             localStorage.setItem("auth-token", res?.data?.access_token)
             localStorage.setItem("auth-time", Number(new Date()))
 
-            setAdminLoggedIn(true)
+            setIsAdminLoggedIn(true)
+
+            console.log(res)
 
             setTimeout(() => {
                 router.push("/admin")
