@@ -27,7 +27,7 @@ const HambuggerMenu = ({open, setOpen}) => {
     const { address, isConnected } = useAccount()
     const { disconnect } = useDisconnect()
 
-    const { isAdminLoggedIn } = useContext(AuthContext);
+    const { isAdmin } = useContext(AuthContext);
 
     const handleClick = () => {
         setOpen(!open)
@@ -60,7 +60,7 @@ const HambuggerMenu = ({open, setOpen}) => {
                         }
 
                         {
-                            isAdminLoggedIn && <NavLink name={"Admin"} link={"/admin"} icon={<RiAdminFill size={24} />} />
+                            isAdmin && <NavLink name={"Admin"} link={"/admin"} icon={<RiAdminFill size={24} />} />
                         }
 
                         { isConnected && (
