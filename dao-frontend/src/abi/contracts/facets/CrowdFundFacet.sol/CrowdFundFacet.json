@@ -141,9 +141,9 @@
   {
     "inputs": [
       {
-        "internalType": "uint256",
-        "name": "_projectIndex",
-        "type": "uint256"
+        "internalType": "address",
+        "name": "projectAddress",
+        "type": "address"
       }
     ],
     "name": "adminWithdraw",

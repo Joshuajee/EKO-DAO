@@ -322,139 +322,102 @@ export const COHORT_FACET_ABI = [
 
 export const CROWDFUNDING_FACET_ABI = [
   {
-    inputs: [
-      {
-        internalType: 'uint256',
-        name: 'projectIndex',
-        type: 'uint256',
-      },
-    ],
-    name: 'ProjectDoesNotExist',
+    inputs: [],
+    name: 'AlreadyInitialized',
     type: 'error',
   },
   {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: false,
-        internalType: 'address',
-        name: 'projectAddress',
-        type: 'address',
-      },
-      {
-        indexed: false,
-        internalType: 'uint256',
-        name: 'contributedAmount',
-        type: 'uint256',
-      },
-      {
-        indexed: true,
-        internalType: 'address',
-        name: 'contributor',
-        type: 'address',
-      },
-    ],
-    name: 'ContributionReceived',
-    type: 'event',
+    inputs: [],
+    name: 'AlreadyVoted',
+    type: 'error',
   },
   {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: false,
-        internalType: 'address',
-        name: 'projectAddress',
-        type: 'address',
-      },
-      {
-        indexed: false,
-        internalType: 'uint256',
-        name: 'amountWithdrawn',
-        type: 'uint256',
-      },
-      {
-        indexed: true,
-        internalType: 'address',
-        name: 'withdrawer',
-        type: 'address',
-      },
-    ],
-    name: 'FundWithdrawn',
-    type: 'event',
+    inputs: [],
+    name: 'CallerNotDelegate',
+    type: 'error',
   },
   {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: false,
-        internalType: 'address',
-        name: 'projectContractAddress',
-        type: 'address',
-      },
-      {
-        indexed: false,
-        internalType: 'string',
-        name: 'title',
-        type: 'string',
-      },
-      {
-        indexed: false,
-        internalType: 'string',
-        name: 'desc',
-        type: 'string',
-      },
-      {
-        indexed: false,
-        internalType: 'uint256',
-        name: 'targetFund',
-        type: 'uint256',
-      },
-      {
-        indexed: false,
-        internalType: 'uint256',
-        name: 'minContribution',
-        type: 'uint256',
-      },
-      {
-        indexed: false,
-        internalType: 'uint256',
-        name: 'startDate',
-        type: 'uint256',
-      },
-      {
-        indexed: false,
-        internalType: 'uint256',
-        name: 'endDate',
-        type: 'uint256',
-      },
-    ],
-    name: 'ProjectStarted',
-    type: 'event',
+    inputs: [],
+    name: 'EmptyInput',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'InsufficientBalance',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'InvalidAddress',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'InvalidCountInput',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'InvalidProposal',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'StartLessThanCount',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'VotingNotStarted',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'VotingPeriodOver',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'ZeroInput',
+    type: 'error',
   },
   {
     inputs: [
       {
         internalType: 'uint256',
-        name: '_projectIndex',
+        name: 'Proposal_ID',
         type: 'uint256',
       },
       {
         internalType: 'address',
-        name: '_user',
+        name: '_delegate',
         type: 'address',
       },
     ],
-    name: 'IsUserADonor',
+    name: 'addVotingDelegate',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: 'Proposal_ID',
+        type: 'uint256',
+      },
+      {
+        internalType: 'address',
+        name: 'voter',
+        type: 'address',
+      },
+    ],
+    name: 'checkIfVoted',
     outputs: [
       {
         internalType: 'bool',
-        name: 'status',
+        name: '',
         type: 'bool',
-      },
-      {
-        internalType: 'uint256',
-        name: 'amount',
-        type: 'uint256',
       },
     ],
     stateMutability: 'view',
@@ -464,49 +427,11 @@ export const CROWDFUNDING_FACET_ABI = [
     inputs: [
       {
         internalType: 'uint256',
-        name: '_projectIndex',
+        name: 'Proposal_ID',
         type: 'uint256',
       },
     ],
-    name: 'adminWithdraw',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'string',
-        name: '_projectTopic',
-        type: 'string',
-      },
-      {
-        internalType: 'string',
-        name: '_description',
-        type: 'string',
-      },
-      {
-        internalType: 'uint256',
-        name: '_targetFund',
-        type: 'uint256',
-      },
-      {
-        internalType: 'uint256',
-        name: '_minimumDonation',
-        type: 'uint256',
-      },
-      {
-        internalType: 'contract IERC20',
-        name: '_acceptedCurrency',
-        type: 'address',
-      },
-      {
-        internalType: 'uint256',
-        name: '_projectPeriod',
-        type: 'uint256',
-      },
-    ],
-    name: 'createCampaign',
+    name: 'deleteProposal',
     outputs: [],
     stateMutability: 'nonpayable',
     type: 'function',
@@ -515,16 +440,11 @@ export const CROWDFUNDING_FACET_ABI = [
     inputs: [
       {
         internalType: 'uint256',
-        name: '_projectIndex',
-        type: 'uint256',
-      },
-      {
-        internalType: 'uint256',
-        name: '_tokenAmount',
+        name: 'Proposal_ID',
         type: 'uint256',
       },
     ],
-    name: 'donate',
+    name: 'endVoting',
     outputs: [],
     stateMutability: 'nonpayable',
     type: 'function',
@@ -533,70 +453,22 @@ export const CROWDFUNDING_FACET_ABI = [
     inputs: [
       {
         internalType: 'uint256',
-        name: '_projectIndex',
+        name: 'start',
         type: 'uint256',
       },
-    ],
-    name: 'donorWithdraw',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
-    inputs: [
       {
         internalType: 'uint256',
-        name: 'X',
+        name: 'count',
         type: 'uint256',
       },
     ],
-    name: 'getLastXProjectDetails',
+    name: 'getLost',
     outputs: [
       {
         components: [
           {
-            internalType: 'address',
-            name: 'admin',
-            type: 'address',
-          },
-          {
-            internalType: 'address',
-            name: 'projectAddress',
-            type: 'address',
-          },
-          {
-            internalType: 'uint256',
-            name: 'targetFund',
-            type: 'uint256',
-          },
-          {
-            internalType: 'uint256',
-            name: 'totalDonationRecieved',
-            type: 'uint256',
-          },
-          {
-            internalType: 'uint256',
-            name: 'minimumDonation',
-            type: 'uint256',
-          },
-          {
-            internalType: 'uint256',
-            name: 'amountWithdrawn',
-            type: 'uint256',
-          },
-          {
-            internalType: 'uint256',
-            name: 'fundBalance',
-            type: 'uint256',
-          },
-          {
-            internalType: 'uint256',
-            name: 'endDate',
-            type: 'uint256',
-          },
-          {
             internalType: 'string',
-            name: 'projectTopic',
+            name: 'name',
             type: 'string',
           },
           {
@@ -605,22 +477,52 @@ export const CROWDFUNDING_FACET_ABI = [
             type: 'string',
           },
           {
+            internalType: 'address',
+            name: 'author',
+            type: 'address',
+          },
+          {
             internalType: 'uint256',
-            name: 'noOfDonors',
+            name: 'id',
             type: 'uint256',
           },
           {
-            internalType: 'enum Status',
-            name: 'status',
-            type: 'uint8',
+            internalType: 'uint256',
+            name: 'creationTime',
+            type: 'uint256',
           },
           {
-            internalType: 'address[]',
-            name: 'donors',
-            type: 'address[]',
+            internalType: 'uint256',
+            name: 'votingDelay',
+            type: 'uint256',
+          },
+          {
+            internalType: 'uint256',
+            name: 'votingPeriod',
+            type: 'uint256',
+          },
+          {
+            internalType: 'uint32',
+            name: 'votesFor',
+            type: 'uint32',
+          },
+          {
+            internalType: 'uint32',
+            name: 'votesAgainst',
+            type: 'uint32',
+          },
+          {
+            internalType: 'uint256',
+            name: 'minVotingTokenReq',
+            type: 'uint256',
+          },
+          {
+            internalType: 'enum LibGovernance.State',
+            name: 'state',
+            type: 'uint8',
           },
         ],
-        internalType: 'struct Database.ProjectState[]',
+        internalType: 'struct LibGovernance.Proposal[]',
         name: '',
         type: 'tuple[]',
       },
@@ -632,11 +534,86 @@ export const CROWDFUNDING_FACET_ABI = [
     inputs: [
       {
         internalType: 'uint256',
-        name: '_projectIndex',
+        name: 'start',
+        type: 'uint256',
+      },
+      {
+        internalType: 'uint256',
+        name: 'count',
         type: 'uint256',
       },
     ],
-    name: 'getProjectBalance',
+    name: 'getNotStarted',
+    outputs: [
+      {
+        components: [
+          {
+            internalType: 'string',
+            name: 'name',
+            type: 'string',
+          },
+          {
+            internalType: 'string',
+            name: 'description',
+            type: 'string',
+          },
+          {
+            internalType: 'address',
+            name: 'author',
+            type: 'address',
+          },
+          {
+            internalType: 'uint256',
+            name: 'id',
+            type: 'uint256',
+          },
+          {
+            internalType: 'uint256',
+            name: 'creationTime',
+            type: 'uint256',
+          },
+          {
+            internalType: 'uint256',
+            name: 'votingDelay',
+            type: 'uint256',
+          },
+          {
+            internalType: 'uint256',
+            name: 'votingPeriod',
+            type: 'uint256',
+          },
+          {
+            internalType: 'uint32',
+            name: 'votesFor',
+            type: 'uint32',
+          },
+          {
+            internalType: 'uint32',
+            name: 'votesAgainst',
+            type: 'uint32',
+          },
+          {
+            internalType: 'uint256',
+            name: 'minVotingTokenReq',
+            type: 'uint256',
+          },
+          {
+            internalType: 'enum LibGovernance.State',
+            name: 'state',
+            type: 'uint8',
+          },
+        ],
+        internalType: 'struct LibGovernance.Proposal[]',
+        name: '',
+        type: 'tuple[]',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'getNumberOfProposals',
     outputs: [
       {
         internalType: 'uint256',
@@ -651,57 +628,22 @@ export const CROWDFUNDING_FACET_ABI = [
     inputs: [
       {
         internalType: 'uint256',
-        name: '_projectIndex',
+        name: 'start',
+        type: 'uint256',
+      },
+      {
+        internalType: 'uint256',
+        name: 'count',
         type: 'uint256',
       },
     ],
-    name: 'getProjectDetails',
+    name: 'getOngoing',
     outputs: [
       {
         components: [
           {
-            internalType: 'address',
-            name: 'admin',
-            type: 'address',
-          },
-          {
-            internalType: 'address',
-            name: 'projectAddress',
-            type: 'address',
-          },
-          {
-            internalType: 'uint256',
-            name: 'targetFund',
-            type: 'uint256',
-          },
-          {
-            internalType: 'uint256',
-            name: 'totalDonationRecieved',
-            type: 'uint256',
-          },
-          {
-            internalType: 'uint256',
-            name: 'minimumDonation',
-            type: 'uint256',
-          },
-          {
-            internalType: 'uint256',
-            name: 'amountWithdrawn',
-            type: 'uint256',
-          },
-          {
-            internalType: 'uint256',
-            name: 'fundBalance',
-            type: 'uint256',
-          },
-          {
-            internalType: 'uint256',
-            name: 'endDate',
-            type: 'uint256',
-          },
-          {
             internalType: 'string',
-            name: 'projectTopic',
+            name: 'name',
             type: 'string',
           },
           {
@@ -710,22 +652,467 @@ export const CROWDFUNDING_FACET_ABI = [
             type: 'string',
           },
           {
+            internalType: 'address',
+            name: 'author',
+            type: 'address',
+          },
+          {
             internalType: 'uint256',
-            name: 'noOfDonors',
+            name: 'id',
             type: 'uint256',
           },
           {
-            internalType: 'enum Status',
-            name: 'status',
-            type: 'uint8',
+            internalType: 'uint256',
+            name: 'creationTime',
+            type: 'uint256',
           },
           {
-            internalType: 'address[]',
-            name: 'donors',
-            type: 'address[]',
+            internalType: 'uint256',
+            name: 'votingDelay',
+            type: 'uint256',
+          },
+          {
+            internalType: 'uint256',
+            name: 'votingPeriod',
+            type: 'uint256',
+          },
+          {
+            internalType: 'uint32',
+            name: 'votesFor',
+            type: 'uint32',
+          },
+          {
+            internalType: 'uint32',
+            name: 'votesAgainst',
+            type: 'uint32',
+          },
+          {
+            internalType: 'uint256',
+            name: 'minVotingTokenReq',
+            type: 'uint256',
+          },
+          {
+            internalType: 'enum LibGovernance.State',
+            name: 'state',
+            type: 'uint8',
           },
         ],
-        internalType: 'struct Database.ProjectState',
+        internalType: 'struct LibGovernance.Proposal[]',
+        name: '',
+        type: 'tuple[]',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: 'start',
+        type: 'uint256',
+      },
+      {
+        internalType: 'uint256',
+        name: 'count',
+        type: 'uint256',
+      },
+    ],
+    name: 'getProposals',
+    outputs: [
+      {
+        components: [
+          {
+            internalType: 'string',
+            name: 'name',
+            type: 'string',
+          },
+          {
+            internalType: 'string',
+            name: 'description',
+            type: 'string',
+          },
+          {
+            internalType: 'address',
+            name: 'author',
+            type: 'address',
+          },
+          {
+            internalType: 'uint256',
+            name: 'id',
+            type: 'uint256',
+          },
+          {
+            internalType: 'uint256',
+            name: 'creationTime',
+            type: 'uint256',
+          },
+          {
+            internalType: 'uint256',
+            name: 'votingDelay',
+            type: 'uint256',
+          },
+          {
+            internalType: 'uint256',
+            name: 'votingPeriod',
+            type: 'uint256',
+          },
+          {
+            internalType: 'uint32',
+            name: 'votesFor',
+            type: 'uint32',
+          },
+          {
+            internalType: 'uint32',
+            name: 'votesAgainst',
+            type: 'uint32',
+          },
+          {
+            internalType: 'uint256',
+            name: 'minVotingTokenReq',
+            type: 'uint256',
+          },
+          {
+            internalType: 'enum LibGovernance.State',
+            name: 'state',
+            type: 'uint8',
+          },
+        ],
+        internalType: 'struct LibGovernance.Proposal[]',
+        name: '',
+        type: 'tuple[]',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: 'start',
+        type: 'uint256',
+      },
+      {
+        internalType: 'uint256',
+        name: 'count',
+        type: 'uint256',
+      },
+    ],
+    name: 'getStalemate',
+    outputs: [
+      {
+        components: [
+          {
+            internalType: 'string',
+            name: 'name',
+            type: 'string',
+          },
+          {
+            internalType: 'string',
+            name: 'description',
+            type: 'string',
+          },
+          {
+            internalType: 'address',
+            name: 'author',
+            type: 'address',
+          },
+          {
+            internalType: 'uint256',
+            name: 'id',
+            type: 'uint256',
+          },
+          {
+            internalType: 'uint256',
+            name: 'creationTime',
+            type: 'uint256',
+          },
+          {
+            internalType: 'uint256',
+            name: 'votingDelay',
+            type: 'uint256',
+          },
+          {
+            internalType: 'uint256',
+            name: 'votingPeriod',
+            type: 'uint256',
+          },
+          {
+            internalType: 'uint32',
+            name: 'votesFor',
+            type: 'uint32',
+          },
+          {
+            internalType: 'uint32',
+            name: 'votesAgainst',
+            type: 'uint32',
+          },
+          {
+            internalType: 'uint256',
+            name: 'minVotingTokenReq',
+            type: 'uint256',
+          },
+          {
+            internalType: 'enum LibGovernance.State',
+            name: 'state',
+            type: 'uint8',
+          },
+        ],
+        internalType: 'struct LibGovernance.Proposal[]',
+        name: '',
+        type: 'tuple[]',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: 'start',
+        type: 'uint256',
+      },
+      {
+        internalType: 'uint256',
+        name: 'count',
+        type: 'uint256',
+      },
+    ],
+    name: 'getWon',
+    outputs: [
+      {
+        components: [
+          {
+            internalType: 'string',
+            name: 'name',
+            type: 'string',
+          },
+          {
+            internalType: 'string',
+            name: 'description',
+            type: 'string',
+          },
+          {
+            internalType: 'address',
+            name: 'author',
+            type: 'address',
+          },
+          {
+            internalType: 'uint256',
+            name: 'id',
+            type: 'uint256',
+          },
+          {
+            internalType: 'uint256',
+            name: 'creationTime',
+            type: 'uint256',
+          },
+          {
+            internalType: 'uint256',
+            name: 'votingDelay',
+            type: 'uint256',
+          },
+          {
+            internalType: 'uint256',
+            name: 'votingPeriod',
+            type: 'uint256',
+          },
+          {
+            internalType: 'uint32',
+            name: 'votesFor',
+            type: 'uint32',
+          },
+          {
+            internalType: 'uint32',
+            name: 'votesAgainst',
+            type: 'uint32',
+          },
+          {
+            internalType: 'uint256',
+            name: 'minVotingTokenReq',
+            type: 'uint256',
+          },
+          {
+            internalType: 'enum LibGovernance.State',
+            name: 'state',
+            type: 'uint8',
+          },
+        ],
+        internalType: 'struct LibGovernance.Proposal[]',
+        name: '',
+        type: 'tuple[]',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'address',
+        name: '_token',
+        type: 'address',
+      },
+    ],
+    name: 'intializeGovernance',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'string',
+        name: '_name',
+        type: 'string',
+      },
+      {
+        internalType: 'string',
+        name: '_description',
+        type: 'string',
+      },
+      {
+        internalType: 'uint256',
+        name: '_delay',
+        type: 'uint256',
+      },
+      {
+        internalType: 'uint256',
+        name: '_votingDuration',
+        type: 'uint256',
+      },
+      {
+        internalType: 'uint256',
+        name: '_minVotingTokenReq',
+        type: 'uint256',
+      },
+    ],
+    name: 'newProposal',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: 'Proposal_ID',
+        type: 'uint256',
+      },
+    ],
+    name: 'removeDelegate',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: 'Proposal_ID',
+        type: 'uint256',
+      },
+    ],
+    name: 'startVoting',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: 'Proposal_ID',
+        type: 'uint256',
+      },
+      {
+        internalType: 'address',
+        name: '_delegate',
+        type: 'address',
+      },
+    ],
+    name: 'viewDelegate',
+    outputs: [
+      {
+        internalType: 'address',
+        name: '',
+        type: 'address',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: 'Proposal_ID',
+        type: 'uint256',
+      },
+    ],
+    name: 'viewProposal',
+    outputs: [
+      {
+        components: [
+          {
+            internalType: 'string',
+            name: 'name',
+            type: 'string',
+          },
+          {
+            internalType: 'string',
+            name: 'description',
+            type: 'string',
+          },
+          {
+            internalType: 'address',
+            name: 'author',
+            type: 'address',
+          },
+          {
+            internalType: 'uint256',
+            name: 'id',
+            type: 'uint256',
+          },
+          {
+            internalType: 'uint256',
+            name: 'creationTime',
+            type: 'uint256',
+          },
+          {
+            internalType: 'uint256',
+            name: 'votingDelay',
+            type: 'uint256',
+          },
+          {
+            internalType: 'uint256',
+            name: 'votingPeriod',
+            type: 'uint256',
+          },
+          {
+            internalType: 'uint32',
+            name: 'votesFor',
+            type: 'uint32',
+          },
+          {
+            internalType: 'uint32',
+            name: 'votesAgainst',
+            type: 'uint32',
+          },
+          {
+            internalType: 'uint256',
+            name: 'minVotingTokenReq',
+            type: 'uint256',
+          },
+          {
+            internalType: 'enum LibGovernance.State',
+            name: 'state',
+            type: 'uint8',
+          },
+        ],
+        internalType: 'struct LibGovernance.Proposal',
         name: '',
         type: 'tuple',
       },
@@ -734,16 +1121,65 @@ export const CROWDFUNDING_FACET_ABI = [
     type: 'function',
   },
   {
-    inputs: [],
-    name: 'returnProjectsCount',
-    outputs: [
+    inputs: [
       {
         internalType: 'uint256',
-        name: '',
+        name: 'Proposal_ID',
         type: 'uint256',
       },
     ],
-    stateMutability: 'view',
+    name: 'voteAgainst',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: 'Proposal_ID',
+        type: 'uint256',
+      },
+      {
+        internalType: 'address',
+        name: 'delegator',
+        type: 'address',
+      },
+    ],
+    name: 'voteAgainstAsDelegate',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: 'Proposal_ID',
+        type: 'uint256',
+      },
+    ],
+    name: 'voteFor',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: 'Proposal_ID',
+        type: 'uint256',
+      },
+      {
+        internalType: 'address',
+        name: 'delegator',
+        type: 'address',
+      },
+    ],
+    name: 'voteForAsDelegate',
+    outputs: [],
+    stateMutability: 'nonpayable',
     type: 'function',
   },
 ];
