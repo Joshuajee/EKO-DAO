@@ -5,6 +5,7 @@ import ProjectABI from '@/abi/contracts/CrowdFundProject.sol/Project.json';
 import { toast } from "react-toastify";
 import { AuthContext } from "@/context/AuthContext";
 import LoadingButton from "@/components/ui/form/LoadingButton";
+import AuthRequest from "@/libs/requests";
 
 const DonorActions = ({status, contract, expired}) => {
 
@@ -12,7 +13,7 @@ const DonorActions = ({status, contract, expired}) => {
 
     const { address, isConnected } = useAccount()
 
-    const { isAdmin, isAddminLoggedIn } = useContext(AuthContext);
+    const { isAdmin, isAdminLoggedIn } = useContext(AuthContext);
 
     const { data } = useContractRead({
         address: contract,
@@ -98,8 +99,8 @@ const DonorActions = ({status, contract, expired}) => {
             <div className="flex justify-center">
                 <div className="w-60">
                     <LoadingButton
-                        loading={isAddminLoggedIn ? loading : adminWithdraw?.isLoading}
-                        onClick={isAddminLoggedIn ? adminWithdrawaltHttp : adminWithdraw?.write}>
+                        loading={isAdminLoggedIn && false ? loading : adminWithdraw?.isLoading}
+                        onClick={isAdminLoggedIn && false ? adminWithdrawaltHttp : adminWithdraw?.write}>
                         Withdraw your funds
                     </LoadingButton>
                 </div>
