@@ -26,7 +26,6 @@ contract Cohort is Ownable {
   enum Status {
   NOT_INITILIZED,
   INITIALIZED,
-  CLOSED,
   ENDED
   }
 
@@ -38,7 +37,6 @@ contract Cohort is Ownable {
   address public ekoStableAddress;
 
   modifier enrollmentRequirementsFulfilled(uint256 amount) {
-    if (cohort.status == Status.CLOSED) revert ("Cohort has been closed");
     if (amount < cohort.commitment) revert("Must submit all fees to enroll");
     if (block.timestamp >= cohort.startDate) revert("Cohort already started");
     if (students[msg.sender]) revert("Student already enrolled");
@@ -118,9 +116,6 @@ contract Cohort is Ownable {
     }
     if(cohort.status == _status){
       revert('Cohort already has the same status');
-    }
-    if(_status ==  Status.CLOSED && block.timestamp <= cohort.startDate){
-      revert ('Cohort already started');
     }
     if(_status ==  Status.ENDED && block.timestamp <= cohort.endDate){
       revert ('End date not reached yet');
