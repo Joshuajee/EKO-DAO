@@ -48,10 +48,10 @@ export class CrowdfundingsController {
     summary: 'Withdraw crowdfunding project funds',
   })
   @ApiParam({
-    description: 'Ekolance crowdfunding project id',
-    name: 'id',
+    description: 'Ekolance crowdfunding project address',
+    name: 'address',
     required: true,
-    type: 'number',
+    type: 'string',
   })
   @ApiResponse({
     status: HttpStatus.CREATED,
@@ -67,8 +67,8 @@ export class CrowdfundingsController {
   })
   @ApiBearerAuth('access-token')
   @UseGuards(AuthGuard('jwt'))
-  @Post('/withdraw/:id')
-  withdraw(@Param('id') id: number): Promise<void> {
-    return this.crowdfundingsService.withdraw(id);
+  @Post('/withdraw/:address')
+  withdraw(@Param('address') address: string): Promise<void> {
+    return this.crowdfundingsService.withdraw(address);
   }
 }

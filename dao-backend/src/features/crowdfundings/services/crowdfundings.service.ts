@@ -42,11 +42,11 @@ export class CrowdfundingsService {
     }
   }
 
-  async withdraw(id: number): Promise<void> {
+  async withdraw(address: string): Promise<void> {
     try {
       const CrowdfundingFacet = this.getCrowdfundingFacet();
       const encodedData: string = CrowdfundingFacet.methods
-        .adminWithdraw(id)
+        .adminWithdraw(address)
         .encodeABI();
       await this.web3Helper.callContract(
         encodedData,

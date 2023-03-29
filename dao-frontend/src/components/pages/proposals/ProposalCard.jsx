@@ -70,26 +70,26 @@ const ProposalCard = ({proposal, expanded}) => {
         switch (state) {
             case 0:
                 if (delay > currentTime)
-                    setProposalStatus({color: "gray", status: "Not Started", state: 0})
+                    setProposalStatus({color: "gray", status: "Voting Not Started", state: 0})
                 else 
                     setProposalStatus({color: "blue", status: "Active", state: 1})
                 break
             case 1:
                 if (deadline < currentTime){
                     if (yes > no) 
-                        setProposalStatus({color: "green", status: "Successful", state: 2})
+                        setProposalStatus({color: "green", status: "Proposal Won", state: 2})
                     else
-                        setProposalStatus({color: "red", status: "Failed", state: 3})
+                        setProposalStatus({color: "red", status: "Proposal Lost", state: 3})
                 }
                 else 
-                    setProposalStatus({color: "blue", status: "Active", state: 1})
+                    setProposalStatus({color: "blue", status: "Voting is Open", state: 1})
 
                 break
             case 2:
-                setProposalStatus({color: "green", status: "Successful", state: 2})
+                setProposalStatus({color: "green", status: "Proposal Won", state: 2})
                 break
             case 3:
-                setProposalStatus({color: "red", status: "Failed", state: 3})
+                setProposalStatus({color: "red", status: "Proposal Lost", state: 3})
                 break
             default:
                 setProposalStatus({color: "red", status: "Failed", state: 3})
@@ -117,12 +117,12 @@ const ProposalCard = ({proposal, expanded}) => {
             <h2 className="text-black text-xl md:text-2xl font-semibold mb-3">{name}</h2>
             <p className="mb-3">{description}</p>
 
-            <div className="flex flex-col md:flex-row justify-between font-medium">
+            <div className="flex flex-col lg:flex-row justify-between font-medium">
                 
                 <div>
                     <Badge color={proposalStatus?.color}> 
                         <AiOutlineClockCircle size={18} /> 
-                        <p className="ml-2 text-sm">Proposal {proposalStatus?.status}</p> 
+                        <p className="ml-2 text-sm">{proposalStatus?.status}</p> 
                     </Badge>
                 </div>
 

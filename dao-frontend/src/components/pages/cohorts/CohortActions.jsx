@@ -13,7 +13,7 @@ import ApprovalBtn from "@/components/ui/form/ApprovalBtn";
 import AuthRequest from "@/libs/requests";
 
 
-const CohortActions = ({status, contract, commitment, isStudent}) => {
+const CohortActions = ({state, status, contract, commitment, isStudent}) => {
 
     const { address } = useAccount()
 
@@ -107,7 +107,6 @@ const CohortActions = ({status, contract, commitment, isStudent}) => {
 
     const initCohortHttp = async () => {
 
-
         setInitLoading(true)
 
         try {
@@ -120,8 +119,6 @@ const CohortActions = ({status, contract, commitment, isStudent}) => {
             })
 
             toast.success("Cohort Created Successfully")
-  
-            console.log(response)
 
         } catch (e) {
             console.error(e)
@@ -135,7 +132,7 @@ const CohortActions = ({status, contract, commitment, isStudent}) => {
         <div className="block py-4 w-full">
 
             { 
-                isStudent && (
+                isStudent && state === 3 (
                     <div className="flex flex-col md:flex-row items-center justify-between">
                         <p>You enrolled for this programme</p> 
                         { (status > 0) &&

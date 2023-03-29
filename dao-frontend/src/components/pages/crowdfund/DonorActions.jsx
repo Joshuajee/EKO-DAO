@@ -1,16 +1,19 @@
 import { convertToEther, dollarFormat } from "@/libs/utils"
-import { memo, useEffect, useContext } from "react"
+import { memo, useEffect, useState, useContext } from "react"
 import { useAccount, useContractRead, useContractWrite } from "wagmi"
 import ProjectABI from '@/abi/contracts/CrowdFundProject.sol/Project.json';
 import { toast } from "react-toastify";
 import { AuthContext } from "@/context/AuthContext";
 import LoadingButton from "@/components/ui/form/LoadingButton";
+import AuthRequest from "@/libs/requests";
 
 const DonorActions = ({status, contract, expired}) => {
 
+    const [loading, setLoading] = useState(false);
+
     const { address, isConnected } = useAccount()
 
-    const { isAdmin } = useContext(AuthContext);
+    const { isAdmin, isAdminLoggedIn } = useContext(AuthContext);
 
     const { data } = useContractRead({
         address: contract,
@@ -33,6 +36,26 @@ const DonorActions = ({status, contract, expired}) => {
         functionName: 'adminWithdraw',
         args: [address],
     })
+
+
+    const adminWithdrawaltHttp = async () => {
+
+        setLoading(true)
+
+        try {
+
+            const request = new AuthRequest(`/crowdfundings/withdraw/${contract}`)
+            
+            await request.post({})
+
+            toast.success("Withdrawal Successful")
+
+        } catch (e) {
+            console.error(e)
+        }
+
+        setLoading(false)
+    }
 
     useEffect(() => {
         if (donorWithdraw.isError) 
@@ -76,8 +99,8 @@ const DonorActions = ({status, contract, expired}) => {
             <div className="flex justify-center">
                 <div className="w-60">
                     <LoadingButton
-                        loading={adminWithdraw?.isLoading}
-                        onClick={adminWithdraw?.write}>
+                        loading={isAdminLoggedIn && false ? loading : adminWithdraw?.isLoading}
+                        onClick={isAdminLoggedIn && false ? adminWithdrawaltHttp : adminWithdraw?.write}>
                         Withdraw your funds
                     </LoadingButton>
                 </div>

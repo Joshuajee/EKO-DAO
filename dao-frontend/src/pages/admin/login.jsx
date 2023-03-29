@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useContext } from 'react'
 import Layout from '@/components/ui/Layout'
 import Input from '@/components/ui/form/Input'
 import LoadingButton from '@/components/ui/form/LoadingButton'
@@ -6,8 +6,8 @@ import { useAccount } from 'wagmi';
 import axios from 'axios';
 import { API_SERVER } from '@/libs/utils';
 import { useRouter } from 'next/router';
-import { links } from '@/libs/routes';
 import { toast } from 'react-toastify';
+import { AuthContext } from '@/context/AuthContext';
 
 
 
@@ -15,6 +15,8 @@ export default function AdminLogin() {
 
     const account = useAccount()
     const router = useRouter()
+
+    const  { setIsAdminLoggedIn } = useContext(AuthContext);
 
     const [isLoading, setIsloading] = useState()
     const [address, setAddress] = useState();
@@ -32,6 +34,10 @@ export default function AdminLogin() {
     
             localStorage.setItem("auth-token", res?.data?.access_token)
             localStorage.setItem("auth-time", Number(new Date()))
+
+            setIsAdminLoggedIn(true)
+
+            console.log(res)
 
             setTimeout(() => {
                 router.push("/admin")
