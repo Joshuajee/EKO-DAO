@@ -26,7 +26,6 @@ contract Cohort is Ownable {
   enum Status {
   NOT_INITILIZED,
   INITIALIZED,
-  CLOSED,
   ENDED
   }
 
@@ -38,7 +37,6 @@ contract Cohort is Ownable {
   address public ekoStableAddress;
 
   modifier enrollmentRequirementsFulfilled(uint256 amount) {
-    if (cohort.status != Status.INITIALIZED) revert ("Cohort has been closed");
     if (amount < cohort.commitment) revert("Must submit all fees to enroll");
     if (block.timestamp >= cohort.startDate) revert("Cohort already started");
     if (students[msg.sender]) revert("Student already enrolled");
@@ -48,6 +46,7 @@ contract Cohort is Ownable {
   }
 
   modifier refundRequirementsFulfilled(uint256 amount, uint256 _certificateId) {
+    if (cohort.status != Status.ENDED) revert ("Cohort not ended yet");
     if (!students[msg.sender])
       revert("Must be a student to claim fees back");
     if (ekoNft.ownerOf(_certificateId) != msg.sender)
