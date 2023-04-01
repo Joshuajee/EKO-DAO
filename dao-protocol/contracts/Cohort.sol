@@ -46,7 +46,7 @@ contract Cohort is Ownable {
   }
 
   modifier refundRequirementsFulfilled(uint256 amount, uint256 _certificateId) {
-    if (cohort.status != Status.ENDED) revert ("Cohort not ended yet");
+    if (block.timestamp <= cohort.endDate) revert ("Cohort not ended yet");
     if (!students[msg.sender])
       revert("Must be a student to claim fees back");
     if (ekoNft.ownerOf(_certificateId) != msg.sender)

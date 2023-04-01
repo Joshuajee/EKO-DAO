@@ -99,8 +99,8 @@ const DonorActions = ({status, contract, expired}) => {
             <div className="flex justify-center">
                 <div className="w-60">
                     <LoadingButton
-                        loading={isAdminLoggedIn && false ? loading : adminWithdraw?.isLoading}
-                        onClick={isAdminLoggedIn && false ? adminWithdrawaltHttp : adminWithdraw?.write}>
+                        loading={isAdminLoggedIn ? loading : adminWithdraw?.isLoading}
+                        onClick={isAdminLoggedIn ? adminWithdrawaltHttp : adminWithdraw?.write}>
                         Withdraw your funds
                     </LoadingButton>
                 </div>
