@@ -2,7 +2,6 @@ import ApprovalBtn from "@/components/ui/form/ApprovalBtn";
 import Balance from "@/components/ui/form/Balance";
 import LoadingButton from "@/components/ui/form/LoadingButton";
 import { convertToEther, dollarFormat } from "@/libs/utils";
-import { useRouter } from "next/router";
 import { useState, useEffect } from "react"
 import { toast } from "react-toastify";
 import { useAccount, useContractWrite } from "wagmi"
@@ -63,7 +62,7 @@ const EnrollmentForm = ({cohort, contract, close}) => {
             <p className="text-center my-4">Commitment commitment {dollarFormat(convertToEther(commitment))} USDC</p>
 
             <div className="flex flex-col justify-between">
-                <LoadingButton disabled={allowance < amount} loading={donation?.isLoading} onClick={donation?.write}> Pay Commitment Fee </LoadingButton>
+                <LoadingButton disabled={Number(allowance) < Number(amount)} loading={donation?.isLoading} onClick={donation?.write}> Pay Commitment Fee </LoadingButton>
             </div>
 
             <ApprovalBtn contract={contract} amount={amount} allowance={allowance} setAllowance={setAllowance} />

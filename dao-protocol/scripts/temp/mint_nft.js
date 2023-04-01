@@ -5,7 +5,7 @@ const mintNFT = async (address) => {
 
     const ekoNFT = await ethers.getContractAt("EkoNFTCert", address);
 
-    const tokenId = await ekoNFT.safeMint("0x5103BC779fdd4799Cfd5efC6ee827F7B1D57789B", "CERT");
+    await ekoNFT.safeMint("0xBD9acC68b274EEC2AFb4e51caA1a192db70548b6", "CERT");
 
     console.log("Done!")
 }

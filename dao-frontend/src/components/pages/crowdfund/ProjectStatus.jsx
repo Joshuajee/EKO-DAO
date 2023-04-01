@@ -6,8 +6,6 @@ import { convertToEther, dollarFormat } from "@/libs/utils"
 
 const ProjectStatus = ({target, current, donorCount, minDonation, endDate }) => {
 
-    const currentPercent = current * 100 / target
-
     return (
         <div className="block py-4 w-full">
 
