@@ -51,12 +51,14 @@ const CohortActions = ({state, status, contract, commitment, isStudent}) => {
         args: [commitment, id],
     })
 
-    const endCohort = useContractWrite({
-        address: contract,
-        abi: CohortABI,
+    const updateCohort = useContractWrite({
+        address: contractAddress,
+        abi: CohortFacetABI,
         functionName: 'updateStatus',
-        args: [3],
+        args: [contract, status + 1],
     })
+
+    console.log(status + 1)
 
     const initCohort = useContractWrite({
         address: contractAddress,
@@ -79,8 +81,8 @@ const CohortActions = ({state, status, contract, commitment, isStudent}) => {
         if (initCohort.isSuccess) 
             return toast.success("Initailize successfully")
 
-        if (endCohort.isSuccess) 
-            return toast.success("Cohort has ended")
+        if (updateCohort.isSuccess) 
+            return toast.success("Cohort Status Updated")
 
         if (refund.isError) 
             return toast.error(refund?.error?.reason)
@@ -88,13 +90,13 @@ const CohortActions = ({state, status, contract, commitment, isStudent}) => {
         if (initCohort.isError) 
             return toast.error(initCohort?.error?.reason)
 
-        if (endCohort.isError) 
-            return toast.error(endCohort?.error?.reason)
+        if (updateCohort.isError) 
+            return toast.error(updateCohort?.error?.reason)
 
     },  [
-            initCohort.isSuccess, endCohort?.isSuccess, refund.isSuccess,
-            initCohort.isError, initCohort?.error, endCohort?.isError, 
-            endCohort?.error, refund.isError, refund?.error
+            initCohort.isSuccess, updateCohort?.isSuccess, refund.isSuccess,
+            initCohort.isError, initCohort?.error, updateCohort?.isError, 
+            updateCohort?.error, refund.isError, refund?.error
     ]);
 
     useEffect(() => {
@@ -113,7 +115,7 @@ const CohortActions = ({state, status, contract, commitment, isStudent}) => {
 
             const request = new AuthRequest(`/cohorts/init/${contract}`)
             
-            const response = await request.post({
+            await request.post({
                 stableCoin: USDC,
                 ekoNft: EKONFTCERT
             })
@@ -129,10 +131,10 @@ const CohortActions = ({state, status, contract, commitment, isStudent}) => {
 
 
     return (
-        <div className="block py-4 w-full">
+        <div className="block py-4 w-full">{status}
 
             { 
-                isStudent && state === 3 (
+                isStudent && state === 3 && Number(getBalance?.data.toString()) > 0 && (
                     <div className="flex flex-col md:flex-row items-center justify-between">
                         <p>You enrolled for this programme</p> 
                         { (status > 0) &&
@@ -158,17 +160,19 @@ const CohortActions = ({state, status, contract, commitment, isStudent}) => {
                 </div>
             }
 
-            {/* { (isAdmin && status != 0) &&
+            {/* { (isAdmin && status > 0 && status < 3) &&
                 <div className="flex justify-center">
                     <div className="w-60">
                         <LoadingButton
-                            onClick={endCohort?.write}
-                            color="yellow" loading={endCohort?.isLoading}> 
-                            End Cohort
+                            onClick={updateCohort?.write}
+                            color={status === 1 && "green" || status === 2 && "yellow" || status === 3 && "red" } loading={updateCohort?.isLoading}> 
+                            { status === 1 && "Start Cohort" }
+                            { status === 2 && "Close Cohort" }
+                            { status === 3 && "End Cohort" }
                         </LoadingButton>
                     </div>
                 </div>
-            } */}
+            }  */}
 
             <ModalWrapper title={"Claim Commitment"} open={open} handleClose={handleClose}>
 
