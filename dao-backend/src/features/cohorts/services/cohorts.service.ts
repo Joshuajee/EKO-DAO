@@ -18,7 +18,6 @@ import { ConfigurationService } from 'src/config/configuration.service';
 import { DataSource, Repository } from 'typeorm';
 import { CohortDto } from '../dtos/cohort.dto';
 import { InitCohortDto } from '../dtos/init-cohort.dto';
-import { UpdateCohortStatusDto } from '../dtos/update-cohort-status.dto';
 import { Cohort } from '../entities/cohorts.entity';
 
 @Injectable()
@@ -106,27 +105,6 @@ export class CohortsService {
     } catch (error) {
       console.error(error);
       throw new ConflictException(COHORT_ALREADY_INITIALIZED);
-    }
-  }
-
-  async updateStatus(
-    address: string,
-    updateCohortStatusDto: UpdateCohortStatusDto,
-  ): Promise<void> {
-    const CohortFacet = this.getCohortFacet();
-    const encodedData: string = CohortFacet.methods
-      .updateStatus(address, updateCohortStatusDto.status)
-      .encodeABI();
-    try {
-      await this.web3Helper.callContract(
-        encodedData,
-        this.configService.diamondAddress,
-        this.configService.superAdminAddress,
-        this.configService.superAdminPrivateKey,
-      );
-    } catch (error) {
-      console.error(error);
-      throw new ConflictException();
     }
   }
 
