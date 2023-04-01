@@ -58,8 +58,6 @@ const CohortActions = ({state, status, contract, commitment, isStudent}) => {
         args: [contract, status + 1],
     })
 
-    console.log(status + 1)
-
     const initCohort = useContractWrite({
         address: contractAddress,
         abi: CohortFacetABI,
@@ -131,7 +129,7 @@ const CohortActions = ({state, status, contract, commitment, isStudent}) => {
 
 
     return (
-        <div className="block py-4 w-full">{status}
+        <div className="block py-4 w-full">
 
             { 
                 isStudent && state === 3 && Number(getBalance?.data.toString()) > 0 && (
