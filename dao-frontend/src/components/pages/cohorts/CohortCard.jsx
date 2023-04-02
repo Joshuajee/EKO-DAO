@@ -20,8 +20,6 @@ const CohortCard = ({cohort, contract, expanded}) => {
         startDate, endDate, description, contractAddress
     } = cohort
 
-    console.log("=== ", cohort?.startDate?.toString(), cohort?.startDate?.toString())
-
     const { isConnected, address } = useAccount()
     const [cohortStatus, setCohortStatus] = useState()
     const [startTime, setStartTime] = useState(0)
@@ -52,6 +50,7 @@ const CohortCard = ({cohort, contract, expanded}) => {
     useEffect(() => {
         switch (status) {
             case 1:
+            case 2:
                 if (startTime < currentTime)
                     setCohortStatus({color: "blue", status: "Enrollment is open", state: 1})
                 else if (deadline > currentTime)
@@ -59,11 +58,8 @@ const CohortCard = ({cohort, contract, expanded}) => {
                 if (deadline < currentTime)
                     setCohortStatus({color: "yellow", status: "Cohort has ended", state: 3})
                 break
-            case 2:
-                setCohortStatus({color: "green", status: "Successful"})
-                break
             case 3:
-                setCohortStatus({color: "gray", status: "Executed"})
+                setCohortStatus({color: "gray", status: "Cohort has ended"})
                 break
             default:
                 setCohortStatus({color: "gray", status: "Enrollment not started"})

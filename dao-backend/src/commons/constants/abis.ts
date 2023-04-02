@@ -300,24 +300,6 @@ export const COHORT_FACET_ABI = [
     stateMutability: 'nonpayable',
     type: 'function',
   },
-  {
-    inputs: [
-      {
-        internalType: 'address',
-        name: '_cohort',
-        type: 'address',
-      },
-      {
-        internalType: 'enum Cohort.Status',
-        name: '_status',
-        type: 'uint8',
-      },
-    ],
-    name: 'updateStatus',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
 ];
 
 export const CROWDFUNDING_FACET_ABI = [

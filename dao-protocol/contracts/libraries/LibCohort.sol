@@ -62,13 +62,6 @@ error Unauthorized();
     cohort.init(_stableCoin, _ekoNft);
   }
 
-  function updateStatus(address _cohort, Cohort.Status _status) internal {
-    if (!LibAdmin.isAdmin(msg.sender))
-      revert("Unauthorized access. Caller is not an admin");
-    Cohort cohort = Cohort(_cohort);
-    cohort.updateStatus(_status);
-  }
-
   function getCohort(uint _id) internal view returns (Cohort.CohortDetails memory) {
     Cohorts storage cohorts = diamondStorage();
     address address_ = cohorts.values[_id];

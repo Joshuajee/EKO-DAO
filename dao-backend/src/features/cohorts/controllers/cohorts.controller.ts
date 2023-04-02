@@ -17,7 +17,6 @@ import {
 } from '@nestjs/swagger';
 import { CohortDto } from '../dtos/cohort.dto';
 import { InitCohortDto } from '../dtos/init-cohort.dto';
-import { UpdateCohortStatusDto } from '../dtos/update-cohort-status.dto';
 import { Cohort } from '../entities/cohorts.entity';
 import { CohortsService } from '../services/cohorts.service';
 
@@ -109,41 +108,5 @@ export class CohortsController {
     @Body() initCohortDto: InitCohortDto,
   ): Promise<void> {
     return this.cohortsService.init(address, initCohortDto);
-  }
-
-  @ApiOperation({
-    summary: 'Update Ekolance cohort status',
-  })
-  @ApiParam({
-    description: 'Ekolance cohort contract address',
-    name: 'address',
-    required: true,
-    type: 'string',
-  })
-  @ApiResponse({
-    status: HttpStatus.OK,
-    description: 'Cohort status successfully updated',
-  })
-  @ApiResponse({
-    status: HttpStatus.BAD_REQUEST,
-    description: 'Bad request, when request parameters are missing or invalid',
-  })
-  @ApiResponse({
-    status: HttpStatus.UNAUTHORIZED,
-    description: 'Not authorized, when access token is mising or invalid',
-  })
-  @ApiResponse({
-    status: HttpStatus.CONFLICT,
-    description:
-      'Conflict, when cohort is not in the expected state (backword transition, cohort has not started or ended yet)',
-  })
-  @ApiBearerAuth('access-token')
-  @UseGuards(AuthGuard('jwt'))
-  @Post('/update-status/:address')
-  updateStatus(
-    @Param('address') address: string,
-    @Body() updateCohortStatusDto: UpdateCohortStatusDto,
-  ): Promise<void> {
-    return this.cohortsService.updateStatus(address, updateCohortStatusDto);
   }
 }

@@ -295,18 +295,5 @@
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "enum Cohort.Status",
-        "name": "_status",
-        "type": "uint8"
-      }
-    ],
-    "name": "updateStatus",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
   }
 ]

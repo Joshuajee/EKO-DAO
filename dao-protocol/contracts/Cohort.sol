@@ -25,8 +25,7 @@ contract Cohort is Ownable {
 
   enum Status {
   NOT_INITILIZED,
-  INITIALIZED,
-  ENDED
+  INITIALIZED
   }
 
   CohortDetails public cohort;
@@ -108,20 +107,6 @@ contract Cohort is Ownable {
 
   function isStudent(address _student)public view returns( bool){
     return students[_student];
-  }
-
-  function updateStatus(Status _status) public onlyOwner onlyInitilized{
-     if(cohort.status > _status){
-      revert('No backwards transitions');
-    }
-    if(cohort.status == _status){
-      revert('Cohort already has the same status');
-    }
-    if(_status ==  Status.ENDED && block.timestamp <= cohort.endDate){
-      revert ('End date not reached yet');
-    }
-
-    cohort.status= _status;
   }
 
   function getCohort() external view returns (CohortDetails memory){

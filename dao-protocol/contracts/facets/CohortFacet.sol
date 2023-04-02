@@ -15,10 +15,6 @@ function initCohort(
     return LibCohort.initCohort(_cohort, _stableCoin, _ekoNft);
   }
 
- function updateStatus(address _cohort, Cohort.Status _status) external {
-    return LibCohort.updateStatus(_cohort,_status);
-  }
-
   function cohort(
     uint _id
   ) external view returns (Cohort.CohortDetails memory) {
