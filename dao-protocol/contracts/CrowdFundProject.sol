@@ -1,5 +1,5 @@
 //SPDX-License-Identifier: Unlicense
-pragma solidity 0.8.17;
+pragma solidity 0.8.19;
 
 import "./libraries/LibCrowdFund.sol";
 
@@ -156,7 +156,7 @@ contract Project {
         state.fundBalance += _amount; //update balance
         Database.getProjectRecords().donors.push(_user); //track the donor address
 
-        if (state.totalDonationRecieved >= state.targetFund){state.status = Status.Successful;}
+        if (state.totalDonationRecieved >= state.targetFund){state.status = Status.Successful;} // check state
         if (block.timestamp > Database.getProjectRecords().endDate){
           Database.getProjectRecords().status = Status.Expired;}  
 
