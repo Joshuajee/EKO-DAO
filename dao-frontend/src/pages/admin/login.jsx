@@ -16,32 +16,28 @@ export default function AdminLogin() {
     const account = useAccount()
     const router = useRouter()
 
-    const  { setIsAdminLoggedIn } = useContext(AuthContext);
+    const  { login } = useContext(AuthContext);
 
     const [isLoading, setIsloading] = useState()
     const [address, setAddress] = useState();
     const [password, setPassword] = useState();
 
-    const login = useCallback(async() => {
+    const loginUser = useCallback(async() => {
 
         setIsloading(true)
 
         try {
+
             const res = await axios.post(`${API_SERVER}/admins/login`, {
                 walletAddress: address,
                 password
             })
-    
-            localStorage.setItem("auth-token", res?.data?.access_token)
-            localStorage.setItem("auth-time", Number(new Date()))
 
-            setIsAdminLoggedIn(true)
-
-            console.log(res)
+            login(res?.data?.access_token)
 
             setTimeout(() => {
-                router.push("/admin")
-            }, 3000)
+                router.push("/admin/logout")
+            }, 1000)
 
             toast.success("Login successful, Redirecting...")
 
@@ -51,7 +47,7 @@ export default function AdminLogin() {
 
         setIsloading(false)
 
-    }, [address, password, router])
+    }, [address, password, router, login])
 
     useEffect(() => {
         setAddress(account.address)
@@ -73,7 +69,7 @@ export default function AdminLogin() {
                     <LoadingButton 
                         loading={isLoading} 
                         //disabled={isDisabled()}   
-                        onClick={login}
+                        onClick={loginUser}
                         >
                             Login
                     </LoadingButton>

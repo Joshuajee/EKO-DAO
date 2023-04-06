@@ -68,7 +68,8 @@ const CohortCard = ({cohort, contract, expanded}) => {
 
     useEffect(() => {
         setDeadline(Number(endDate.toString()))
-    }, [endDate])
+        setStartTime(Number(startDate.toString()))
+    }, [startDate, endDate])
 
     useEffect(() => {
         setCurrentTime(Number(new Date()) / 1000)
