@@ -22,8 +22,12 @@ async function deployDiamond(test = false) {
     "OwnershipFacet",
     "AdminFacet",
     "CohortFactoryFacet",
+    "CohortFacet",
     "GovernanceFacet",
     "CrowdFundFacet",
+    "HackathonFacet",
+    "HackathonFacetUsers",
+    "HackathonFacetGetters",
   ];
   // The `facetCuts` variable is the FacetCut[] that contains the functions to add during diamond deployment
   const facetCuts = [];
@@ -58,7 +62,7 @@ async function deployDiamond(test = false) {
   await diamond.deployed();
   if (!test) console.log("Diamond deployed:", diamond.address);
 
-  const USDC = await ethers.getContractFactory("USDC");
+  /* const USDC = await ethers.getContractFactory("USDC");
   const usdc = await USDC.deploy();
   await usdc.deployed();
   console.log(`USDC deployed: ${usdc.address}`);
@@ -67,6 +71,11 @@ async function deployDiamond(test = false) {
   const ekoNft = await EkoNFT.deploy();
   await ekoNft.deployed();
   console.log(`EkoNFT deployed: ${ekoNft.address}`);
+
+  const EkoScore = await ethers.getContractFactory("EkoScoreToken");
+  const ekoScore = await EkoScore.deploy();
+  await ekoScore.deployed();
+  console.log(`EkoScore deployed: ${ekoScore.address}`);*/
 
   // returning the address of the diamond
   return diamond.address;

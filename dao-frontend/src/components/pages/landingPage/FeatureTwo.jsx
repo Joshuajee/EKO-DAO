@@ -1,7 +1,7 @@
 import FeatureCard from "./FeatureCard";
 import { MdSchool } from "react-icons/md";
 import { FaVoteYea, FaAward } from "react-icons/fa";
-import { links } from "@/libs/routes";
+import { links, routes } from "@/libs/routes";
 import FeatureCardTwo from "./FeatureCardTwo";
 
 
@@ -15,7 +15,8 @@ export default function FeatureTwo (){
                 <FeatureCardTwo 
                     title={"Join a Cohort"}
                     lottie={"https://assets3.lottiefiles.com/packages/lf20_xxyvtiab.json"}
-                    isRight={false}>
+                    isRight={false}
+                    link={links.cohorts}>
                     Empower your education with Ekolance DAO. Commit funds, 
                     receive ekoStable tokens, and claim funds back upon program completion. 
                     Join a supportive community of decentralized learners and take 
@@ -23,8 +24,10 @@ export default function FeatureTwo (){
                 </FeatureCardTwo>
 
                 <FeatureCardTwo
-                    title={"Join Hackathons"} isRight={true}
-                    lottie={"https://assets2.lottiefiles.com/private_files/lf30_mksyrgzs.json"}>
+                    title={"Join Hackathons"} 
+                    isRight={true}
+                    lottie={"https://assets2.lottiefiles.com/private_files/lf30_mksyrgzs.json"}
+                    link={links.hackathons}>
                     Join the innovation revolution with Ekolance DAO&apos;s hackathons. 
                     Collaborate with top talent, showcase your skills, and push the limits 
                     of what&apos;s possible. To participate, hold score tokens and get 
@@ -33,8 +36,10 @@ export default function FeatureTwo (){
                 </FeatureCardTwo>
 
                 <FeatureCardTwo 
-                    title={"Decentralised Vote"} isRight={false}
-                    lottie ={"https://assets4.lottiefiles.com/packages/lf20_hxwcQt.json"}>
+                    title={"Decentralised Vote"} 
+                    isRight={false}
+                    lottie ={"https://assets4.lottiefiles.com/packages/lf20_hxwcQt.json"}
+                    link={links.proposals}>
                     Join Ekolance DAO and Shape Your Community with Decentralized Votes. 
                     Raise proposals, hold Ekotokens, and cast your vote on community decisions. 
                     Ensure fair and transparent decision-making with our publicly recorded 
@@ -42,8 +47,10 @@ export default function FeatureTwo (){
                 </FeatureCardTwo>
 
                 <FeatureCardTwo 
-                    title={"Decentralised Crowdfunding"} isRight={true}
-                    lottie={"https://assets6.lottiefiles.com/packages/lf20_ocBLovFChM.json"}>
+                    title={"Decentralised Crowdfunding"} 
+                    isRight={true}
+                    lottie={"https://assets6.lottiefiles.com/packages/lf20_ocBLovFChM.json"}
+                    link={links.crowdfunding}>
                     Unleash Your Ideas with Decentralized Crowdfunding on Ekolance DAO. 
                     Raise funds in stablecoins for your projects, events and activities with 
                     our transparent and secure platform. Get the support you need to turn 

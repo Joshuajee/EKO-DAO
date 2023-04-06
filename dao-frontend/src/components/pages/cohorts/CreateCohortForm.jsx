@@ -1,17 +1,28 @@
 import Input from "@/components/ui/form/Input"
-import { useState, useEffect, useLayoutEffect } from "react"
+import { useState, useEffect, useLayoutEffect, useContext, memo } from "react"
 import wordsCount from 'words-count';
-import { contractAddress, convertToEther, convertToWEI, getDate } from "@/libs/utils"
+import { contractAddress, convertToWEI, getDate } from "@/libs/utils"
 import { useContractWrite } from "wagmi";
 import cohortFacetABI from '../../../abi/contracts/facets/CohortFactoryFacet.sol/CohortFactoryFacet.json';
 import { toast } from "react-toastify";
 import LoadingButton from "@/components/ui/form/LoadingButton";
+import Textarea from "@/components/ui/form/Textarea";
+import AuthRequest from "@/libs/requests";
+import { AuthContext } from "@/context/AuthContext";
 
-const currentDate = getDate()
+const currentDate = getDate() 
+
+const dateToTimeStamp = (date) => {
+    return new Date(date).getTime() / 1000
+}
 
 const CreateCohortForm = ({close}) => {
 
-    const [id, setId] = useState("");
+    const { isAdminLoggedIn } = useContext(AuthContext);
+
+    const [loading, setLoading] = useState(false)
+
+    const [id] = useState(Number(new Date()));
     const [name, setName] = useState("");
 
     const [startDate, setStartDate] = useState(currentDate);
@@ -20,9 +31,12 @@ const CreateCohortForm = ({close}) => {
     const [student, setStudent] = useState("");
     const [commitment, setCommitment] = useState("");
 
+    const [description, setDescription] = useState("");
+
     // Errors 
     const [idError, setIdError] = useState(false);
     const [nameError, setNameError] = useState(false);
+    const [descriptionError, setDescriptionError] = useState("");
 
     const [startDateError, setStartDateError] = useState(false);
     const [endDateError, setEndDateError] = useState(false);
@@ -35,13 +49,43 @@ const CreateCohortForm = ({close}) => {
         address: contractAddress,
         abi: cohortFacetABI,
         functionName: 'newCohort',
-        args: [id, name, new Date(startDate).getTime(), new Date(endDate).getTime(), student, convertToWEI(commitment)],
+        args: [id, name, dateToTimeStamp(startDate), dateToTimeStamp(endDate), student, convertToWEI(commitment), description],
     })
 
-    const submit = (e) => {
+    const submit = async(e) => {
         e.preventDefault()
-        create?.write()
+        isAdminLoggedIn ? await httpCreate() : create?.write()
     }
+
+    const httpCreate = async () => {
+
+        setLoading(true)
+
+        try {
+
+            const request = new AuthRequest("/cohorts")
+            
+            const response = await request.post({
+                name,
+                startDate: startDate,
+                endDate: endDate,
+                size: Number(student),
+                commitment: (Number(commitment)),
+                briefDescription: description,
+                exhaustiveDescription: "Why this training is important?, Training structure, Meet the team, Why should you apply for this training"
+            })
+
+            toast.success("Cohort Created Successfully")
+            close()
+            console.log(response)
+
+        } catch (e) {
+            console.error(e)
+        }
+
+        setLoading(false)
+    }
+
 
     const isDisabled = () => {
         return idError || nameError || startDateError || endDateError || studentError || commitmentError
@@ -58,6 +102,12 @@ const CreateCohortForm = ({close}) => {
         if (wordsCount(name) <= 2) setNameError(true)
         else setNameError(false)
     }, [name])
+
+    // Description
+    useEffect(() => {
+        if (wordsCount(description) <= 10 || wordsCount(description) >= 50 ) setDescriptionError(true)
+        else setDescriptionError(false)
+    }, [description])
 
     // Student Size
     useEffect(() => {
@@ -76,10 +126,7 @@ const CreateCohortForm = ({close}) => {
 
         if (create.isSuccess) {
             toast.success("Cohort Created Successfully")
-
-            setTimeout(() => {
-                close()
-            }, 600)
+            close()
         }
 
         if (create?.isError) {
@@ -91,16 +138,16 @@ const CreateCohortForm = ({close}) => {
 
     return (
         <form className="text-gray-700" onSubmit={submit}>
-            
-            <Input type="number" value={id} onChange={setId} id="id" label={"Cohort id"} placeholder="e.g 3" error={idError} helperText={"Invalid ID"}  />
-            
+
             <Input value={name} onChange={setName} id="name" label={"Cohort Title"} placeholder="e.g Solidity Bootcamp fall 2023" error={nameError} helperText={"Cohort Title should have at least 3 words"}  />
+
+            <Textarea value={description} onChange={setDescription} id="description" label={"Cohort Description"} placeholder="e.g Contribute and saving the planet in a decentralized manner" error={descriptionError} helperText={"Descripion should contain 10 - 50 words"}></Textarea>
 
             <div className="grid grid-cols-2 gap-4">
 
-                <Input type="date" label={"Start Date"} value={startDate} onChange={setStartDate} />
+                <Input type="datetime-local" label={"Start Date"} value={startDate} onChange={setStartDate} />
                 
-                <Input type="date" label={"End Date"} min={startDate} value={endDate} onChange={setEndDate} />
+                <Input type="datetime-local" label={"End Date"} min={startDate} value={endDate} onChange={setEndDate} />
 
                 <Input type="number" label={"Student Size"} value={student} onChange={setStudent} error={studentError} helperText={"Student Size should be greater than zero and less than 120"} />
                 
@@ -108,10 +155,10 @@ const CreateCohortForm = ({close}) => {
 
             </div>
 
-            <LoadingButton loading={create?.isLoading} disabled={isDisabled()} > Create Cohort</LoadingButton>
+            <LoadingButton loading={isAdminLoggedIn ? loading : create?.isLoading} disabled={isDisabled()} > Create Cohort</LoadingButton>
 
         </form>
     )
 }
 
-export default CreateCohortForm
+export default memo(CreateCohortForm)

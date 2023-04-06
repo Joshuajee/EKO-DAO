@@ -1,9 +1,14 @@
 export default () => ({
+  env: process.env.NODE_ENV,
   app: {
     name: process.env.APP_NAME,
     host: process.env.APP_HOST,
-    port: parseInt(process.env.APP_PORT, 10) || 3000,
+    port: parseInt(process.env.PORT, 10) || 3000,
     version: process.env.APP_VERSION,
+    allowedOrigins: process.env.ALLOWED_ORIGIN,
+    jwtSecret: process.env.JWT_SECRET,
+    jwtLife: process.env.JWT_LIFE,
+    swaggerEnabled: process.env.SWAGGER_ENABLED,
   },
 
   db: {
@@ -17,5 +22,10 @@ export default () => ({
 
   bc: {
     providerUrl: process.env.PROVIDER_URL,
+    chainId: parseInt(process.env.CHAIN_ID, 10),
+    superAdminAddress: process.env.SUPER_ADMIN_ADDRESS,
+    superAdminPrivateKey: process.env.SUPER_ADMIN_PRIVATE_KEY,
+    superAdminPublicKey: process.env.SUPER_ADMIN_PUBLIC_KEY,
+    diamondAddress: process.env.DIAMOND_ADDRESS,
   },
 });

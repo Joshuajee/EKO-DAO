@@ -1,31 +1,36 @@
 import Input from "@/components/ui/form/Input"
-import { useState, useEffect, useLayoutEffect } from "react"
+import { useState, useEffect, useContext } from "react"
 import wordsCount from 'words-count';
-import { contractAddress, convertToWEI, getDate, USDC } from "@/libs/utils"
+import { contractAddress, convertToWEI, USDC } from "@/libs/utils"
 import { useContractWrite } from "wagmi";
 import crowdFundFacetABI from '../../../abi/contracts/facets/CrowdFundFacet.sol/CrowdFundFacet.json';
 import { toast } from "react-toastify";
 import LoadingButton from "@/components/ui/form/LoadingButton";
 import Textarea from "@/components/ui/form/Textarea";
+import Select from "@/components/ui/form/Select";
+import { durationLists } from "@/libs/constants";
+import { AuthContext } from "@/context/AuthContext";
+import AuthRequest from "@/libs/requests";
 
-const currentDate = getDate()
 
 const CreateCrowdForm = ({close}) => {
+
+    const { isAdminLoggedIn } = useContext(AuthContext);
+
+    const [loading, setLoading] = useState(false)
 
     const [name, setName] = useState("");
 
     const [description, setDescription] = useState("");
-    const [duration, setDuration] = useState(null);
+    const [duration, setDuration] = useState(durationLists[0]?.value);
 
     const [target, setTarget] = useState(null);
     const [min, setMin] = useState(null);
 
     // Errors 
-    const [idError, setIdError] = useState(false);
     const [nameError, setNameError] = useState(false);
 
     const [descriptionError, setDescriptionError] = useState(false);
-    const [durationError, setDurationError] = useState(false);
 
     const [targetError, setTargetError] = useState(false);
     const [minError, setMinError] = useState(false);
@@ -35,16 +40,52 @@ const CreateCrowdForm = ({close}) => {
         address: contractAddress,
         abi: crowdFundFacetABI,
         functionName: 'createCampaign',
-        args: [name, description, convertToWEI(target), convertToWEI(min), USDC, new Date(duration).getTime()],
+        args: [name, description, convertToWEI(target), convertToWEI(min), USDC, duration],
     })
+
+    const httpCreate = async () => {
+
+        setLoading(true)
+
+        console.log({
+            topic: name,
+            description,
+            target: Number(target),
+            minDonation: Number(min),
+            stableCoin: USDC,
+            period: Number(duration)
+        })
+        
+
+        try {
+            const request = new AuthRequest("/crowdfundings")
+            
+            await request.post({
+                topic: name,
+                description,
+                target: Number(target),
+                minDonation: Number(min),
+                stableCoin: USDC,
+                period: Number(duration)
+            })
+
+            toast.success("Funding Created Successfully")
+            close()
+
+        } catch (e) {
+            console.error(e)
+        }
+
+        setLoading(false)
+    }
 
     const submit = (e) => {
         e.preventDefault()
-        create?.write()
+        isAdminLoggedIn ? httpCreate() : create?.write()
     }
 
     const isDisabled = () => {
-        return idError || nameError || descriptionError || durationError || targetError || minError
+        return nameError || descriptionError || targetError || minError
     }
 
     // Verify Name
@@ -76,14 +117,11 @@ const CreateCrowdForm = ({close}) => {
 
         if (create.isSuccess) {
             toast.success("Funding Created Successfully")
-
-            setTimeout(() => {
-                close()
-            }, 600)
+            close()
         }
 
         if (create.error) {
-            toast.error(create.error)
+            toast.error(create?.error?.reason)
         }
 
     }, [create.isLoading, create.isSuccess, create.isError, create.error, close])
@@ -101,11 +139,11 @@ const CreateCrowdForm = ({close}) => {
 
                 <Input type="number" label={"Target Donation (USDC)"} value={target} onChange={setTarget} error={targetError} helperText={"Target should be greater than zero"} />
 
-                <Input type="date" label={"Duration"} min={currentDate} value={duration} onChange={setDuration} />
-                
+                <Select id={"duration"} label={"Duration"}  lists={durationLists} onChange={setDuration} />
+
             </div>
 
-            <LoadingButton loading={create?.isLoading} disabled={isDisabled()} > Create Funding</LoadingButton>
+            <LoadingButton loading={isAdminLoggedIn ? loading : create?.isLoading} disabled={isDisabled()} > Create Funding</LoadingButton>
 
         </form>
     )

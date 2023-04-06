@@ -7,18 +7,24 @@ import { AuthService } from './auth/auth.service';
 import { JwtModule } from '@nestjs/jwt';
 import { JwtStrategy } from './auth/jwt.strategy';
 import { PassportModule } from '@nestjs/passport';
-import { Web3Helper } from 'src/commons/helpers/web3-helper';
+import { ConfigurationService } from 'src/config/configuration.service';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Admin]),
     PassportModule,
-    JwtModule.register({
-      secret: 'secretKey',
-      signOptions: { expiresIn: '3600s' },
-    }),
+    {
+      ...JwtModule.registerAsync({
+        inject: [ConfigurationService],
+        useFactory: async (config: ConfigurationService) => ({
+          secret: config.jwtSecret,
+          signOptions: { expiresIn: config.jwtLife },
+        }),
+      }),
+      global: true,
+    },
   ],
   controllers: [AdminsController],
-  providers: [AdminsService, AuthService, JwtStrategy, Web3Helper],
+  providers: [AdminsService, AuthService, JwtStrategy],
 })
 export class AdminsModule {}

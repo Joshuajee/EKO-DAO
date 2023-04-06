@@ -15,7 +15,7 @@ const LoadingScreen = ({isError}) => {
     )
 
     return (
-        <div className='flex justify-center items-center w-full h-[400px] lg:h-[700px] 2xl:h-[900px]'>
+        <div className='flex justify-center items-center w-full h-[400px] lg:h-[500px] 2xl:h-[600px]'>
             { isError ? lottie : loader }
         </div>
     )

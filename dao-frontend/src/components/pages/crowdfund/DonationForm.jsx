@@ -22,7 +22,6 @@ const DonationForm = ({project, close}) => {
 
     const [min, setMin] = useState(convertToEther(minimumDonation))
 
-
     const { address } = useAccount()
 
     const donation = useContractWrite({
@@ -39,7 +38,7 @@ const DonationForm = ({project, close}) => {
     }
 
     useEffect(() => {
-        if (donation?.isError) toast.error(donation?.error?.message)
+        if (donation?.isError) toast.error(donation?.error?.reason)
 
         if (donation?.isSuccess) {
             toast.success("Donation Successful")

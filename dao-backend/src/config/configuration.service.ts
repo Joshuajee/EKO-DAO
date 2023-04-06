@@ -5,6 +5,10 @@ import { ConfigService } from '@nestjs/config';
 export class ConfigurationService {
   constructor(private configService: ConfigService) {}
 
+  get env(): string {
+    return this.configService.get<string>('env');
+  }
+
   get name(): string {
     return this.configService.get<string>('app.name');
   }
@@ -16,6 +20,20 @@ export class ConfigurationService {
   }
   get version(): string {
     return this.configService.get<string>('app.version');
+  }
+  get allowedOrigins(): any {
+    return this.configService.get<any>('app.allowedOrigins');
+  }
+  get jwtSecret(): string {
+    return this.configService.get<string>('app.jwtSecret');
+  }
+  get jwtLife(): string {
+    return this.configService.get<string>('app.jwtLife');
+  }
+  get swaggerEnabled(): boolean {
+    return this.configService.get<string>('app.swaggerEnabled') === 'true'
+      ? true
+      : false;
   }
   get dbtype(): string {
     return this.configService.get<string>('db.type');
@@ -43,5 +61,25 @@ export class ConfigurationService {
 
   get providerUrl(): string {
     return this.configService.get<string>('bc.providerUrl');
+  }
+
+  get chainId(): number {
+    return this.configService.get<number>('bc.chainId');
+  }
+
+  get superAdminAddress(): string {
+    return this.configService.get<string>('bc.superAdminAddress');
+  }
+
+  get superAdminPrivateKey(): string {
+    return this.configService.get<string>('bc.superAdminPrivateKey');
+  }
+
+  get superAdminPublicKey(): string {
+    return this.configService.get<string>('bc.superAdminPublicKey');
+  }
+
+  get diamondAddress(): string {
+    return this.configService.get<string>('bc.diamondAddress');
   }
 }

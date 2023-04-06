@@ -63,14 +63,8 @@ contract CrowdFundFacet{
 
 
   // Admin withdraw if project is successful
-   function adminWithdraw(uint256 _projectIndex) public {
+   function adminWithdraw(address projectAddress) public {
         address _user = msg.sender;
-
-        Project projectAddress = Database.getCrowdFundMappingRecords().Projects[_projectIndex];
-        if(address(projectAddress) == address(0)){
-            revert ProjectDoesNotExist(_projectIndex);
-        }
-
         Project(projectAddress).adminWithdraw(_user); // Call function       
   }
 

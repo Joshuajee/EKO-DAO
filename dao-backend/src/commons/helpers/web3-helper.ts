@@ -2,10 +2,13 @@ import { Injectable } from '@nestjs/common';
 import Web3 from 'web3';
 import EthereumTxAll, { Transaction, TxData } from 'ethereumjs-tx';
 import { publicKeyByPrivateKey } from 'eth-crypto';
+import { ConfigurationService } from 'src/config/configuration.service';
 
 @Injectable()
 export class Web3Helper {
   web3;
+
+  constructor(private readonly configService: ConfigurationService) {}
 
   instantiateWeb3(providerUrl: string): void {
     try {
@@ -17,13 +20,17 @@ export class Web3Helper {
     }
   }
 
-  createAccount() {
+  createAccount(): { [key: string]: any } {
     const account = this.web3.eth.accounts.create();
     return {
       address: account['address'],
       publicKey: `0x${publicKeyByPrivateKey(account['privateKey'])}`,
       privateKey: account['privateKey'],
     };
+  }
+
+  toWei(value: string): string {
+    return this.web3.utils.toWei(value);
   }
 
   getContractInstance(contractAbi: any, contractAddress: string) {
@@ -34,6 +41,21 @@ export class Web3Helper {
     }
   }
 
+  async callContract(
+    encodedData: string,
+    contractAddress: string,
+    accountAddress: string,
+    privateKey: string,
+  ): Promise<void> {
+    const txData: TxData = await this.buildTx(
+      encodedData,
+      contractAddress,
+      accountAddress,
+    );
+    const signedTx: string = this.signTx(txData, privateKey);
+    await this.sendSignedTx(signedTx);
+  }
+
   async buildTx(
     data: string,
     contractAddress: string,
@@ -41,16 +63,15 @@ export class Web3Helper {
     value?: number,
   ): Promise<TxData> {
     const nonce: number = await this.getNonce(accountAddress);
-    const gasPrice: number = Math.floor(
-      (await this.web3.eth.getGasPrice()) * 1.5,
-    );
+    const gasPrice: number = await this.web3.eth.getGasPrice();
     return {
       data: data,
       to: contractAddress,
       nonce: nonce,
-      gasLimit: '0x3d0900',
-      gasPrice: gasPrice,
+      gasLimit: '0xffffff',
+      gasPrice: Math.floor(gasPrice) * 1.5,
       value: value ? value : 0,
+      chainId: this.configService.chainId,
     };
   }
 
