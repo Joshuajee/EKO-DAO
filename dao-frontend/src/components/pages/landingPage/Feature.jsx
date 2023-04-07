@@ -10,7 +10,7 @@ export default function Feature (){
         <section className="text-gray-600 body-font">
             <div className="container px-5 py-24 mx-auto">
                 <div className="flex flex-wrap -m-4">
-                    <FeatureCard title={"Join Cohort"} icon={<MdSchool size={24} route={links.cohorts} />}>
+                    <FeatureCard title={"Join Cohort"} icon={<MdSchool size={24} />} route={links.cohorts}>
                         Take Control of Your Learning Journey: Join a Community of Like-Minded Students and Reach Your Goals
                     </FeatureCard>
                     <FeatureCard title={"Participate in Hackathons"} icon={<FaAward size={24} />} route={links.hackathons}>

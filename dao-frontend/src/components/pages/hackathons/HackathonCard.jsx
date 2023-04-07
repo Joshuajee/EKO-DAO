@@ -71,7 +71,7 @@ const HackathonCard = ({hackathon, expanded}) => {
             case 1:
                 if (startDate > currentTime)
                     setHackStatus({color: "blue", status: "Registration is open", state: 1})
-                if (endDate > currentTime)
+                if (startDate < currentTime && endDate > currentTime)
                     setHackStatus({color: "green", status: "Hackathon in session", state: 2})
                 if (endDate < currentTime)
                     setHackStatus({color: "yellow", status: "Hackathon has ended", state: 3})
