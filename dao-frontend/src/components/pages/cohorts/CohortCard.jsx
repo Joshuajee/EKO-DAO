@@ -47,13 +47,18 @@ const CohortCard = ({cohort, contract, expanded}) => {
         enabled: isConnected
     })
 
+    console.log({ startTime, currentTime })
+    console.log(startTime < currentTime)
+    console.log(status)
+
     useEffect(() => {
         switch (status) {
             case 1:
             case 2:
-                if (startTime < currentTime)
+        
+                if (startTime > currentTime)
                     setCohortStatus({color: "blue", status: "Enrollment is open", state: 1})
-                else if (deadline > currentTime)
+                if (startTime < currentTime && deadline > currentTime)
                     setCohortStatus({color: "green", status: "Cohort in session", state: 2})
                 if (deadline < currentTime)
                     setCohortStatus({color: "yellow", status: "Cohort has ended", state: 3})
