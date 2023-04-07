@@ -1,4 +1,4 @@
-import { MdDashboard, MdSchool } from "react-icons/md";
+import { MdSchool } from "react-icons/md";
 import { FaVoteYea, FaHandsHelping, FaAward } from "react-icons/fa";
 import { GrMoney } from "react-icons/gr"
 

@@ -55,7 +55,6 @@ const CohortCard = ({cohort, contract, expanded}) => {
         switch (status) {
             case 1:
             case 2:
-        
                 if (startTime > currentTime)
                     setCohortStatus({color: "blue", status: "Enrollment is open", state: 1})
                 if (startTime < currentTime && deadline > currentTime)
