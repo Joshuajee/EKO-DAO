@@ -132,10 +132,10 @@ const CohortActions = ({state, status, contract, commitment, isStudent}) => {
         <div className="block py-4 w-full">
 
             { 
-                isStudent && state === 3 && Number(getBalance?.data.toString()) > 0 && (
+                isStudent && (
                     <div className="flex flex-col md:flex-row items-center justify-between">
                         <p>You enrolled for this programme</p> 
-                        { (status > 0) &&
+                        { (status > 0 && state === 3 && Number(getBalance?.data.toString()) > 0 ) &&
                             <button 
                                 onClick={() => setOpen(true)}
                                 className="mt-2 md:mt-0 bg-green-600 hover:bg-green-700 rounded-lg px-8 py-2 text-white"> 

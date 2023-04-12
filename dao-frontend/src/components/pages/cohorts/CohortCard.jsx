@@ -11,6 +11,7 @@ import { toast } from "react-toastify"
 import CohortActions from "./CohortActions"
 import CohortABI from '@/abi/contracts/Cohort.sol/Cohort.json';
 import Badge from "@/components/ui/Badge"
+import CardWrapper from "@/components/ui/CardWrapper"
 
 
 const CohortCard = ({cohort, contract, expanded}) => {
@@ -47,15 +48,21 @@ const CohortCard = ({cohort, contract, expanded}) => {
         enabled: isConnected
     })
 
+
     useEffect(() => {
+
+        const start = Number(startTime)
+        const end = Number(deadline)
+        const current = Number(currentTime)
+
         switch (status) {
             case 1:
             case 2:
-                if (startTime < currentTime)
+                if (start > current)
                     setCohortStatus({color: "blue", status: "Enrollment is open", state: 1})
-                else if (deadline > currentTime)
+                if (start < current && end > current)
                     setCohortStatus({color: "green", status: "Cohort in session", state: 2})
-                if (deadline < currentTime)
+                if (end < current)
                     setCohortStatus({color: "yellow", status: "Cohort has ended", state: 3})
                 break
             case 3:
@@ -68,7 +75,8 @@ const CohortCard = ({cohort, contract, expanded}) => {
 
     useEffect(() => {
         setDeadline(Number(endDate.toString()))
-    }, [endDate])
+        setStartTime(Number(startDate.toString()))
+    }, [startDate, endDate])
 
     useEffect(() => {
         setCurrentTime(Number(new Date()) / 1000)
@@ -79,36 +87,38 @@ const CohortCard = ({cohort, contract, expanded}) => {
     }, [])
 
     return (
-        <div className="text-gray-700 bg-white rounded-md p-4 md:px-4 shadow-lg w-full max-h-[500px] overflow-x-hidden overflow-y-auto">
-            {/* <h3 className="mb-3 text-sm">COHORT ADDRESS: {cohort.contractAddress}</h3> */}
-            <h2 className="text-black text-xl md:text-2xl font-semibold mb-3">{name}</h2>
-            
-            <p className="mb-3">{description}</p>
-            
-            <Badge color={cohortStatus?.color}> 
-                <AiOutlineClockCircle size={18} /> 
-                <p className="ml-2 text-sm">{cohortStatus?.status}</p> 
-            </Badge>
+        <CardWrapper link={`${links.cohorts}/${contractAddress}`}>
+            <div className="text-gray-700 bg-white rounded-md p-4 md:px-4 shadow-lg w-full max-h-[500px] overflow-x-hidden overflow-y-auto">
+                {/* <h3 className="mb-3 text-sm">COHORT ADDRESS: {cohort.contractAddress}</h3> */}
+                <h2 className="text-black text-xl md:text-2xl font-semibold mb-3">{name}</h2>
+                
+                <p className="mb-3">{description}</p>
+                
+                <Badge color={cohortStatus?.color}> 
+                    <AiOutlineClockCircle size={18} /> 
+                    <p className="ml-2 text-sm">{cohortStatus?.status}</p> 
+                </Badge>
 
-            <div className="flex justify-end">
-                <CohortStatus expanded={expanded} fee={commitment} students={size} start={startDate} end={endDate} />
+                <div className="flex justify-end">
+                    <CohortStatus expanded={expanded} fee={commitment} students={size} start={startDate} end={endDate} />
+                </div>
+
+                <div className="flex justify-between mt-2">
+
+                    { !expanded ? <button onClick={() => router.push(`${links.cohorts}/${contractAddress}`)} className="text-gray-600">View Details </button> : <div> </div> }
+
+                    { (expanded && !data && cohortStatus?.state === 1 ) && <button onClick={handleClick} className="bg-blue-600 hover:bg-blue-800 rounded-lg px-8 py-2 text-white"> Enroll </button> }
+
+                </div>
+
+                <ModalWrapper title={"Join Cohort"} open={open} handleClose={handleClose}>
+                    <EnrollmentForm cohort={cohort} contract={contract} close={handleClose} />
+                </ModalWrapper>
+
+                { expanded && <CohortActions state={cohortStatus?.state} status={status} contract={contract} isStudent={data} commitment={commitment.toString()} /> }
+                
             </div>
-
-            <div className="flex justify-between">
-
-                { !expanded ? <button onClick={() => router.push(`${links.cohorts}/${contractAddress}`)} className="text-gray-600">View Details </button> : <div> </div> }
-
-                { (expanded && !data && cohortStatus?.state === 1 ) && <button onClick={handleClick} className="bg-blue-600 hover:bg-blue-800 rounded-lg px-8 py-2 text-white"> Enroll </button> }
-
-            </div>
-
-            <ModalWrapper title={"Join Cohort"} open={open} handleClose={handleClose}>
-                <EnrollmentForm cohort={cohort} contract={contract} close={handleClose} />
-            </ModalWrapper>
-
-            { expanded && <CohortActions state={cohortStatus?.state} status={status} contract={contract} isStudent={data} commitment={commitment.toString()} /> }
-            
-        </div>
+        </CardWrapper>
     )
 }
 

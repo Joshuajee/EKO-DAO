@@ -44,7 +44,7 @@ const HambuggerMenu = ({open, setOpen}) => {
     }, []);
 
     return (
-        <div className='md:hidden'>
+        <div className='lg:hidden'>
 
             <Hamburger size={28} toggled={open} toggle={handleClick} />
 
